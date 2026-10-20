@@ -10,6 +10,9 @@ All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 - Maintenance mode for the online version, switched on and off in
   Streamlit Cloud > Settings > Secrets (`MAINTENANCE`,
   `MAINTENANCE_MESSAGE`, `MAINTENANCE_KEY`), with developer access by key.
+- Fix: after an update on Streamlit Cloud, changed `geochem/` modules are
+  now reloaded automatically (before, the online app could keep old modules
+  in memory and fail until it was rebooted).
 - Fix: online, the top bar no longer overlaps the Streamlit Cloud toolbar
   (Share, GitHub ...).
 - New document: architecture and workflows (design principles, layers,

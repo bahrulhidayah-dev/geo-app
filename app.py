@@ -14,8 +14,32 @@ import pandas as pd
 import streamlit as st
 from matplotlib.colors import to_hex
 
+import importlib
+
+import geochem
 from geochem import calc, catalog, data, docs, norms, plotting, symbols, xrfcal, xrfqc
+from geochem import i18n
 from geochem.i18n import LANGUAGES, t
+
+
+# After an update (for example a new commit on Streamlit Cloud) Streamlit
+# reruns app.py but keeps the old geochem modules in memory. Reload every
+# module whose file changed, in dependency order, so all code is current.
+def _reload_changed_modules():
+    order = [calc, data, norms, symbols, i18n, plotting, catalog, xrfqc, xrfcal, docs]
+    stamps = getattr(geochem, "_file_stamps", {})
+    changed = False
+    for mod in order:
+        stamp = Path(mod.__file__).stat().st_mtime
+        if changed or (mod.__name__ in stamps and stamps[mod.__name__] != stamp):
+            importlib.reload(mod)
+            changed = True          # reload everything that depends on it too
+        stamps[mod.__name__] = stamp
+    geochem._file_stamps = stamps
+
+
+_reload_changed_modules()
+LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
 APP_VERSION = "0.9.1"
 DEVELOPER = "Bahrul Hidayah"
