@@ -52,6 +52,10 @@ programming or with GCDkit is needed.
 
 ### Start the app
 
+- **Online (no installation):** open https://geo-app-hidayah.streamlit.app
+  in any browser.
+- **Portable Windows version:** extract the ZIP file and double-click
+  *Start GeoChem App.bat* (chapter 19).
 - **Windows (with the shortcut):** double-click **GeoChem App** on the
   Desktop. A black window opens (this is the app engine; keep it open) and
   your browser opens the app at `http://localhost:8501` after a few seconds.
@@ -459,6 +463,14 @@ chapter 18 for how to cite this app.
 run entirely on your own computer. The online version processes your file on
 its server, in memory, without saving it.
 
+**The online app says "GeoChem App is being updated".** The developer has
+switched on maintenance mode for an update. Try again later, or use the
+portable version.
+
+**The online app shows "Yes, get this app back up!".** A free online app
+sleeps after some days without visitors. Click the button and wait about a
+minute.
+
 **The download manager (for example IDM) catches every file.** The app makes
 files only when you click a download button. If your download manager still
 interferes, add `localhost` to its exception list.
@@ -475,7 +487,9 @@ When you publish results made with GeoChem App, please cite:
    Geochemical Data Toolkit (GCDkit). *Journal of Petrology* 47(6),
    1255-1259;
 3. this app: Hidayah B. (2026) GeoChem App: a free web application for
-   whole-rock geochemistry, version shown in **About**;
+   whole-rock geochemistry, version shown in **About**.
+   https://geo-app-hidayah.streamlit.app (source code:
+   https://github.com/bahrulhidayah-dev/geo-app);
 4. if you used the XRF module: Mikuni K., Ishikawa A., Sato R. (2025)
    *Geochemical Journal* 59(6), 299-314.
 
@@ -488,7 +502,8 @@ boundaries come from GCDkit (GPL), whose authors are credited throughout.
 
 ### Contributing and feedback
 
-Bug reports, new diagram requests and translations are welcome. Write to the
+Bug reports, new diagram requests and translations are welcome: open an
+*Issue* at https://github.com/bahrulhidayah-dev/geo-app/issues, or write to the
 developer, Bahrul Hidayah (bahrul.hidayah@gmail.com), and attach a screenshot
 and, if possible, a small example file. Developers will find the code
 organisation in `README.md` and in the comments at the top of each file.

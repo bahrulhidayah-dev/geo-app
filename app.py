@@ -17,7 +17,7 @@ from matplotlib.colors import to_hex
 from geochem import calc, catalog, data, docs, norms, plotting, symbols, xrfcal, xrfqc
 from geochem.i18n import LANGUAGES, t
 
-APP_VERSION = "0.9.0"
+APP_VERSION = "0.9.1"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"

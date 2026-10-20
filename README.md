@@ -1,10 +1,11 @@
 # GeoChem App
 
 A free, open-source web app for whole-rock geochemistry (XRF and ICP data),
-inspired by GCDkit. Version 0.5.0.
+inspired by GCDkit. Version 0.9.1.
 Developed by Bahrul Hidayah (bahrul.hidayah@gmail.com).
 
 **Try it online:** https://geo-app-hidayah.streamlit.app (no installation needed).
+Source code: https://github.com/bahrulhidayah-dev/geo-app
 
 **User manual:** [docs/user-manual.md](docs/user-manual.md) (also inside the app:
 top bar > Documentation). **Portable and online versions:**
@@ -26,8 +27,10 @@ top bar > Documentation). **Portable and online versions:**
   volcanic and plutonic (De la Roche et al. 1980), Batchelor and Bowden 1985,
   Agrawal et al. 2008, Verma et al. 2006, Ohta and Arai 2007 (F-M-W).
 - CIPW norm (Hutchison 1974, 1975; ported from GCDkit) with download.
-- Interface in Indonesian, English and Japanese.
-- Light, dark or system theme; the session is kept when the page reloads.
+- Top bar with Documentation (full user manual with screenshots),
+  References, About, and the language (Indonesian, English, Japanese) and
+  theme (light, dark or system) menus; the session is kept when the page
+  reloads.
 - Plot appearance: fonts, field-label orientation, tick-label angle, y-axis
   title orientation, line widths, figure size, grid.
 - Automatic field names for every sample in classification diagrams.
@@ -50,6 +53,11 @@ top bar > Documentation). **Portable and online versions:**
   against the paper: with their SciTokyo_Day1 intensities the app gives
   R2 = 0.99967 and accuracy = 0.077 wt% for T-Fe2O3, and GP13 8.92 -> 8.40 wt%
   (paper: same values). The paper's data set is included as an example.
+
+- Three ways to share: online (Streamlit Community Cloud), portable Windows
+  ZIP with Python included, or from the source code. The online version shows
+  a privacy note and has a maintenance mode switched on through Secrets
+  (see [docs/deployment.md](docs/deployment.md)).
 
 ## Install and run
 
@@ -87,6 +95,7 @@ docs/deployment.md         portable and online versions, release checklist
 tools/portable/            portable Windows build (build_portable.bat, launcher)
 examples/                  example data files (synthetic and published)
 LICENSE                    GNU GPL v3.0
+.devcontainer/             settings for editing in GitHub Codespaces (added by Streamlit)
 geochem/diagrams/gcdkit/   boundary geometry converted from GCDkit 6.3 templates
 tools/gcdkit_import.py     converter from GCDkit R templates to JSON
 geochem/diagrams/*.json    spider-plot normalizing values

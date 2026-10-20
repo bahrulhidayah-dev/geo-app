@@ -2,6 +2,19 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.9.1 - 2026-10-20
+
+- The app is online: https://geo-app-hidayah.streamlit.app (source code:
+  https://github.com/bahrulhidayah-dev/geo-app). Links added to the About
+  page, README, manual and CITATION.cff.
+- Maintenance mode for the online version, switched on and off in
+  Streamlit Cloud > Settings > Secrets (`MAINTENANCE`,
+  `MAINTENANCE_MESSAGE`, `MAINTENANCE_KEY`), with developer access by key.
+- Fix: online, the top bar no longer overlaps the Streamlit Cloud toolbar
+  (Share, GitHub ...).
+- Documentation: GitHub Desktop workflow (commit, push, pull), maintenance
+  mode, online troubleshooting, and the real repository name.
+
 ## 0.9.0 - 2026-10-19
 
 - Portable Windows version: `tools/portable/build_portable.bat` builds a ZIP

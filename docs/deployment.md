@@ -53,20 +53,29 @@ and gives it a public address. The official instance is https://geo-app-hidayah.
 ### Step 1 - Put the code on GitHub
 
 1. Create a free account at github.com.
-2. Click **New repository**, name it for example `geochem-app`, choose
-   **Public**, leave *Add a README* unticked, and click **Create repository**.
-3. Upload the code, in one of these ways:
-   - **GitHub Desktop** (easiest for beginners): install it, *File > Add
-     local repository* > choose the `geo-app` folder > *Publish
-     repository*.
-   - **Command line** (in the `geo-app` folder):
+2. Upload the code, in one of these ways:
+   - **GitHub Desktop** (easiest for beginners; this is how the official
+     repository was made):
+     1. *Add an Existing Repository from your local drive* > choose the
+        `geo-app` folder.
+     2. GitHub Desktop says the folder is not a Git repository yet: click
+        **create a repository**. Keep the name `geo-app`, leave *README*,
+        *Git ignore* and *License* empty (the files already exist), and click
+        **Create repository**. GitHub Desktop makes the first commit
+        (*Initial commit*) by itself, so the *Changes* tab shows
+        *0 changed files*; the committed files are listed in the *History*
+        tab.
+     3. Click **Publish repository**, untick **Keep this code private**,
+        and click **Publish repository** again.
+   - **Command line** (in the `geo-app` folder; first create an empty
+     public repository named `geo-app` on github.com):
 
      ```
      git init
      git add .
-     git commit -m "GeoChem App 0.8.0"
+     git commit -m "GeoChem App"
      git branch -M main
-     git remote add origin https://github.com/<your-name>/geochem-app.git
+     git remote add origin https://github.com/<your-name>/geo-app.git
      git push -u origin main
      ```
 
@@ -78,16 +87,31 @@ and gives it a public address. The official instance is https://geo-app-hidayah.
 
 1. Go to share.streamlit.io and sign in with GitHub.
 2. Click **Create app** > **Deploy a public app from GitHub**.
-3. Choose the repository `geochem-app`, branch `main`, main file `app.py`.
-4. Optional: choose a custom address (for example `geochem-app`).
+3. Choose the repository `<your-name>/geo-app`, branch `main`, main file
+   `app.py`.
+4. Optional: choose a custom address (the official one is
+   `geo-app-hidayah`).
 5. Under **Advanced settings**, choose Python **3.12**.
 6. Click **Deploy**. The first start takes a few minutes; later starts are
    fast.
 
 ### Step 3 - Updates
 
-Every change pushed to GitHub (`git push`, or *Push origin* in GitHub
-Desktop) updates the online app automatically within a minute.
+Every change pushed to GitHub updates the online app automatically within
+a minute. In GitHub Desktop:
+
+1. The *Changes* tab lists the changed files. Write a short summary (for
+   example `Fix top bar`) and click **Commit to main**.
+2. Click **Push origin**.
+
+If the button shows **Pull origin** instead (with arrows ↓1 ↑1), GitHub has
+a commit that your computer does not have yet. Click **Pull origin** first;
+GitHub Desktop merges both, and then **Push origin** appears.
+
+This happens, for example, after you click the pencil icon (✏️) on the
+online app: Streamlit then adds a `.devcontainer` folder to the repository
+(settings for editing the code in the browser with GitHub Codespaces). The
+folder is harmless and can stay.
 
 ### Good to know
 
@@ -108,20 +132,28 @@ Desktop) updates the online app automatically within a minute.
 During a critical update you can close the online app without changing the
 code:
 
-1. On share.streamlit.io, open the app menu (**⋮**) > **Settings** >
-   **Secrets**.
+1. Open the settings: either on share.streamlit.io > *My apps* > **⋮**
+   next to the app > **Settings** > **Secrets**, or in the online app
+   itself > **Manage app** (bottom right, visible only to you) > **⋮** >
+   **Settings** > **Secrets**. (The **Share** button at the top right is a
+   different panel: it invites viewers and switches the app between public
+   and private; keep *Make this app public* on.)
 2. Add these lines and click **Save**:
 
    ```
    MAINTENANCE = true
-   MAINTENANCE_MESSAGE = "Back on 25 October."
+   MAINTENANCE_MESSAGE = "The app is serpentinising. New features coming soon!"
    MAINTENANCE_KEY = "choose-a-secret-word"
    ```
 
-   Only `MAINTENANCE` is required. Visitors now see a short notice in
-   English, Indonesian and Japanese, with your message and contact e-mail.
+   Only `MAINTENANCE` is required; choose your own secret word (anyone who
+   knows it can open the app). Within about a minute visitors see a short
+   notice in English, Indonesian and Japanese, with your message and contact
+   e-mail. The code for this switch must already be on GitHub (version
+   0.9.1 or later).
 3. You can still use the app yourself at
    `https://geo-app-hidayah.streamlit.app/?key=choose-a-secret-word`.
+   A yellow bar reminds you that maintenance mode is on.
 4. To open the app again, delete the lines (or write `MAINTENANCE = false`)
    and click **Save**.
 
@@ -129,7 +161,8 @@ The link stays the same. For everyday fixes, work in a separate branch
 (for example `dev`) and merge into `main` when the change is tested: the
 online app follows `main` only.
 
-On other servers, use the environment variables `GEOCHEM_MAINTENANCE=1`,
+On your own computer and in the portable version the switch is never on
+(there is no Secrets file). On other servers, use the environment variables `GEOCHEM_MAINTENANCE=1`,
 `GEOCHEM_MAINTENANCE_MESSAGE` and `GEOCHEM_MAINTENANCE_KEY`.
 
 ### Other hosts
@@ -148,8 +181,8 @@ the app shows the privacy note.
 ## 3. From the source code (any system)
 
 ```
-git clone https://github.com/<your-name>/geochem-app.git
-cd geochem-app
+git clone https://github.com/bahrulhidayah-dev/geo-app.git
+cd geo-app
 python -m venv .venv
 .venv\Scripts\activate              (Windows)
 source .venv/bin/activate           (macOS, Linux)
@@ -162,7 +195,8 @@ streamlit run app.py
 1. Raise `APP_VERSION` in `app.py` and `version` in `CITATION.cff`.
 2. Add the changes to `CHANGELOG.md`.
 3. Test with the files in `examples/`.
-4. Push to GitHub (the online version updates itself).
+4. Commit and push to GitHub (the online version updates itself). Use
+   maintenance mode if the update may break the app for a while.
 5. Run `tools\portable\build_portable.bat` and share the new ZIP file.
 6. Optional: make a GitHub *Release* and connect the repository to
    zenodo.org to get a DOI that others can cite.
