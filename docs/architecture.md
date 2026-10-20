@@ -52,7 +52,7 @@ every click and rebuilds the page; values that must survive are kept in
 
 | Module | Responsibility |
 |---|---|
-| `data.py` | Read CSV/Excel; clean text values; recognise column names (`SiO2 (wt%)` to `SiO2`); report changes |
+| `data.py` | Read CSV/Excel (with a chosen header row); clean text values; recognise column names (`SiO2 (wt%)` to `SiO2`); detect and convert units (wt%, ppm, ppb); apply the user's column setup; report changes |
 | `calc.py` | FeOt, Mg#, anhydrous recalculation, molar values, millications, element from oxide, normalisation |
 | `norms.py` | CIPW norm (Hutchison 1974, 1975; ported from GCDkit), iron split by Fe³⁺/Fe(total) |
 | `catalog.py` | The 27 diagrams: title, category, rock scope, year, axis formulas per panel, sample subset, notes, reference |
@@ -68,7 +68,7 @@ every click and rebuilds the page; values that must survive are kept in
 |---|---|
 | `geochem/diagrams/gcdkit/*.json` | Boundary geometry of each diagram (lines, polygons, field names, label positions, axis limits) |
 | `geochem/diagrams/gcdkit/discriminants.json` | Discriminant-function formulas (Agrawal et al. 2008, Verma et al. 2006) |
-| `geochem/diagrams/spider_*.json` | CI chondrite (McDonough and Sun 1995) and primitive mantle (Sun and McDonough 1989) |
+| `geochem/diagrams/spider_norms_gcdkit.json` | 35 sets of normalising values for spider diagrams (chondrite, primitive mantle, MORB, OIB, crust, sediments) from GCDkit 6.3 `spider.data` |
 | `geochem/reference_materials.csv` | Reference values of 26 rock reference materials (Mikuni et al. 2025, Table 1) |
 | `docs/` | User manual, this document, deployment guide, screenshots and diagrams |
 | `examples/` | Example data with known answers |
@@ -86,8 +86,13 @@ The developer runs it once per diagram; users never need it.
    a missing value (never zero); decimal commas are read; rows without
    numbers (units rows) are removed. Every change goes into the **data
    check report**.
-4. **Recognise columns** (`data.standardize`). Lab spellings become standard
-   names, so `Fe2O3T`, `Fe2O3*` and `T-Fe2O3` all become `Fe2O3t`.
+4. **Recognise columns and units** (`data.detect_units`,
+   `data.standardize`). Lab spellings become standard names, so `Fe2O3T`,
+   `Fe2O3*` and `T-Fe2O3` all become `Fe2O3t`. Units found in the column
+   names or in a units row are converted (oxides to wt%, elements to ppm,
+   for example ppb / 1000). The user's **column setup** (header row, sample
+   name, rock type, locality, group, meaning and unit of each column) is
+   applied here; the sample column is moved to the front.
 5. **Select samples** (`view`). Groups hidden in the sidebar are left out.
 6. **Choose a plot.**
 7. **Calculate the axis values.**

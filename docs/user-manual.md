@@ -95,7 +95,9 @@ To stop the app, close the black window (or press `Ctrl+C` in the terminal).
 
 - One sample per **row**, one variable per **column**.
 - Column names in the **first row**.
-- The **first column** should hold the sample names.
+- The **first column** should hold the sample names (or choose the sample
+  column in **Data → Column setup**). The order of the other columns does not
+  matter.
 - Text columns (for example *Group*, *Locality*, *Rock type*) can be used to
   group and label samples.
 - CSV (comma separated) and Excel (`.xlsx`) files are accepted.
@@ -113,6 +115,13 @@ To stop the app, close the black window (or press `Ctrl+C` in the terminal).
   (La, Ce, Nb, Zr, Cr, Ni ...).
 - K, Ti and P in ppm are calculated from K2O, TiO2 and P2O5 when the element
   columns are missing.
+- **Other units are converted for you.** The unit is read from the column
+  name (`La (ppb)`, `Cr_ppm`, `SiO2 wt%`, `ng/g`, `µg/g`, `mg/kg`) or from a
+  units row under the header. Elements in **ppb** are divided by 1000 and
+  elements in wt% are multiplied by 10 000 to give ppm; oxides in ppm are
+  divided by 10 000 to give wt%. Every conversion is listed in
+  **Data → Data check**. A column without a unit is taken as wt% (oxides) or
+  ppm (elements); if that is wrong, set the unit in **Data → Column setup**.
 
 ### Column names are recognised for you
 
@@ -139,6 +148,39 @@ Cells such as `<0.01`, `bdl`, `b.d.l.`, `n.d.`, `-` or empty cells become
 **missing values** (they are not set to zero). Decimal commas (`0,52`) are
 read as decimal points. A second header row with units (`wt%`, `ppm`) is
 removed. Every change is reported in **Data → Data check**.
+
+### Your own layout: Data → Column setup
+
+Lab files differ: title rows above the column names, a running number in the
+first column, sample names somewhere else, unusual names, other units. The
+order of the columns never matters. The **Column setup** tab lets you
+describe your file once:
+
+- **Column names on row**: use 2, 3 ... when the file has title or note rows
+  above the column names.
+- **Sample name**: the column with the sample names (default: the first
+  column). It is moved to the front of every table and result.
+- **Rock type**, **Locality**, **Group**: text columns with these meanings.
+  They are renamed to *Rock type*, *Locality* and *Group* and can be used in
+  **Group samples by** and **Label points with**.
+- **Columns** table: for each column, the app shows an example value, what
+  it detected and the unit it found. Change **Read as** to tell the app what a
+  column contains (for example *SiO2* for a column named `Si-XRF`), to keep it
+  as **(text)** (sample numbers) or to **(ignore)** it. Change **Unit** to
+  wt%, ppm or ppb when the file does not say.
+
+Click **Apply setup**. The setup stays with this file name during the session.
+**Save setup (JSON)** stores it on your computer; **Load a saved setup** uses
+it again for the next file from the same lab. **Reset** returns to the
+automatic setup. Try it with `examples/layout_and_units_example.xlsx`
+(column names on row 3, sample name *Lab ID*, rock type *Lithology*,
+locality *Area*).
+
+### XRF and ICP results in one table
+
+The app works with one table per session. Most studies combine XRF (major
+oxides, wt%) and ICP-MS (trace elements, ppm or ppb): put both in one table
+with one row per sample (see chapter 17 for the options).
 
 ### Optional columns
 
@@ -184,11 +226,13 @@ Click **Open** on a card to go to the full page of that plot.
 
 ## 6. Data
 
-The **Data** page has four tabs.
+The **Data** page has five tabs.
 
 - **Table**: your data after cleaning, with the recognised column names.
-- **Data check**: cells that were set to missing (and why), and the list of
-  recognised columns. Check this tab first with every new file.
+- **Column setup**: header row, sample name, rock type, locality, group,
+  and the meaning and unit of each column (chapter 3).
+- **Data check**: unit conversions, cells that were set to missing (and
+  why), and the list of recognised columns. Check this tab first with every new file.
 - **Calculated values**: major-oxide total, FeOt, Mg#, anhydrous SiO2 and
   Na2O + K2O, and the TAS and AFM names. Download them as CSV.
 - **CIPW norm**: normative minerals (Hutchison 1974, 1975; ported from
@@ -258,10 +302,24 @@ granites. Read the **Scientific basis** tab before you interpret a result.
 
 ## 8. Spider diagrams
 
-Choose the pattern:
+Choose the **pattern** and what the samples are **normalised to**. All 35
+sets of normalising values of GCDkit 6.3 are available:
 
-- **REE, chondrite-normalised** (McDonough and Sun 1995).
-- **Multi-element, primitive-mantle-normalised** (Sun and McDonough 1989).
+- **REE**: chondrite (McDonough and Sun 1995, the default; Boynton 1984;
+  Nakamura 1974; Anders and Grevesse 1989; Palme and O'Neill 2014;
+  O'Neill 2016), primitive mantle (McDonough and Sun 1995), upper
+  continental crust, PAAS and NASC.
+- **Multi-element**: primitive mantle (Sun and McDonough 1989, the default;
+  also short and immobile-element versions, and McDonough and Sun 1995),
+  N-MORB, E-MORB and OIB (Sun and McDonough 1989), MORB (Pearce 1983, 1996),
+  ORG (Pearce et al. 1984), CI chondrite and other chondrite sets.
+- **Crust and sediments**: lower, average, upper, bulk continental crust,
+  upper-crust sediments and GLOSS-II.
+
+The **Scientific basis** box shows the reference and every normalising value.
+For the Sun and McDonough (1989) primitive mantle, the app uses the GCDkit
+values (Cs 0.0079, Pb 0.071 ppm); some compilations quote Cs 0.032 and
+Pb 0.185 ppm, so check the original table if Cs or Pb matter for you.
 
 Values below detection limit are left out; dotted lines bridge the gaps.
 The table on the right shows the normalised values and which elements are
@@ -470,6 +528,20 @@ portable version.
 **The online app shows "Yes, get this app back up!".** A free online app
 sleeps after some days without visitors. Click the button and wait about a
 minute.
+
+**Should I merge my XRF and ICP files?** Yes, for diagrams that need both
+(TAS with REE patterns, Pearce 2008 with SiO2 groups ...). Three ways:
+(1) **one combined table** (recommended): one row per sample, oxides from XRF
+and elements from ICP; when an element was measured by both methods (Cr, Ni,
+Sr, Zr ...), keep one column and write the method in your notes, or keep both
+and set the one you do not want to **(ignore)** in Column setup; (2) **two
+separate sessions**: load the XRF file for major-element diagrams and the ICP
+file for spider and trace-element diagrams (each file needs the same sample
+names); (3) a future version may join the two files inside the app by sample
+name.
+
+**The numbers of an element look 1000 times too large.** The file probably
+gives ppb without saying so. Set the unit to *ppb* in **Data → Column setup**.
 
 **The download manager (for example IDM) catches every file.** The app makes
 files only when you click a download button. If your download manager still

@@ -15,6 +15,7 @@ import streamlit as st
 from matplotlib.colors import to_hex
 
 import importlib
+import json
 
 import geochem
 from geochem import calc, catalog, data, docs, norms, plotting, symbols, xrfcal, xrfqc
@@ -41,7 +42,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.9.1"
+APP_VERSION = "0.10.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -57,15 +58,22 @@ st.set_page_config(page_title="GeoChem App", layout="wide",
                    initial_sidebar_state="expanded")
 
 DIA = catalog.BY_ID
-REE = plotting.load_diagram("spider_ree_chondrite_ms1995.json")
-MULTI = plotting.load_diagram("spider_multi_pm_sm1989.json")
+# Normalising values for spider diagrams (all sets of GCDkit 6.3)
+NORMS = {n["id"]: n for n in plotting.load_diagram("spider_norms_gcdkit.json")["sets"]}
+NORM_GROUPS = ["REE", "Multi-element", "Crust and sediments"]
+NORM_DEFAULT = {"REE": "REE_chondrite_McDonough_Sun_1995",
+                "Multi-element": "Primitive_Mantle_Long_Sun_McDonough_1989",
+                "Crust and sediments": "Upper_Continental_Crust_Taylor_McLennan_1995"}
+REE = NORMS[NORM_DEFAULT["REE"]]
+MULTI = NORMS[NORM_DEFAULT["Multi-element"]]
 
 # ================= Session memory (survives a page reload) =================
 # A theme change reloads the page. The data, settings and symbols are kept on
 # this computer's app server under a key in the address (?s=...), so nothing
 # has to be loaded again.
 STATE_KEYS = ["dataset", "settings", "symbols", "lang", "group_col", "group_keep",
-              "label_col", "diagram_id", "appearance", "theme_choice", "xrf_int"]
+              "label_col", "diagram_id", "appearance", "theme_choice", "xrf_int",
+              "col_setups"]
 
 
 MAX_SESSIONS = 50          # remembered sessions on this server (oldest dropped)
@@ -239,11 +247,21 @@ if _is_on(_secret("MAINTENANCE", "0")):
 
 # ================= Data =================
 @st.cache_data(show_spinner=False)
-def process(name, content):
-    raw = data.load_file(name, content)
+def process(name, content, setup_json="{}"):
+    """Read, clean and standardise a data file with the user's column setup
+    (header row, column meanings, units, roles)."""
+    setup = json.loads(setup_json)
+    raw = data.load_file(name, content, setup.get("header_row", 1))
+    raw.columns = [str(c).strip() for c in raw.columns]
+    units = data.detect_units(raw)
     clean, report = data.clean_data(raw)
-    std, mapping = data.standardize(clean)
-    return clean, report, std, mapping
+    std, mapping, unit_report = data.standardize(clean, setup, units, raw)
+    return clean, report, std, mapping, unit_report, units
+
+
+def col_setup(name):
+    """Column setup saved for this file name (empty = automatic)."""
+    return st.session_state.setdefault("col_setups", {}).get(name, {})
 
 
 # ---- sidebar: data source (language and theme are in the top bar) ----
@@ -270,9 +288,16 @@ elif st.session_state.pop("_upload_id", None):
 ctx = None
 if "dataset" in st.session_state:
     name, content = st.session_state["dataset"]
-    clean, report, std, mapping = process(name, content)
+    try:
+        clean, report, std, mapping, unit_report, units = process(
+            name, content, json.dumps(col_setup(name), sort_keys=True))
+    except Exception as e:          # for example a wrong header row
+        st.session_state.setdefault("col_setups", {}).pop(name, None)
+        st.error(t("The file could not be read with this column setup ({e}). "
+                   "The automatic setup is used again.").format(e=e))
+        clean, report, std, mapping, unit_report, units = process(name, content)
     ctx = {"name": name, "clean": clean, "report": report, "std": std,
-           "mapping": mapping}
+           "mapping": mapping, "unit_report": unit_report, "units": units}
 
 
 # ================= Helpers =================
@@ -384,7 +409,7 @@ def catalog_coords(d, df):
         try:
             out.append(catalog.panel_data(d, i, df, settings))
             missing.append(None)
-        except calc.MissingData as e:
+        except (calc.MissingData, KeyError) as e:   # KeyError: column not in file
             out.append(None)
             missing.append(str(e.args[0]))
     return out, missing
@@ -584,6 +609,110 @@ def page_diagrams():
                         f"**{t('Boundaries')}:** {d['source']} (Janousek et al. 2006, GPL).")
 
 
+def column_setup_tab():
+    """Let the user say what each column is: sample name, rock type,
+    locality, group, the meaning and unit of each data column, and the row
+    that holds the column names."""
+    name = ctx["name"]
+    setup = dict(col_setup(name))
+    clean = ctx["clean"]
+    st.caption(t("The app recognises most columns by itself. Use this setup when a "
+                 "file has title rows above the header, unusual column names, other "
+                 "units, or when you want to say which column is the sample name, "
+                 "rock type, locality or group. The setup is used for this file "
+                 "until you change it, and can be saved and reused for files with "
+                 "the same layout."))
+    ver = st.session_state.get("setup_ver", 0)
+    k = f"cs_{ver}_{name}"
+    cols = list(clean.columns)
+    text_cols = clean.select_dtypes(exclude="number").columns.tolist()
+    roles = dict(setup.get("roles", {}))
+    with st.container(border=True):
+        st.markdown(f"**{t('Layout and roles')}**")
+        r = st.columns(5)
+        header_row = r[0].number_input(t("Column names on row"), 1, 50,
+                                       int(setup.get("header_row", 1)), key=k + "_hdr",
+                                       help=t("Use 2 or more when the file has title "
+                                              "or note rows above the column names."))
+        sample_opts = cols
+        cur = roles.get("Sample") if roles.get("Sample") in cols else cols[0]
+        roles["Sample"] = r[1].selectbox(t("Sample name"), sample_opts,
+                                         index=sample_opts.index(cur), key=k + "_smp")
+        for i, role in enumerate(data.ROLES[1:]):
+            opts = [NONE] + [c for c in text_cols if c != roles["Sample"]]
+            cur = roles.get(role) if roles.get(role) in opts else NONE
+            roles[role] = r[i + 2].selectbox(t(role), opts, index=opts.index(cur),
+                                             format_func=lambda v: t(v) if v == NONE else v,
+                                             key=k + f"_{role}")
+    roles = {a: b for a, b in roles.items() if b and b != NONE}
+    if roles.get("Sample") == cols[0]:
+        roles.pop("Sample")                      # the first column is the default
+    st.markdown(f"**{t('Columns')}**")
+    over = setup.get("columns", {})
+    uover = setup.get("units", {})
+    rows = []
+    for c in cols:
+        numeric = pd.api.types.is_numeric_dtype(clean[c])
+        guess = data.guess(c) if numeric else None
+        ex = clean[c].dropna()
+        rows.append({t("Column in file"): c,
+                     t("Example"): str(ex.iloc[0]) if len(ex) else "",
+                     t("Detected as"): guess or (t("number, not recognised") if numeric
+                                                 else t("text")),
+                     t("Unit found"): ctx["units"].get(c, ""),
+                     t("Read as"): over.get(c, data.AUTO),
+                     t("Unit"): uover.get(c, data.AUTO)})
+    ed = st.data_editor(
+        pd.DataFrame(rows), hide_index=True, key=k + "_tbl", height=360,
+        disabled=[t("Column in file"), t("Example"), t("Detected as"), t("Unit found")],
+        column_config={
+            t("Read as"): st.column_config.SelectboxColumn(
+                t("Read as"), options=[data.AUTO, data.TEXT, data.IGNORE] + data.CANONICAL,
+                help=t("(auto): as detected. (text): keep as text, for example "
+                       "sample numbers. (ignore): leave out. Or choose what the "
+                       "column contains.")),
+            t("Unit"): st.column_config.SelectboxColumn(
+                t("Unit"), options=[data.AUTO] + data.UNITS,
+                help=t("Unit of the values in the file. Oxides are converted to wt% "
+                       "and elements to ppm."))})
+    new = {"header_row": int(header_row), "roles": roles,
+           "columns": {r_[t("Column in file")]: r_[t("Read as")] for _, r_ in ed.iterrows()
+                       if r_[t("Read as")] not in (None, data.AUTO)},
+           "units": {r_[t("Column in file")]: r_[t("Unit")] for _, r_ in ed.iterrows()
+                     if r_[t("Unit")] not in (None, data.AUTO)}}
+    if new["header_row"] == 1:
+        new.pop("header_row")
+    new = {a: b for a, b in new.items() if b}
+    b1, b2, b3, b4 = st.columns([1.2, 1, 1.4, 1.6], vertical_alignment="center")
+    if b1.button(t("Apply setup"), type="primary", icon=":material/check:",
+                 disabled=new == setup):
+        st.session_state.setdefault("col_setups", {})[name] = new
+        st.session_state["setup_ver"] = ver + 1
+        if roles.get("Group"):
+            st.session_state["group_col"] = "Group"
+        st.rerun()
+    if b2.button(t("Reset"), icon=":material/restart_alt:", disabled=not setup):
+        st.session_state.setdefault("col_setups", {}).pop(name, None)
+        st.session_state["setup_ver"] = ver + 1
+        st.rerun()
+    with b3:
+        st.download_button(t("Save setup (JSON)"),
+                           data=lambda: json.dumps(setup, indent=2).encode("utf-8"),
+                           file_name="column_setup.json", mime="application/json",
+                           on_click="ignore", disabled=not setup)
+    up = b4.file_uploader(t("Load a saved setup"), type=["json"], key=k + "_load",
+                          label_visibility="collapsed")
+    if up is not None:
+        try:
+            st.session_state.setdefault("col_setups", {})[name] = json.loads(up.getvalue())
+            st.session_state["setup_ver"] = ver + 1
+            st.rerun()
+        except ValueError:
+            st.error(t("This is not a valid setup file."))
+    if new != setup:
+        st.caption(t("Changes are not used yet: click Apply setup."))
+
+
 def page_data():
     header(t("Data"))
     if ctx is None:
@@ -598,11 +727,18 @@ def page_data():
               int(ctx["report"]["Cells set to missing"].sum())
               if not ctx["report"].empty else 0)
 
-    tab1, tab2, tab3, tab4 = st.tabs([t("Table"), t("Data check"),
-                                      t("Calculated values"), t("CIPW norm")])
+    tab1, tab_setup, tab2, tab3, tab4 = st.tabs(
+        [t("Table"), t("Column setup"), t("Data check"), t("Calculated values"),
+         t("CIPW norm")])
     with tab1:
         st.dataframe(df, hide_index=True)
+    with tab_setup:
+        column_setup_tab()
     with tab2:
+        if not ctx["unit_report"].empty:
+            st.info(t("Some columns were in other units and were converted: oxides "
+                      "to wt%, elements to ppm."), icon=":material/straighten:")
+            st.dataframe(ctx["unit_report"], hide_index=True)
         if ctx["report"].empty:
             st.success(t("All numeric columns were read without problems."))
         else:
@@ -659,8 +795,19 @@ def page_spider():
         return
     df = view()
     kw = opts(df, labels=False)
-    choice_ = st.radio(t("Pattern"), [REE["title"], MULTI["title"]], horizontal=True)
-    ref = REE if choice_ == REE["title"] else MULTI
+    c1, c2 = st.columns([1.3, 2], vertical_alignment="bottom")
+    group = c1.segmented_control(t("Pattern"), NORM_GROUPS, format_func=t,
+                                 default=st.session_state.get("spider_group", "REE"),
+                                 key="spider_group_pick") or "REE"
+    st.session_state["spider_group"] = group
+    ids = [k for k, n in NORMS.items() if n["group"] == group]
+    saved = st.session_state.get("spider_norm", {})
+    cur = saved.get(group, NORM_DEFAULT[group])
+    nid = c2.selectbox(t("Normalised to"), ids, index=ids.index(cur) if cur in ids else 0,
+                       format_func=lambda k: NORMS[k]["title"], key=f"spider_norm_{group}")
+    saved[group] = nid
+    st.session_state["spider_norm"] = saved
+    ref = NORMS[nid]
     norm = calc.normalize(df, ref)
     if norm.shape[1] < 3:
         missing_note(list(ref["elements"].keys()))
@@ -679,8 +826,15 @@ def page_spider():
             st.caption(t("Not in your data, so not plotted: {c}").format(c=", ".join(missing)))
         with st.expander(t("Scientific basis")):
             st.markdown(f"- {t('Normalizing values')}: {ref['reference']}\n"
+                        f"- {t('Source of the values')}: GCDkit 6.3 (spider.data; "
+                        f"Janousek et al. 2006)\n"
                         f"- {t('K, Ti and P are calculated from K2O, TiO2 and P2O5 when the element columns are missing.')}\n"
                         f"- {t('Values below detection limit are left out; dotted lines bridge the gaps.')}")
+            if ref.get("note"):
+                st.caption(ref["note"])
+            st.dataframe(pd.DataFrame({t("Element"): list(ref["elements"]),
+                                       t("Value (ppm)"): list(ref["elements"].values())}),
+                         hide_index=True, height=220)
 
 
 def page_xy():

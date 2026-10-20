@@ -1,7 +1,7 @@
 # GeoChem App
 
 A free, open-source web app for whole-rock geochemistry (XRF and ICP data),
-inspired by GCDkit. Version 0.9.1.
+inspired by GCDkit. Version 0.10.0.
 Developed by Bahrul Hidayah (bahrul.hidayah@gmail.com).
 
 **Try it online:** https://geo-app-hidayah.streamlit.app (no installation needed).
@@ -35,7 +35,11 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
 - Plot appearance: fonts, field-label orientation, tick-label angle, y-axis
   title orientation, line widths, figure size, grid.
 - Automatic field names for every sample in classification diagrams.
-- REE (chondrite) and multi-element (primitive mantle) spider diagrams.
+- REE, multi-element and crust/sediment spider diagrams with all 35 GCDkit
+  normalisation sets (chondrite, primitive mantle, N-MORB, E-MORB, OIB ...).
+- Units read from column names or a units row and converted (ppb, ppm, wt%);
+  Column setup for any lab layout: header row, sample name, rock type,
+  locality, group, and the meaning and unit of each column (save and reuse).
 - Free XY plot, group statistics, calculated values (FeOt, Mg#, anhydrous
   oxides).
 - Symbols and colours per group (colour, symbol, size, filled or open), used by

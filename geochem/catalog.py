@@ -484,6 +484,6 @@ def missing_columns(diagram, df, settings):
         try:
             panel_data(diagram, i, df, settings)
             out.append([])
-        except calc.MissingData as e:
+        except (calc.MissingData, KeyError) as e:
             out.append([str(e.args[0])])
     return out

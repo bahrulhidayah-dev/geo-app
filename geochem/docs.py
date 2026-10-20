@@ -87,6 +87,9 @@ GENERAL = [
      "243-256."),
     ("Spider diagrams", "McDonough W.F., Sun S.-s. (1995) The composition of the Earth. "
      "Chemical Geology 120, 223-253. (CI chondrite)"),
+    ("Spider diagrams", "35 sets of normalising values (chondrite, primitive mantle, "
+     "MORB, OIB, continental crust, sediments ...) from GCDkit 6.3 (spider.data); the "
+     "reference of each set is shown on the Spider diagrams page."),
     ("Spider diagrams", "Sun S.-s., McDonough W.F. (1989) Chemical and isotopic "
      "systematics of oceanic basalts: implications for mantle composition and processes. "
      "Geological Society, London, Special Publications 42, 313-345. (Primitive mantle)"),

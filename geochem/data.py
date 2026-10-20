@@ -40,11 +40,58 @@ def _as_text(series):
     return series.map(lambda v: "" if pd.isna(v) else str(v)).astype(object).str.strip()
 
 
-def load_file(name, content):
-    """Read CSV or Excel bytes into a table."""
+def load_file(name, content, header_row=1):
+    """Read CSV or Excel bytes into a table. header_row: the row (1 = first)
+    that holds the column names; rows above it (titles, notes) are skipped."""
+    skip = max(int(header_row or 1) - 1, 0)
     if name.lower().endswith(".csv"):
-        return pd.read_csv(io.BytesIO(content))
-    return pd.read_excel(io.BytesIO(content))
+        return pd.read_csv(io.BytesIO(content), skiprows=skip)
+    return pd.read_excel(io.BytesIO(content), skiprows=skip)
+
+
+# ---------------- units ----------------
+OXIDES = ["SiO2", "TiO2", "Al2O3", "Fe2O3", "FeO", "Fe2O3t", "FeOt", "MnO", "MgO",
+          "CaO", "Na2O", "K2O", "P2O5", "LOI", "Cr2O3", "NiO"]
+UNITS = ["wt%", "ppm", "ppb"]
+TO_PPM = {"wt%": 1e4, "ppm": 1.0, "ppb": 1e-3}
+
+
+def expected_unit(canon):
+    """Unit the app uses internally: wt% for oxides and LOI, ppm for elements."""
+    if canon in OXIDES:
+        return "wt%"
+    if canon in TRACE:
+        return "ppm"
+    return None
+
+
+def unit_from_text(text):
+    """'ppb', 'ng/g' -> ppb; 'ppm', 'ug/g', 'mg/kg' -> ppm; 'wt%', '%' -> wt%."""
+    t = str(text).strip().lower().replace("µ", "u").replace("μ", "u")
+    if not t:
+        return None
+    if re.search(r"ppb|ng/g|ug/kg", t):
+        return "ppb"
+    if re.search(r"ppm|ug/g|mg/kg|g/t", t):
+        return "ppm"
+    if re.search(r"wt|%|mass", t):
+        return "wt%"
+    return None
+
+
+def detect_units(raw):
+    """Unit of each column, from its name ('La (ppb)', 'Cr_ppm', 'SiO2 wt%')
+    or from a units row under the header ('wt%', 'ppm', 'ppb')."""
+    units = {}
+    first = raw.iloc[0] if len(raw) else None
+    for col in raw.columns:
+        u = unit_from_text(col) if re.search(r"ppm|ppb|wt|%|/g|/kg", str(col).lower()) else None
+        if u is None and first is not None and isinstance(first[col], str):
+            if not re.search(r"\d", first[col]):          # a word, not a number
+                u = unit_from_text(first[col])
+        if u:
+            units[str(col).strip()] = u
+    return units
 
 
 def clean_data(raw):
@@ -90,21 +137,79 @@ def clean_data(raw):
     return df, pd.DataFrame(report)
 
 
-def map_columns(df):
-    """Return {canonical name: column name in the file} for recognised columns."""
+CANONICAL = list(ALIASES)                 # every name the app understands
+ROLES = ["Sample", "Rock type", "Locality", "Group"]
+AUTO, TEXT, IGNORE = "(auto)", "(text)", "(ignore)"
+
+
+def guess(col):
+    """Canonical name for a column name, or None."""
     lookup = {}
     for canon, keys in ALIASES.items():
         for k in keys:
             lookup.setdefault(k, canon)
+    return lookup.get(_key(col))
+
+
+def map_columns(df, overrides=None):
+    """Return {canonical name: column name in the file} for recognised columns.
+    overrides: {file column: canonical name, '(text)' or '(ignore)'}."""
+    overrides = overrides or {}
     found = {}
+    for col in df.columns:                 # the user's choices come first
+        o = overrides.get(col)
+        if o and o not in (AUTO, TEXT, IGNORE) and o not in found \
+                and pd.api.types.is_numeric_dtype(df[col]):
+            found[o] = col
     for col in df.columns:
-        canon = lookup.get(_key(col))
+        if overrides.get(col, AUTO) != AUTO or col in found.values():
+            continue
+        canon = guess(col)
         if canon and canon not in found and pd.api.types.is_numeric_dtype(df[col]):
             found[canon] = col
     return found
 
 
-def standardize(df):
-    """Copy of the table with recognised columns renamed to canonical names."""
-    mapping = map_columns(df)
-    return df.rename(columns={v: k for k, v in mapping.items()}), mapping
+def standardize(df, setup=None, units=None, raw=None):
+    """Copy of the table ready for the app.
+    - recognised columns renamed to canonical names (SiO2, La ...);
+    - values converted to wt% (oxides) or ppm (elements) when the file
+      gives another unit;
+    - the user's column setup applied: ignored columns removed, text
+      columns kept as text, roles (Sample, Rock type, Locality, Group).
+    Returns (table, mapping, unit report)."""
+    setup = setup or {}
+    overrides = setup.get("columns", {})
+    unit_over = setup.get("units", {})
+    units = dict(units or {})
+    units.update({c: u for c, u in unit_over.items() if u in UNITS})
+    df = df.copy()
+    for col, o in overrides.items():
+        if col not in df:
+            continue
+        if o == IGNORE:
+            df = df.drop(columns=col)
+        elif o == TEXT and raw is not None and col in raw:
+            df[col] = _as_text(raw[col]).reindex(df.index)
+    mapping = map_columns(df, overrides)
+    report = []
+    for canon, col in mapping.items():
+        have, want = units.get(col), expected_unit(canon)
+        if have and want and have != want:
+            factor = TO_PPM[have] / TO_PPM[want]
+            df[col] = df[col] * factor
+            report.append({"Column": col, "Read as": canon, "Unit in file": have,
+                           "Converted to": want, "Factor": factor})
+    out = df.rename(columns={v: k for k, v in mapping.items()})
+    # roles: the sample column goes first (all tables and results use it)
+    roles = setup.get("roles", {})
+    sample = roles.get("Sample")
+    if sample in out.columns:
+        out = out[[sample] + [c for c in out.columns if c != sample]]
+    rename = {}
+    for role in ROLES[1:]:
+        col = roles.get(role)
+        if col in out.columns and role not in out.columns:
+            rename[col] = role
+    out = out.rename(columns=rename)
+    return out, mapping, pd.DataFrame(report)

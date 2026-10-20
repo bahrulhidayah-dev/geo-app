@@ -2,6 +2,21 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.10.0 - 2026-10-20
+
+- Units: read from the column names (`La (ppb)`, `Cr_ppm`, `ng/g` ...) or a
+  units row, and converted (elements to ppm, oxides to wt%). Conversions are
+  listed in Data check. Before, ppb values were read as ppm.
+- Column setup (Data page): header row for files with title rows, sample
+  name column, rock type, locality and group roles, and the meaning and unit
+  of every column; save and load the setup as JSON.
+- Spider diagrams: all 35 normalisation sets of GCDkit 6.3 (REE,
+  multi-element, crust and sediments), with the values shown in Scientific
+  basis. The default primitive mantle now uses the GCDkit values (Cs 0.0079,
+  Pb 0.071 ppm; previously 0.032 and 0.185).
+- Fix: a file without recognised oxide columns no longer stops the Data page.
+- New example: `examples/layout_and_units_example.xlsx`.
+
 ## 0.9.1 - 2026-10-20
 
 - The app is online: https://geo-app-hidayah.streamlit.app (source code:
