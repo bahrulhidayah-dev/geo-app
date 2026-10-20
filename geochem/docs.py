@@ -12,6 +12,10 @@ from . import catalog, xrfqc
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 MANUAL = DOCS / "user-manual.md"
+# Documents shown on the Documentation page (title: file)
+DOCUMENTS = {"User manual": MANUAL,
+             "Architecture and workflows": DOCS / "architecture.md",
+             "Portable and online versions": DOCS / "deployment.md"}
 CHANGELOG = ROOT / "CHANGELOG.md"
 
 LOGO_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="{s}" height="{s}">
@@ -32,8 +36,8 @@ def _slug(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
-def manual_text():
-    return MANUAL.read_text(encoding="utf-8")
+def manual_text(path=MANUAL):
+    return Path(path).read_text(encoding="utf-8")
 
 
 def chapters(md=None):
@@ -52,8 +56,15 @@ def chapters(md=None):
 def _img_tag(path, alt):
     if not path.exists():
         return ""
-    b64 = base64.b64encode(path.read_bytes()).decode("ascii")
-    return (f'<figure class="gc-fig"><img src="data:image/png;base64,{b64}" alt="{alt}"/>'
+    raw = path.read_bytes()
+    b64 = base64.b64encode(raw).decode("ascii")
+    style = ""
+    if "diagrams" in path.parts:
+        # charts are rendered at 2x: show them at their natural size
+        # (never wider than the page), so tall charts do not become huge
+        width = int.from_bytes(raw[16:20], "big") // 2       # PNG header
+        style = f' style="width: {width}px"'
+    return (f'<figure class="gc-fig"><img src="data:image/png;base64,{b64}" alt="{alt}"{style}/>'
             f"<figcaption>{alt}</figcaption></figure>")
 
 

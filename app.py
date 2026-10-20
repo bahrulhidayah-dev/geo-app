@@ -152,7 +152,7 @@ header[data-testid="stHeader"] {{ background: transparent; }}
 .gc-top-brand .gc-ver {{ font-size: 0.7rem; color: {PAL['accent']}; border: 1px solid {PAL['card_border']};
           border-radius: 6px; padding: 0 0.35rem; margin-left: 0.2rem; }}
 .gc-fig {{ margin: 0.6rem 0 1.2rem 0; }}
-.gc-fig img {{ max-width: 100%; border: 1px solid {PAL['card_border']}; border-radius: 10px; }}
+.gc-fig img {{ max-width: 100%; width: auto; border: 1px solid {PAL['card_border']}; border-radius: 10px; background: #FFFFFF; }}
 .gc-fig figcaption {{ font-size: 0.8rem; color: {PAL['sub']}; margin-top: 0.3rem; }}
 .gc-doc h3 {{ font-size: 1.12rem; margin-top: 1.2rem; }}
 .gc-ref {{ font-size: 0.9rem; margin: 0 0 0.55rem 0; line-height: 1.45; }}
@@ -1188,25 +1188,34 @@ def page_xrfqc():
 
 
 def page_docs():
-    header(t("Documentation"), t("User manual. The manual is written in English so "
-                                  "that every user reads the same text."))
-    chs = docs.chapters()
+    header(t("Documentation"), t("User manual and technical documents, written in "
+                                  "English so that every user reads the same text."))
+    names = list(docs.DOCUMENTS)
+    doc = st.segmented_control(t("Document"), names, format_func=t,
+                               default=st.session_state.get("doc_name", names[0]),
+                               key="doc_pick", label_visibility="collapsed")
+    doc = doc or names[0]
+    st.session_state["doc_name"] = doc
+    path = docs.DOCUMENTS[doc]
+    chs = docs.chapters(docs.manual_text(path))
     titles = [c[0] for c in chs]
-    cur = st.session_state.get("doc_chapter", titles[0])
+    ckey = "doc_chapter_" + path.stem
+    cur = st.session_state.get(ckey, titles[0])
     if cur not in titles:
         cur = titles[0]
     left, right = st.columns([1, 3.2], gap="large")
     with left:
         with st.container(key="doc_toc"):
             for i, ttl in enumerate(titles):
-                if st.button(ttl, key=f"doc_{i}", width="stretch",
+                if st.button(ttl, key=f"doc_{path.stem}_{i}", width="stretch",
                              type="primary" if ttl == cur else "tertiary"):
-                    st.session_state["doc_chapter"] = ttl
+                    st.session_state[ckey] = ttl
                     st.rerun()
-        st.download_button(t("Download the manual (Markdown)"),
-                           data=lambda: docs.manual_text().encode("utf-8"),
-                           file_name="GeoChem_App_user_manual.md", mime="text/markdown",
-                           on_click="ignore", icon=":material/download:")
+        st.download_button(t("Download this document (Markdown)"),
+                           data=lambda: docs.manual_text(path).encode("utf-8"),
+                           file_name=f"GeoChem_App_{path.stem}.md", mime="text/markdown",
+                           on_click="ignore", icon=":material/download:",
+                           key=f"doc_dl_{path.stem}")
     with right:
         k = titles.index(cur)
         body = chs[k][1]
@@ -1215,11 +1224,11 @@ def page_docs():
             st.markdown(docs.embed_images(body), unsafe_allow_html=True)
         nav_l, nav_r = st.columns(2)
         if k > 0 and nav_l.button(":material/arrow_back: " + titles[k - 1], key="doc_prev"):
-            st.session_state["doc_chapter"] = titles[k - 1]
+            st.session_state[ckey] = titles[k - 1]
             st.rerun()
         if k < len(titles) - 1 and nav_r.button(titles[k + 1] + " :material/arrow_forward:",
                                                 key="doc_next"):
-            st.session_state["doc_chapter"] = titles[k + 1]
+            st.session_state[ckey] = titles[k + 1]
             st.rerun()
 
 

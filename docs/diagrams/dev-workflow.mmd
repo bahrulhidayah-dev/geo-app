@@ -1,0 +1,22 @@
+flowchart TD
+  A["Idea, bug report<br/>or new paper"] --> B["Change the code<br/>in C:\Users\Bahrul\geo-app"]
+  B --> C["Test on your computer<br/>desktop shortcut or<br/>streamlit run app.py<br/>with examples/ files"]
+  C -->|problem| B
+  C -->|works| D["Update version and notes<br/>APP_VERSION, CITATION.cff,<br/>CHANGELOG.md, docs/"]
+  D --> E{"Can the update break<br/>the online app for a while?"}
+  E -->|yes| M["Maintenance mode ON<br/>Streamlit Cloud > Settings > Secrets:<br/>MAINTENANCE = true"]
+  E -->|no| F
+  M --> F["GitHub Desktop<br/>Commit to main"]
+  F --> G{"Pull origin shown?"}
+  G -->|yes| H["Pull origin<br/>(merge remote commits)"] --> I
+  G -->|no| I["Push origin"]
+  I --> J["Streamlit Cloud rebuilds<br/>the online app (about 1 min)"]
+  J --> K["Check online<br/>(with ?key=... during maintenance)"]
+  K --> N["Maintenance mode OFF<br/>(delete the Secrets lines)"]
+  I --> P["Portable release<br/>tools\portable\build_portable.bat<br/>dist\GeoChemApp-version-windows-portable.zip"]
+  classDef s fill:#EAF0FA,stroke:#4C86C6,color:#1B2333
+  classDef g fill:#E3F1EC,stroke:#2E8B74,color:#1B2333
+  classDef w fill:#FBF1E4,stroke:#D9822B,color:#1B2333
+  class A,B,C,D s
+  class F,H,I,J,K,P g
+  class M,N w

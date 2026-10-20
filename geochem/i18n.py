@@ -324,6 +324,12 @@ TR = {
     'GeoChem App is being updated. Please come back later.': ('GeoChem App sedang diperbarui. Silakan kembali lagi nanti.', 'GeoChem App は更新中です。しばらくしてから再度アクセスしてください。'),
     'Contact': ('Kontak', '連絡先'),
     'Maintenance mode is on: only you can see the app (developer key).': ('Mode perbaikan aktif: hanya Anda yang bisa melihat aplikasi (kunci pengembang).', 'メンテナンスモード中：開発者キーでアクセスしています。'),
+    'Document': ('Dokumen', '文書'),
+    'User manual': ('Manual pengguna', 'ユーザーマニュアル'),
+    'Architecture and workflows': ('Arsitektur dan alur kerja', 'アーキテクチャとワークフロー'),
+    'Portable and online versions': ('Versi portable dan online', 'ポータブル版とオンライン版'),
+    'Download this document (Markdown)': ('Unduh dokumen ini (Markdown)', 'この文書をダウンロード（Markdown）'),
+    'User manual and technical documents, written in English so that every user reads the same text.': ('Manual pengguna dan dokumen teknis, ditulis dalam bahasa Inggris agar semua pengguna membaca teks yang sama.', 'ユーザーマニュアルと技術文書。すべての利用者が同じ文章を読めるよう英語で書かれています。'),
 }
 
 

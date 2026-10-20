@@ -1,0 +1,47 @@
+digraph G {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=13, nodesep=0.25, ranksep=0.45, bgcolor="white", pad=0.25, newrank=true];
+  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, margin="0.14,0.07", color="#7A8699", fillcolor="white", fontcolor="#1B2333"];
+  edge  [color="#5B6577", arrowsize=0.7, fontname="Helvetica", fontsize=10, fontcolor="#5B6577"];
+
+  subgraph cluster_user { label="User"; style="rounded,filled"; fillcolor="#F7F8FA"; color="#C9D1DC";
+    browser [label="Web browser\n(desktop, laptop, tablet, phone)", fillcolor="#FFF6E5", color="#E3B95B"]; }
+
+  subgraph cluster_run { label="Runtime: where the app runs"; style="rounded,filled"; fillcolor="#F7F8FA"; color="#C9D1DC";
+    desk [label="Desktop\nstart_geochem.bat + .venv", fillcolor="#F3EEFA", color="#8A6CC8"];
+    port [label="Portable ZIP\nlauncher.py + embedded Python", fillcolor="#F3EEFA", color="#8A6CC8"];
+    cloud [label="Streamlit Community Cloud\nbuilt from GitHub (main)", fillcolor="#F3EEFA", color="#8A6CC8"];
+    {rank=same; desk; port; cloud;} }
+
+  subgraph cluster_ui { label="Interface layer: app.py (Streamlit)"; style="rounded,filled"; fillcolor="#F7F8FA"; color="#C9D1DC";
+    top [label="Top bar\nDocumentation, References, About,\nlanguage, theme", fillcolor="#E3F1EC", color="#2E8B74"];
+    side [label="Sidebar\ndata file, pages,\ngroups, labels", fillcolor="#E3F1EC", color="#2E8B74"];
+    pages [label="Pages\nDashboard, Data, Diagrams, Spider, XY,\nStatistics, Symbols, Appearance, Settings,\nXRF QC, Docs, References, About", fillcolor="#E3F1EC", color="#2E8B74"];
+    state [label="Session state\ndataset, settings, symbols,\nappearance, language", fillcolor="#E3F1EC", color="#2E8B74"];
+    {rank=same; top; side; pages; state;} }
+
+  subgraph cluster_core { label="Science layer: geochem/ package (plain Python, no interface code)"; style="rounded,filled"; fillcolor="#F7F8FA"; color="#C9D1DC";
+    data [label="data.py\nread, clean,\nrecognise columns", fillcolor="#EAF0FA", color="#4C86C6"];
+    calc [label="calc.py, norms.py\nFeOt, Mg#, anhydrous,\nmillications, CIPW norm", fillcolor="#EAF0FA", color="#4C86C6"];
+    cat [label="catalog.py\n27 diagrams: formulas,\ncategories, references", fillcolor="#EAF0FA", color="#4C86C6"];
+    plot [label="plotting.py, symbols.py\nplotting engine,\nsymbols and colours", fillcolor="#EAF0FA", color="#4C86C6"];
+    xrf [label="xrfqc.py, xrfcal.py\nXRF QC and\ncalibration", fillcolor="#EAF0FA", color="#4C86C6"];
+    i18n [label="i18n.py, docs.py\n3 languages, manual,\nreferences", fillcolor="#EAF0FA", color="#4C86C6"];
+    {rank=same; data; calc; cat; plot; xrf; i18n;} }
+
+  subgraph cluster_data { label="Data layer: files"; style="rounded,filled"; fillcolor="#F7F8FA"; color="#C9D1DC";
+    json [label="diagrams/gcdkit/*.json\nboundaries from GCDkit 6.3", fillcolor="#FBF1E4", color="#D9822B"];
+    spider [label="diagrams/spider_*.json\nnormalising values", fillcolor="#FBF1E4", color="#D9822B"];
+    rmcsv [label="reference_materials.csv\n26 reference materials", fillcolor="#FBF1E4", color="#D9822B"];
+    docs [label="docs/*.md, docs/img\nmanual, screenshots", fillcolor="#FBF1E4", color="#D9822B"];
+    {rank=same; json; spider; rmcsv; docs;} }
+
+  importer [label="tools/gcdkit_import.py\nGCDkit R templates to JSON\n(run once by the developer)", style="rounded,dashed", color="#7A8699"];
+
+  browser -> port [dir=both, lhead=cluster_run];
+  port -> pages [ltail=cluster_run, lhead=cluster_ui];
+  pages -> cat [ltail=cluster_ui, lhead=cluster_core];
+  cat -> spider [ltail=cluster_core, lhead=cluster_data];
+  importer -> json [style=dashed];
+  {rank=same; importer; json;}
+  graph [compound=true];
+}

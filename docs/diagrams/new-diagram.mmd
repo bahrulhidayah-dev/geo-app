@@ -1,0 +1,14 @@
+flowchart TD
+  A["GCDkit 6.3 template<br/>Diagrams/.../Name.r<br/>(R code, GPL)"] --> B["tools/gcdkit_import.py<br/>reads the R code:<br/>axis limits, lines, polygons,<br/>field names, labels"]
+  B --> C["geochem/diagrams/gcdkit/<br/>Name.json<br/>(geometry as data)"]
+  P["Original paper<br/>axis formulas, rock types,<br/>reference"] --> D["catalog.py entry<br/>id, title, category, scope,<br/>panels (formulas), reference,<br/>notes, subset"]
+  C --> E["Plotting engine<br/>draws any diagram<br/>from JSON + formulas"]
+  D --> E
+  E --> F["Test<br/>examples/ data with<br/>known answers;<br/>compare with GCDkit"]
+  F --> G["Appears automatically on<br/>the Diagrams and References<br/>pages; add it to the<br/>manual list by hand"]
+  classDef s fill:#EAF0FA,stroke:#4C86C6,color:#1B2333
+  classDef d fill:#FBF1E4,stroke:#D9822B,color:#1B2333
+  classDef o fill:#E3F1EC,stroke:#2E8B74,color:#1B2333
+  class A,P d
+  class B,C,D,E,F s
+  class G o

@@ -1,0 +1,27 @@
+flowchart TD
+  A["Step 1: Data file<br/>CSV or Excel"] --> B["Step 2: Read<br/>data.load_file()"]
+  B --> C["Step 3: Clean<br/>data.clean_data()<br/>&lt;0.01, bdl, n.d. → missing"]
+  C --> R1[/"Data check<br/>report"/]
+  C --> D["Step 4: Recognise columns<br/>data.standardize()<br/>Fe2O3T → Fe2O3t"]
+  D --> E["Step 5: Select samples<br/>view()"]
+  E --> F{"Step 6: Which plot?"}
+  F -->|"diagram"| G["Step 7a: Axis values<br/>catalog.panel_data()"]
+  F -->|"spider"| H["Step 7b: Normalise<br/>calc.normalize()"]
+  F -->|"XY"| K["Step 7c: Two columns"]
+  G --> M["Step 8: Boundaries<br/>gcdkit/*.json"]
+  M --> N
+  H --> N
+  K --> N
+  SY["Style settings<br/>symbols.resolve()<br/>set_appearance()"] --> N
+  N["Step 9: Draw<br/>plotting.plot_catalog()<br/>plot_spider(), plot_binary()"]
+  N --> O["Step 10: Matplotlib Figure"]
+  O --> P["Step 11a: On screen<br/>figure_html(): SVG"]
+  O --> Q["Step 11b: Download<br/>figure_bytes():<br/>PNG, SVG, PDF"]
+  G --> T["Step 12: Classify<br/>classify_panel()"]
+  T --> U[/"Results table<br/>(CSV)"/]
+  classDef step fill:#EAF0FA,stroke:#4C86C6,color:#1B2333
+  classDef out fill:#E3F1EC,stroke:#2E8B74,color:#1B2333
+  classDef opt fill:#FBF1E4,stroke:#D9822B,color:#1B2333
+  class A,B,C,D,E,G,H,K,M,N,O,T step
+  class P,Q,U,R1 out
+  class SY opt

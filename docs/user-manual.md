@@ -505,8 +505,9 @@ boundaries come from GCDkit (GPL), whose authors are credited throughout.
 Bug reports, new diagram requests and translations are welcome: open an
 *Issue* at https://github.com/bahrulhidayah-dev/geo-app/issues, or write to the
 developer, Bahrul Hidayah (bahrul.hidayah@gmail.com), and attach a screenshot
-and, if possible, a small example file. Developers will find the code
-organisation in `README.md` and in the comments at the top of each file.
+and, if possible, a small example file. Developers will find the design, the data flow
+and the workflows in `docs/architecture.md` (also on the Documentation page),
+and details in the comments at the top of each file.
 
 ## 19. Sharing the app: portable and online versions
 

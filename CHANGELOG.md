@@ -12,6 +12,10 @@ All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
   `MAINTENANCE_MESSAGE`, `MAINTENANCE_KEY`), with developer access by key.
 - Fix: online, the top bar no longer overlaps the Streamlit Cloud toolbar
   (Share, GitHub ...).
+- New document: architecture and workflows (design principles, layers,
+  data flow from file to figure, how a diagram is defined, user and
+  developer workflows), with five charts. The Documentation page now
+  offers the user manual, this document and the deployment guide.
 - Documentation: GitHub Desktop workflow (commit, push, pull), maintenance
   mode, online troubleshooting, and the real repository name.
 

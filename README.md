@@ -9,7 +9,8 @@ Source code: https://github.com/bahrulhidayah-dev/geo-app
 
 **User manual:** [docs/user-manual.md](docs/user-manual.md) (also inside the app:
 top bar > Documentation). **Portable and online versions:**
-[docs/deployment.md](docs/deployment.md). Changes: [CHANGELOG.md](CHANGELOG.md). How to cite:
+[docs/deployment.md](docs/deployment.md). **Architecture, data flow and
+workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.md](CHANGELOG.md). How to cite:
 [CITATION.cff](CITATION.cff) and the About page.
 
 ## Features
@@ -92,6 +93,8 @@ geochem/reference_materials.csv  reference values of 26 RMs (Mikuni et al. 2025)
 geochem/docs.py            manual, references and about pages
 docs/user-manual.md        user manual (docs/img: screenshots)
 docs/deployment.md         portable and online versions, release checklist
+docs/architecture.md       design, data flow from file to figure, workflows
+docs/diagrams/             sources of the architecture and flow charts
 tools/portable/            portable Windows build (build_portable.bat, launcher)
 examples/                  example data files (synthetic and published)
 LICENSE                    GNU GPL v3.0

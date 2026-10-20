@@ -1,0 +1,14 @@
+flowchart TD
+  A["Open the app<br/>online link, portable ZIP<br/>or desktop shortcut"] --> B["Load data<br/>sidebar: Data file<br/>or example dataset"]
+  B --> C["Check data<br/>Data > Data check:<br/>missing cells,<br/>recognised columns"]
+  C --> D["Group and label<br/>sidebar: Group samples by,<br/>Show groups, Label points"]
+  D --> E["Explore<br/>Dashboard, Diagrams,<br/>Spider, XY, Statistics"]
+  E --> F["Style<br/>Symbols and colours,<br/>Plot appearance"]
+  F --> G["Export<br/>PNG, SVG, PDF figures;<br/>CSV tables"]
+  G --> H["Cite<br/>References and About:<br/>diagram authors, GCDkit,<br/>this app"]
+  C -. "optional, ultramafic or XRF data" .-> X["XRF quality control<br/>RM check, calibration,<br/>ultramafic iron check"]
+  X -.-> E
+  classDef s fill:#E3F1EC,stroke:#2E8B74,color:#1B2333
+  classDef o fill:#FBF1E4,stroke:#D9822B,color:#1B2333
+  class A,B,C,D,E,F,G,H s
+  class X o
