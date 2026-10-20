@@ -89,6 +89,10 @@ PAL = ({"bg": "#111827", "side": "#0D1420", "border": "#1F2A3D", "card": "#161E2
         "sub": "#5B6577", "head": "#6A7486", "hover": "#E4E9F0", "accent": "#2E8B74",
         "tag": "#F0F3F7", "tag_border": "#D5DCE5", "tag_text": "#3B4558"})
 
+# Online, Streamlit Cloud shows its own toolbar (Share, GitHub ...) at the top
+# right, so the top bar starts below it; on the desktop it moves up.
+TOPBAR_TOP = "0.6rem" if HOSTED else "-2.4rem"
+
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
@@ -131,7 +135,7 @@ html, body, p, li, label, h1, h2, h3, h4, input, textarea, td, th,
 [class*="st-key-dia_"] {{ margin-bottom: -0.55rem; }}
 header[data-testid="stHeader"] {{ background: transparent; }}
 .st-key-gc_topbar {{ border-bottom: 1px solid {PAL['border']}; padding: 0 0 0.8rem 0;
-          margin: -2.4rem 0 1.1rem 0; }}
+          margin: {TOPBAR_TOP} 0 1.1rem 0; }}
 [class*="st-key-doc_"] button div, [class*="st-key-doc_"] button span {{ justify-content: flex-start !important; }}
 .st-key-doc_toc [class*="st-key-doc_"] {{ margin-bottom: -0.6rem; }}
 .st-key-doc_body h2 {{ font-size: 1.55rem; font-weight: 700; }}
