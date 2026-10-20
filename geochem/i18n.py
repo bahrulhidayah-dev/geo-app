@@ -321,6 +321,9 @@ TR = {
     'Colours': ('Warna', '色'),
     'XRF module': ('Modul XRF', 'XRF モジュール'),
     'Online version: files are processed in memory and are not stored. For confidential data, use the desktop or portable version.': ('Versi online: file diproses di memori dan tidak disimpan. Untuk data rahasia, gunakan versi desktop atau portable.', 'オンライン版：ファイルはメモリ上で処理され、保存されません。機密データにはデスクトップ版またはポータブル版を使ってください。'),
+    'GeoChem App is being updated. Please come back later.': ('GeoChem App sedang diperbarui. Silakan kembali lagi nanti.', 'GeoChem App は更新中です。しばらくしてから再度アクセスしてください。'),
+    'Contact': ('Kontak', '連絡先'),
+    'Maintenance mode is on: only you can see the app (developer key).': ('Mode perbaikan aktif: hanya Anda yang bisa melihat aplikasi (kunci pengembang).', 'メンテナンスモード中：開発者キーでアクセスしています。'),
 }
 
 

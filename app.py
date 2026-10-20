@@ -166,6 +166,53 @@ header[data-testid="stHeader"] {{ background: transparent; }}
 
 
 
+# ================= Maintenance mode =================
+# Turn on without changing the code: in Streamlit Cloud, App settings > Secrets:
+#     MAINTENANCE = true
+#     MAINTENANCE_MESSAGE = "Back on 25 October."      (optional)
+#     MAINTENANCE_KEY = "my-secret-word"                (optional)
+# With MAINTENANCE_KEY, the developer can still open the app at
+#     https://...streamlit.app/?key=my-secret-word
+# (environment variables GEOCHEM_MAINTENANCE=1 and GEOCHEM_MAINTENANCE_KEY work too).
+def _secret(name, default=None):
+    try:
+        if name in st.secrets:
+            return st.secrets[name]
+    except Exception:              # no secrets file on this computer
+        pass
+    return os.environ.get("GEOCHEM_" + name, default)
+
+
+def _is_on(value):
+    return str(value).strip().lower() in ("1", "true", "yes", "on")
+
+
+if _is_on(_secret("MAINTENANCE", "0")):
+    _key = str(_secret("MAINTENANCE_KEY", "") or "")
+    if _key and st.query_params.get("key") == _key:
+        st.session_state["_maint_bypass"] = True
+    if not st.session_state.get("_maint_bypass"):
+        _msg = _secret("MAINTENANCE_MESSAGE", "")
+        st.markdown(f"""
+<div style="max-width: 640px; margin: 8vh auto 0 auto; text-align: center;">
+  <div style="display:inline-block">{docs.logo(72, DARK)}</div>
+  <h1 style="font-size: 1.9rem; margin: 0.8rem 0 0.4rem 0;">GeoChem App</h1>
+  <p style="font-size: 1.15rem; color: {PAL['text']}; margin: 0.6rem 0;">
+    GeoChem App is being updated. Please come back later.</p>
+  <p style="color: {PAL['sub']}; font-size: 0.95rem;">
+    GeoChem App sedang diperbarui. Silakan kembali lagi nanti.<br>
+    GeoChem App は更新中です。しばらくしてから再度アクセスしてください。</p>
+  {f'<p style="color: {PAL["accent"]}; font-size: 1rem; margin-top: 1rem;">{_msg}</p>' if _msg else ""}
+  <p style="color: {PAL['sub']}; font-size: 0.85rem; margin-top: 2rem;">
+    {t("Contact")}: <a href="mailto:{DEVELOPER_EMAIL}">{DEVELOPER_EMAIL}</a></p>
+</div>""", unsafe_allow_html=True)
+        st.html("<style>[data-testid='stSidebar'], [data-testid='stSidebarCollapsedControl'] "
+                "{ display: none; }</style>")
+        st.stop()
+    st.warning(t("Maintenance mode is on: only you can see the app (developer key)."),
+               icon=":material/construction:")
+
+
 # ================= Data =================
 @st.cache_data(show_spinner=False)
 def process(name, content):

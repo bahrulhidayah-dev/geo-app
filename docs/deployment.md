@@ -103,6 +103,35 @@ Desktop) updates the online app automatically within a minute.
 - **Theme:** each visitor's light/dark choice is stored in his or her own
   browser.
 
+### Maintenance mode (closing the app for a while)
+
+During a critical update you can close the online app without changing the
+code:
+
+1. On share.streamlit.io, open the app menu (**⋮**) > **Settings** >
+   **Secrets**.
+2. Add these lines and click **Save**:
+
+   ```
+   MAINTENANCE = true
+   MAINTENANCE_MESSAGE = "Back on 25 October."
+   MAINTENANCE_KEY = "choose-a-secret-word"
+   ```
+
+   Only `MAINTENANCE` is required. Visitors now see a short notice in
+   English, Indonesian and Japanese, with your message and contact e-mail.
+3. You can still use the app yourself at
+   `https://geo-app-hidayah.streamlit.app/?key=choose-a-secret-word`.
+4. To open the app again, delete the lines (or write `MAINTENANCE = false`)
+   and click **Save**.
+
+The link stays the same. For everyday fixes, work in a separate branch
+(for example `dev`) and merge into `main` when the change is tested: the
+online app follows `main` only.
+
+On other servers, use the environment variables `GEOCHEM_MAINTENANCE=1`,
+`GEOCHEM_MAINTENANCE_MESSAGE` and `GEOCHEM_MAINTENANCE_KEY`.
+
 ### Other hosts
 
 The app is a standard Streamlit app and also runs on Hugging Face Spaces
