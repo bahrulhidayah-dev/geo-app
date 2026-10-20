@@ -18,7 +18,7 @@ import importlib
 import json
 
 import geochem
-from geochem import calc, catalog, data, docs, norms, plotting, symbols, xrfcal, xrfqc
+from geochem import calc, catalog, data, docs, norms, plotting, project, symbols, xrfcal, xrfqc
 from geochem import i18n
 from geochem.i18n import LANGUAGES, t
 
@@ -27,7 +27,8 @@ from geochem.i18n import LANGUAGES, t
 # reruns app.py but keeps the old geochem modules in memory. Reload every
 # module whose file changed, in dependency order, so all code is current.
 def _reload_changed_modules():
-    order = [calc, data, norms, symbols, i18n, plotting, catalog, xrfqc, xrfcal, docs]
+    order = [calc, data, norms, symbols, i18n, plotting, catalog, xrfqc, xrfcal, docs,
+             project]
     stamps = getattr(geochem, "_file_stamps", {})
     changed = False
     for mod in order:
@@ -42,7 +43,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.10.0"
+APP_VERSION = "0.11.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -73,7 +74,7 @@ MULTI = NORMS[NORM_DEFAULT["Multi-element"]]
 # has to be loaded again.
 STATE_KEYS = ["dataset", "settings", "symbols", "lang", "group_col", "group_keep",
               "label_col", "diagram_id", "appearance", "theme_choice", "xrf_int",
-              "col_setups"]
+              "col_setups", "work_folder", "spider_group", "spider_norm"]
 
 
 MAX_SESSIONS = 50          # remembered sessions on this server (oldest dropped)
@@ -92,6 +93,24 @@ if not st.session_state.get("_restored"):
     for k, v in _store().get(token, {}).items():
         st.session_state.setdefault(k, v)
     st.session_state["_restored"] = True
+
+# A project opened on the Project page is applied here, before any widget
+# is drawn (widgets cannot be changed after they appear on the page).
+_pending = st.session_state.pop("_pending_project", None)
+if _pending is not None:
+    _meta, _ds, _xrf = project.unpack(_pending)
+    for _k, _v in _meta.get("state", {}).items():
+        st.session_state[_k] = _v
+    for _k in ("group_keep",):
+        if _k not in _meta.get("state", {}):
+            st.session_state.pop(_k, None)
+    if _ds:
+        st.session_state["dataset"] = _ds
+    if _xrf:
+        st.session_state["xrf_int"] = _xrf
+    for _k in ("sym_ver", "app_ver", "setup_ver"):          # redraw editors
+        st.session_state[_k] = st.session_state.get(_k, 0) + 1
+    st.session_state["_project_loaded"] = _meta.get("saved", "")
 
 SETTINGS_DEFAULT = {"tas_recalc": True, "export_style": "publication",
                     "dpi": 300, "legend": "upper right", "palette": "Default",
@@ -264,6 +283,16 @@ def col_setup(name):
     return st.session_state.setdefault("col_setups", {}).get(name, {})
 
 
+def work_folder():
+    """The work folder on this computer, or None (never online)."""
+    if HOSTED:
+        return None
+    if "work_folder" not in st.session_state:
+        st.session_state["work_folder"] = project.load_config().get("work_folder")
+    wf = st.session_state.get("work_folder")
+    return wf if wf and Path(wf).is_dir() else None
+
+
 # ---- sidebar: data source (language and theme are in the top bar) ----
 LANG_SHORT = {"id": "ID", "en": "EN", "ja": "JA"}
 THEME_ICON = {"System": ":material/brightness_auto:", "Light": ":material/light_mode:",
@@ -271,6 +300,8 @@ THEME_ICON = {"System": ":material/brightness_auto:", "Light": ":material/light_
 
 uploaded = st.sidebar.file_uploader(t("Data file (CSV or Excel)"),
                                     type=["csv", "xlsx"], key="uploader")
+if not HOSTED and work_folder():
+    st.sidebar.caption(f":material/folder: {t('Work folder')}: {Path(work_folder()).name}")
 if HOSTED:
     st.sidebar.caption(t("Online version: files are processed in memory and are not "
                          "stored. For confidential data, use the desktop or portable "
@@ -362,28 +393,54 @@ MIME = {"png": "image/png", "svg": "image/svg+xml", "pdf": "application/pdf",
         "csv": "text/csv"}
 
 
+def save_to_folder(files):
+    """files: [(name, make_bytes)]. Writes them to <work folder>/exports."""
+    wf = work_folder()
+    saved = []
+    try:
+        for name, make in files:
+            saved.append(project.write(wf, "exports", name, make()))
+    except OSError as e:
+        st.error(t("Could not save to the work folder: {e}").format(e=e))
+        return
+    st.toast(t("Saved to {p}").format(p=str(saved[0].parent)), icon=":material/folder:")
+
+
 def downloads(make_fig, stem):
     """Download buttons. The file is only created when a button is clicked,
-    so nothing is downloaded when the page opens."""
+    so nothing is downloaded when the page opens. With a work folder, one
+    more button saves PNG, SVG and PDF into its exports folder."""
     style = settings["export_style"]
     style = SCREEN if style == "screen" else style
     dpi = settings["dpi"]
     app = dict(appearance)
-    cols = st.columns(3)
-    for col, fmt in zip(cols, ("png", "svg", "pdf")):
-        def make(fmt=fmt):
+
+    def maker(fmt):
+        def make():
             plotting.set_appearance(app)
             return plotting.figure_bytes(make_fig(style), fmt, dpi)
-        col.download_button(t("Download {f}").format(f=fmt.upper()), data=make,
+        return make
+    cols = st.columns(3)
+    for col, fmt in zip(cols, ("png", "svg", "pdf")):
+        col.download_button(t("Download {f}").format(f=fmt.upper()), data=maker(fmt),
                             file_name=f"{stem}.{fmt}", mime=MIME[fmt],
                             on_click="ignore", width="stretch",
                             key=f"dl_{stem}_{fmt}")
+    if work_folder():
+        if st.button(t("Save PNG, SVG and PDF to the work folder"), key=f"wf_{stem}",
+                     icon=":material/save:", type="tertiary"):
+            save_to_folder([(f"{stem}.{f}", maker(f)) for f in ("png", "svg", "pdf")])
 
 
 def csv_download(label, make_table, file_name, index=False):
-    st.download_button(label,
-                       data=lambda: make_table().to_csv(index=index).encode("utf-8"),
-                       file_name=file_name, mime=MIME["csv"], on_click="ignore")
+    make = lambda: make_table().to_csv(index=index).encode("utf-8")
+    row = st.container(horizontal=True, gap="small", vertical_alignment="center")
+    row.download_button(label, data=make, file_name=file_name, mime=MIME["csv"],
+                        on_click="ignore", key=f"dl_{file_name}")
+    if work_folder():
+        if row.button(t("Save to the work folder"), key=f"wf_{file_name}",
+                      icon=":material/save:", type="tertiary"):
+            save_to_folder([(file_name, make)])
 
 
 def missing_note(need):
@@ -1053,6 +1110,144 @@ def page_appearance():
                 show(fig, max_width="760px")
 
 
+def project_state():
+    return {k: st.session_state[k] for k in project.STATE_KEYS if k in st.session_state}
+
+
+def open_project(content):
+    """Check the file, then apply it at the start of the next run."""
+    try:
+        project.unpack(content)
+    except ValueError:
+        st.error(t("This is not a GeoChem App project file."))
+        return
+    st.session_state["_pending_project"] = content
+    st.rerun()
+
+
+def page_project():
+    header(t("Project"), t("Save your whole analysis (data, column setup, symbols, "
+                           "plot appearance, settings) as one project file, and open it "
+                           "again later or on another computer."))
+    wf = work_folder()
+    if st.session_state.pop("_project_loaded", None) is not None:
+        st.success(t("Project opened."), icon=":material/folder_open:")
+    ds = st.session_state.get("dataset")
+    stem = Path(ds[0]).stem if ds else "geochem_project"
+    left, right = st.columns(2, gap="large")
+    with left, st.container(border=True):
+        st.markdown(f"**{t('Save project')}**")
+        pname = st.text_input(t("Project name"), value=stem, key="proj_name")
+        fname = project.safe_name(pname, "geochem_project") + project.EXTENSION
+        # take the snapshot now: the download itself runs outside this script run
+        snap, xrf_file = project_state(), st.session_state.get("xrf_int")
+        make = lambda: project.pack(snap, ds, xrf_file, APP_VERSION)
+        row = st.container(horizontal=True, gap="small")
+        row.download_button(t("Download project file"), data=make, file_name=fname,
+                            mime="application/zip", on_click="ignore",
+                            icon=":material/download:", disabled=ds is None)
+        if wf and row.button(t("Save in the work folder"), icon=":material/save:",
+                             disabled=ds is None):
+            try:
+                p = project.write(wf, "projects", fname, make())
+                st.toast(t("Saved to {p}").format(p=str(p)), icon=":material/folder:")
+            except OSError as e:
+                st.error(t("Could not save to the work folder: {e}").format(e=e))
+        if ds is None:
+            st.caption(t("Load a data file first."))
+        st.caption(t("A project file (.geochem) contains a copy of your data file. "
+                     "Share it only with people who may see the data."))
+    with right, st.container(border=True):
+        st.markdown(f"**{t('Open project')}**")
+        up = st.file_uploader(t("Project file (.geochem)"), type=["geochem", "zip"],
+                              key="proj_up")
+        if up is not None and st.session_state.get("_proj_up_id") != up.file_id:
+            st.session_state["_proj_up_id"] = up.file_id
+            open_project(up.getvalue())
+        st.caption(t("Opening a project replaces the data and settings of this session."))
+
+    st.markdown(f"#### {t('Work folder')}")
+    if HOSTED:
+        st.info(t("The online version cannot read or write folders on your computer. "
+                  "Use project files (above) to save and reopen your work, or use the "
+                  "desktop or portable version for a work folder."),
+                icon=":material/cloud:")
+        return
+    with st.container(border=True):
+        st.caption(t("A folder on this computer for your data, exported figures and "
+                     "tables, and projects. The app creates the subfolders data, "
+                     "exports and projects, and remembers the folder next time."))
+        cfg = project.load_config()
+        c1, c2 = st.columns([4, 1], vertical_alignment="bottom")
+        path = c1.text_input(t("Folder"), value=wf or str(project.default_folder()),
+                             key="wf_path")
+        if c2.button(t("Use this folder"), type="primary", width="stretch"):
+            try:
+                p = project.prepare(path)
+                st.session_state["work_folder"] = str(p)
+                project.remember(p)
+                st.rerun()
+            except OSError as e:
+                st.error(t("This folder cannot be used: {e}").format(e=e))
+        recent = [f for f in cfg.get("recent", []) if f != wf and Path(f).is_dir()]
+        if recent:
+            st.caption(t("Recent folders"))
+            row = st.container(horizontal=True, gap="small")
+            for i, f in enumerate(recent[:5]):
+                if row.button(f, key=f"wf_recent_{i}", icon=":material/folder:",
+                              type="tertiary"):
+                    st.session_state["work_folder"] = f
+                    project.remember(f)
+                    st.rerun()
+        if wf:
+            st.markdown(f":material/folder_open: **{t('In use')}:** `{wf}`")
+            if st.button(t("Stop using a work folder"), type="tertiary",
+                         icon=":material/folder_off:"):
+                st.session_state["work_folder"] = None
+                project.forget()
+                st.rerun()
+    if not wf:
+        return
+    a, b = st.columns(2, gap="large")
+    with a:
+        st.markdown(f"**{t('Data files')}** · `data`")
+        files = project.list_files(wf, "data", project.DATA_TYPES)
+        if not files:
+            st.caption(t("No CSV or Excel files yet. Copy your data files into the data "
+                         "subfolder, or save the current one:"))
+        for i, (n, kb, mod) in enumerate(files[:30]):
+            r = st.columns([5, 2, 1.4], vertical_alignment="center")
+            r[0].markdown(f":material/table_chart: {n}")
+            r[1].caption(f"{mod} · {kb} kB")
+            if r[2].button(t("Open"), key=f"wf_data_{i}", width="stretch"):
+                st.session_state["dataset"] = (n, project.read(wf, "data", n))
+                st.toast(t("Opened {n}").format(n=n), icon=":material/table_chart:")
+                st.rerun()
+        if ds and not any(n == ds[0] for n, _, _ in files):
+            if st.button(t("Copy the current data file into the data folder"),
+                         icon=":material/content_copy:", type="tertiary"):
+                project.write(wf, "data", ds[0], ds[1])
+                st.rerun()
+    with b:
+        st.markdown(f"**{t('Projects')}** · `projects`")
+        files = project.list_files(wf, "projects", (project.EXTENSION,))
+        if not files:
+            st.caption(t("No projects saved yet."))
+        for i, (n, kb, mod) in enumerate(files[:30]):
+            r = st.columns([5, 2, 1.4], vertical_alignment="center")
+            r[0].markdown(f":material/folder_zip: {n}")
+            r[1].caption(f"{mod} · {kb} kB")
+            if r[2].button(t("Open"), key=f"wf_proj_{i}", width="stretch"):
+                open_project(project.read(wf, "projects", n))
+        st.markdown(f"**{t('Exports')}** · `exports`")
+        ex = project.list_files(wf, "exports", (".png", ".svg", ".pdf", ".csv"))
+        if not ex:
+            st.caption(t("Figures and tables saved with the Save buttons appear here."))
+        else:
+            st.dataframe(pd.DataFrame(ex[:50], columns=[t("File"), "kB", t("Modified")]),
+                         hide_index=True, height=min(38 + 35 * len(ex[:50]), 300))
+
+
 def page_settings():
     header(t("Settings"))
     with st.container(border=True):
@@ -1514,6 +1709,8 @@ PAGES = {
                           icon=":material/format_size:", url_path="appearance"),
     "settings": st.Page(page_settings, title=t("Settings"), icon=":material/tune:",
                         url_path="settings"),
+    "project": st.Page(page_project, title=t("Project"), icon=":material/folder_open:",
+                       url_path="project"),
     "xrfqc": st.Page(page_xrfqc, title=t("XRF quality control"),
                      icon=":material/fact_check:", url_path="xrf-qc"),
     "docs": st.Page(page_docs, title=t("Documentation"), icon=":material/menu_book:",
@@ -1523,7 +1720,7 @@ PAGES = {
     "about": st.Page(page_about, title=t("About"), icon=":material/info:",
                      url_path="about"),
 }
-NAV_GROUPS = [("Overview", ["dashboard", "data"]),
+NAV_GROUPS = [("Overview", ["dashboard", "data", "project"]),
               ("Plots", ["diagrams", "spider", "xy"]),
               ("Tools", ["stats"] + (["xrfqc"] if settings["xrf_qc"] else [])
                + ["symbols", "appearance", "settings"])]

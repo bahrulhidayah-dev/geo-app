@@ -43,6 +43,7 @@ every click and rebuilds the page; values that must survive are kept in
 | Theme | Light, dark or system. The choice is stored in the browser for every page address, then the page reloads. |
 | Maintenance mode | Read from Streamlit Secrets (`MAINTENANCE`, `MAINTENANCE_MESSAGE`, `MAINTENANCE_KEY`). Stops the script with a notice page unless the developer key is given. |
 | Data loading | `process()` reads, cleans and standardises the uploaded file once; the result is cached by file content. |
+| Project page | Save and open project files; choose the work folder (not online); open data files and projects from it. A project is applied at the start of the next run, before any widget is drawn. |
 | Top bar | Brand, Documentation, References, About, language and theme menus. |
 | Sidebar | Data file, page links, *Group samples by*, *Show groups*, *Label points with*. |
 | Pages | One function per page (`page_dashboard()`, `page_diagrams()` ...). Pages call the science layer and show results. |
@@ -61,6 +62,7 @@ every click and rebuilds the page; values that must survive are kept in
 | `xrfqc.py`, `xrfcal.py` | Optional XRF module: reference-material QC, calibration from intensities with matrix correction, ultramafic iron check (Mikuni et al. 2025) |
 | `i18n.py` | Interface text in Indonesian, English and Japanese (English text is the key) |
 | `docs.py` | Splits the documents into chapters, embeds images, builds the reference list |
+| `project.py` | Project files (`.geochem` ZIP: data + session as JSON) and the work folder (data, exports, projects; remembered in `~/.geochem_app/config.json`) |
 
 ### 2.4 Data layer: files
 

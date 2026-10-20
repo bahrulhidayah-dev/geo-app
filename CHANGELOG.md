@@ -2,6 +2,18 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.11.0 - 2026-10-20
+
+- Project page. Project files (`.geochem`) hold the data file and the whole
+  session (column setup, symbols, appearance, settings, grouping, diagram,
+  spider normalisation, XRF intensities): save, send and open again; works
+  online too.
+- Work folder (desktop and portable): choose a folder; the app creates
+  `data`, `exports` and `projects`, lists data files and projects to open
+  with one click, saves figures (PNG, SVG, PDF) and tables straight into
+  `exports`, and remembers the folder and recent folders.
+- Manual: new chapter 15, Projects and the work folder.
+
 ## 0.10.0 - 2026-10-20
 
 - Units: read from the column names (`La (ppb)`, `Cr_ppm`, `ng/g` ...) or a

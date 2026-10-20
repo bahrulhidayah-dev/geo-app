@@ -46,7 +46,7 @@ programming or with GCDkit is needed.
   forgets the data.
 - **Online version:** your file is sent to the server that runs the app,
   processed in memory and not saved. For confidential data, use the desktop
-  or portable version (chapter 19).
+  or portable version (chapter 20).
 
 ## 2. Quick start
 
@@ -55,7 +55,7 @@ programming or with GCDkit is needed.
 - **Online (no installation):** open https://geo-app-hidayah.streamlit.app
   in any browser.
 - **Portable Windows version:** extract the ZIP file and double-click
-  *Start GeoChem App.bat* (chapter 19).
+  *Start GeoChem App.bat* (chapter 20).
 - **Windows (with the shortcut):** double-click **GeoChem App** on the
   Desktop. A black window opens (this is the app engine; keep it open) and
   your browser opens the app at `http://localhost:8501` after a few seconds.
@@ -180,7 +180,7 @@ locality *Area*).
 
 The app works with one table per session. Most studies combine XRF (major
 oxides, wt%) and ICP-MS (trace elements, ppm or ppb): put both in one table
-with one row per sample (see chapter 17 for the options).
+with one row per sample (see chapter 18 for the options).
 
 ### Optional columns
 
@@ -198,7 +198,8 @@ with one row per sample (see chapter 17 for the options).
   **References** (all scientific sources), **About** (version, license,
   how to cite), the **language** menu and the **theme** menu
   (system, light or dark).
-- **Left panel:** the data file, the pages (Overview, Plots, Tools) and the
+- **Left panel:** the data file, the work folder in use (if any), the pages
+  (Overview: Dashboard, Data, Project; Plots; Tools) and the
   **Display** options:
   - **Group samples by**: a text column that defines the groups
     (each group gets its own symbol and colour).
@@ -466,7 +467,46 @@ module is on, the **Data check** tab also warns you about ultramafic samples.
 Reference values of 26 RMs (JP-1, JP-2, UB-N, OKUM, JB-1a, BHVO-2 ...)
 from Table 1 of the paper, with their original sources. Download them as CSV.
 
-## 15. Exporting figures and tables
+## 15. Projects and the work folder
+
+### Project files
+
+A **project file** (`.geochem`) keeps a whole analysis in one file: a copy of
+the data file, the column setup, symbols and colours, plot appearance,
+settings, grouping, labels, the chosen diagram and spider normalisation, and
+the XRF intensity file if one was loaded.
+
+- **Project → Save project**: give a name and click **Download project
+  file** (or **Save in the work folder**).
+- **Project → Open project**: choose a `.geochem` file. The data and all
+  settings come back exactly as they were. This replaces the data and settings
+  of the current session.
+
+Project files work in every version, also online, and can be sent to a
+colleague or supervisor. They contain your data: share them only with people
+who may see the data.
+
+### The work folder (desktop and portable versions)
+
+On your own computer you can choose a **work folder**, for example
+`Documents\GeoChem App`. On the **Project** page, type the folder path and
+click **Use this folder**. The app creates three subfolders:
+
+| Subfolder | Content |
+|---|---|
+| `data` | Your data files. They are listed on the Project page and open with one click, without uploading. **Copy the current data file into the data folder** puts the loaded file there. |
+| `exports` | Figures and tables. With a work folder, every plot has a button **Save PNG, SVG and PDF to the work folder**, and every table a button **Save to the work folder**. |
+| `projects` | Project files saved with **Save in the work folder**; open them with one click. |
+
+The app remembers the folder (and up to six recent folders) the next time it
+starts. The left panel shows the folder in use. **Stop using a work folder**
+switches it off; nothing is deleted.
+
+The online version cannot read or write folders on your computer (a web
+server must not touch your files), so online the work folder is not
+available; use project files there.
+
+## 16. Exporting figures and tables
 
 - Every plot has **Download PNG**, **Download SVG** and **Download PDF**
   buttons. The file is made only when you click, so nothing downloads when a
@@ -476,8 +516,11 @@ from Table 1 of the paper, with their original sources. Download them as CSV.
 - **PNG** uses the resolution set in Settings (300 dpi is fine for most
   journals; use 600 dpi for line art).
 - Tables have **Download ... (CSV)** buttons. CSV files open in Excel.
+- With a work folder (chapter 15), **Save PNG, SVG and PDF to the work
+  folder** and **Save to the work folder** write the files straight into its
+  `exports` subfolder, without the browser's download dialog.
 
-## 16. Calculations and formulas
+## 17. Calculations and formulas
 
 | Quantity | Formula |
 |---|---|
@@ -496,7 +539,7 @@ from Table 1 of the paper, with their original sources. Download them as CSV.
 The **Scientific basis** tab of every diagram gives its exact axis
 formulas.
 
-## 17. Troubleshooting and FAQ
+## 18. Troubleshooting and FAQ
 
 **The shortcut opens nothing.** Wait 10-20 seconds; the first start is slow.
 If the browser does not open, go to `http://localhost:8501` yourself. If the
@@ -515,7 +558,7 @@ oxides must be in wt% and trace elements in ppm (not ppb, not %).
 
 **Can I use the results in a publication?** Yes. Cite the original authors of
 each diagram (see **References**) and GCDkit (Janoušek et al. 2006). See
-chapter 18 for how to cite this app.
+chapter 19 for how to cite this app.
 
 **Does the app send my data anywhere?** The desktop and portable versions
 run entirely on your own computer. The online version processes your file on
@@ -547,7 +590,7 @@ gives ppb without saying so. Set the unit to *ppb* in **Data → Column setup**.
 files only when you click a download button. If your download manager still
 interferes, add `localhost` to its exception list.
 
-## 18. Citing, license and contributing
+## 19. Citing, license and contributing
 
 ### How to cite
 
@@ -581,7 +624,7 @@ and, if possible, a small example file. Developers will find the design, the dat
 and the workflows in `docs/architecture.md` (also on the Documentation page),
 and details in the comments at the top of each file.
 
-## 19. Sharing the app: portable and online versions
+## 20. Sharing the app: portable and online versions
 
 There are three ways to give GeoChem App to colleagues and students:
 

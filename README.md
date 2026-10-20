@@ -1,7 +1,7 @@
 # GeoChem App
 
 A free, open-source web app for whole-rock geochemistry (XRF and ICP data),
-inspired by GCDkit. Version 0.10.0.
+inspired by GCDkit. Version 0.11.0.
 Developed by Bahrul Hidayah (bahrul.hidayah@gmail.com).
 
 **Try it online:** https://geo-app-hidayah.streamlit.app (no installation needed).
@@ -59,6 +59,10 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
   R2 = 0.99967 and accuracy = 0.077 wt% for T-Fe2O3, and GP13 8.92 -> 8.40 wt%
   (paper: same values). The paper's data set is included as an example.
 
+- Project files (`.geochem`: data plus all settings) to save, send and reopen
+  an analysis; on the desktop and portable versions a work folder with
+  `data`, `exports` and `projects` subfolders and one-click saving of figures
+  and tables.
 - Three ways to share: online (Streamlit Community Cloud), portable Windows
   ZIP with Python included, or from the source code. The online version shows
   a privacy note and has a maintenance mode switched on through Secrets
