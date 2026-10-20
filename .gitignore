@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+# Builds
+dist/
+# Local data and reference copies (keep your own data out of the public repository)
+test_data/
+reference/
+*.lnk
+# Editors and systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+# Personal learning exercises (not part of the app)
+grafik.py
+hello_rock.py
+hitung_total.py
+plot_oxides.py
+major_oxides.png
+oksida_utama.png
+sampel_xrf.csv

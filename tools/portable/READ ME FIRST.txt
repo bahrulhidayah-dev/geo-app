@@ -1,0 +1,26 @@
+GeoChem App - portable version for Windows
+==========================================
+
+No installation and no internet connection are needed.
+
+1. Extract the whole ZIP file to a folder, for example your Desktop or a
+   USB drive. (Do not run the app from inside the ZIP file.)
+2. Double-click "Start GeoChem App.bat".
+3. A black window opens and, after 10-30 seconds, your web browser shows
+   the app. Keep the black window open while you work.
+4. To stop the app, close the black window.
+
+Try the example files in the "examples" folder.
+The full user manual is inside the app (top bar > Documentation) and in
+app\docs\user-manual.md.
+
+If Windows shows "Windows protected your PC", click "More info" and then
+"Run anyway". This appears because the file came from the internet.
+
+Your data stay on this computer; nothing is uploaded.
+
+GeoChem App is free software (GNU GPL v3.0, see app\LICENSE).
+Developer: Bahrul Hidayah (bahrul.hidayah@gmail.com)
+Diagram boundaries from GCDkit (Janousek et al. 2006, Journal of
+Petrology 47, 1255-1259). Please cite GCDkit and the original reference of
+every diagram you use.

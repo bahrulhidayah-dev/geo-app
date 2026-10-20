@@ -1,0 +1,234 @@
+{
+ "id": "Shand",
+ "source": "GCDkit 6.3, Diagrams/Classification/English/Shand.r",
+ "panels": [
+  {
+   "xlim": [
+    0.5,
+    1.5
+   ],
+   "ylim": [
+    0.0,
+    7.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "A/CNK",
+   "ylab": "A/NK",
+   "title": "A/CNK-A/NK plot (Shand 1943)",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      1.0,
+      1.0,
+      0.5,
+      0.5,
+      1.0
+     ],
+     "y": [
+      1.0,
+      7.0,
+      7.0,
+      1.0,
+      1.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      1.0,
+      2.0,
+      2.0,
+      1.0,
+      1.0
+     ],
+     "y": [
+      1.0,
+      1.0,
+      7.0,
+      7.0,
+      1.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      1.0,
+      1.0,
+      0.5,
+      0.5,
+      1.0
+     ],
+     "y": [
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      1.0,
+      2.0,
+      2.0,
+      1.0,
+      1.0
+     ],
+     "y": [
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "abline": {
+      "a": null,
+      "b": null,
+      "h": 1.0,
+      "v": null
+     },
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "abline": {
+      "a": null,
+      "b": null,
+      "h": null,
+      "v": 1.0
+     },
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      0.0,
+      7.0
+     ],
+     "y": [
+      0.0,
+      7.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 0.55,
+     "y": 6.0,
+     "text": "Metaluminous",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0,
+     "role": "line"
+    },
+    {
+     "x": 1.05,
+     "y": 6.0,
+     "text": "Peraluminous",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0,
+     "role": "line"
+    },
+    {
+     "x": 0.55,
+     "y": 0.5,
+     "text": "Peralkaline",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0,
+     "role": "line"
+    }
+   ],
+   "fields": [
+    {
+     "name": "metaluminous",
+     "x": [
+      1.0,
+      1.0,
+      0.5,
+      0.5,
+      1.0
+     ],
+     "y": [
+      1.0,
+      7.0,
+      7.0,
+      1.0,
+      1.0
+     ]
+    },
+    {
+     "name": "peraluminous",
+     "x": [
+      1.0,
+      2.0,
+      2.0,
+      1.0,
+      1.0
+     ],
+     "y": [
+      1.0,
+      1.0,
+      7.0,
+      7.0,
+      1.0
+     ]
+    },
+    {
+     "name": "peralkaline",
+     "x": [
+      1.0,
+      1.0,
+      0.5,
+      0.5,
+      1.0
+     ],
+     "y": [
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ]
+    },
+    {
+     "name": "undefined",
+     "x": [
+      1.0,
+      2.0,
+      2.0,
+      1.0,
+      1.0
+     ],
+     "y": [
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   ],
+   "name": "A/CNK - A/NK (Shand 1943)"
+  }
+ ]
+}

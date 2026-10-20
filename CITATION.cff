@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use GeoChem App, please cite it as below, together with GCDkit and the original reference of every diagram you used."
+title: "GeoChem App: a free web application for whole-rock geochemistry"
+version: 0.9.0
+date-released: 2026-10-19
+license: GPL-3.0-or-later
+authors:
+  - family-names: Hidayah
+    given-names: Bahrul
+    email: bahrul.hidayah@gmail.com
+    affiliation: "Hokkaido University"
+references:
+  - type: article
+    title: "Interpretation of whole-rock geochemical data in igneous geochemistry: introducing Geochemical Data Toolkit (GCDkit)"
+    authors:
+      - family-names: Janoušek
+        given-names: Vojtěch
+      - family-names: Farrow
+        given-names: Colin M.
+      - family-names: Erban
+        given-names: Vojtěch
+    journal: "Journal of Petrology"
+    volume: 47
+    issue: 6
+    start: 1255
+    end: 1259
+    year: 2006
+    doi: 10.1093/petrology/egl013

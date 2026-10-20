@@ -1,0 +1,32 @@
+# Geochemical reference materials (applied reference values, as-received basis).
+# Source: Mikuni K., Ishikawa A. and Sato R. (2025) Geochemical Journal 59(6), 299-314,
+# Table 1, doi:10.2343/geochemj.GJ25017 (CC BY 4.0). Cr and Ni in ug/g; oxides in wt%.
+# LOI: value analysed by Mikuni et al. (2025) for their own powders (used only as a fallback).
+# The original references for each material are listed in the Reference column.
+RM,Rock type,Source,Reference,SiO2,TiO2,Al2O3,Fe2O3t,MnO,MgO,CaO,Na2O,K2O,P2O5,Cr,Ni,LOI
+JP-1,Peridotite (dunite),GSJ,"Imai et al. (1995); Mikuni et al. (2025) for Cr and Ni",42.38,0.006,0.66,8.37,0.121,44.60,0.55,0.021,0.003,0.002,2920,2460,2.14
+JP-2,Peridotite (lherzolite),GSJ,Mikuni et al. (2025),44.24,0.085,3.14,8.72,0.126,39.97,2.73,0.28,0.012,0.005,2640,2100,0.14
+OKUM,Komatiite,IAG,IAG certificate,44.14,0.380,7.97,11.81,0.181,21.29,7.85,1.136,0.044,0.027,2460,886,4.62
+UB-N,Serpentinite,SARM,SARM certificate,39.43,0.11,2.90,8.34,0.12,35.21,1.20,0.10,0.02,0.04,2300,2000,10.44
+JH-1,Hornblendite,GSJ,Imai et al. (1999),48.18,0.665,5.66,10.27,0.190,16.73,15.02,0.71,0.526,0.099,616,58.2,1.92
+JB-1,Basalt,GSJ,Imai et al. (1995),52.37,1.32,14.53,8.99,0.153,7.71,9.25,2.77,1.43,0.255,425,133,0.39
+JB-1a,Basalt,GSJ,Imai et al. (1995),52.41,1.28,14.45,9.05,0.148,7.83,9.31,2.73,1.40,0.260,392,139,0.4
+JB-1b,Basalt,GSJ,Terashima et al. (1998),51.11,1.26,14.38,9.02,0.147,8.14,9.60,2.63,1.32,0.256,439,148,1.17
+JB-2,Basalt,GSJ,Imai et al. (1995),53.25,1.19,14.64,14.25,0.218,4.62,9.82,2.04,0.42,0.101,28.1,16.6,-0.65
+JB-3,Basalt,GSJ,Imai et al. (1995),50.96,1.44,17.20,11.82,0.177,5.19,9.79,2.73,0.78,0.294,58.1,36.2,-0.51
+BIR-1a,Basalt,USGS,USGS certificate,47.96,0.96,15.50,11.30,0.175,9.70,13.30,1.82,0.030,0.021,370,170,-0.66
+BCR-2,Basalt,USGS,Jochum et al. (2015),54.00,2.27,13.48,13.77,0.197,3.60,7.11,3.12,1.774,0.359,15.9,12.6,0.05
+BHVO-2,Basalt,USGS,USGS certificate,49.90,2.73,13.50,12.30,0.167,7.23,11.40,2.22,0.52,0.27,280,119,-0.6
+JGb-1,Gabbro,GSJ,Imai et al. (1995),43.66,1.60,17.49,15.06,0.189,7.85,11.90,1.20,0.24,0.056,57.8,25.4,0.73
+JGb-2,Gabbro,GSJ,Imai et al. (1999),46.47,0.56,23.48,6.69,0.126,6.18,14.10,0.92,0.059,0.017,125,13.6,1.28
+JA-1,Andesite,GSJ,Imai et al. (1995),63.97,0.85,15.22,7.07,0.157,1.57,5.70,3.84,0.77,0.165,7.83,3.49,0.67
+JA-1a,Andesite,GSJ,GSJ certificate,63.66,0.87,15.40,7.17,0.157,1.55,5.74,3.90,0.78,0.165,4.1,2.7,-0.11
+JA-2,Andesite,GSJ,Imai et al. (1995),56.42,0.66,15.41,6.21,0.108,7.60,6.29,3.11,1.81,0.146,436,130,0.94
+JA-3,Andesite,GSJ,Imai et al. (1995),62.27,0.70,15.56,6.60,0.104,3.72,6.24,3.19,1.41,0.116,66.2,32.2,0.18
+JG-1,Granite,GSJ,Imai et al. (1995),72.30,0.26,14.24,2.18,0.063,0.74,2.20,3.38,3.98,0.099,53.2,7.47,0.43
+JG-1a,Granite,GSJ,Imai et al. (1995),72.30,0.25,14.30,2.00,0.057,0.69,2.13,3.39,3.96,0.083,17.6,6.91,0.52
+JG-2,Granite,GSJ,Imai et al. (1995),76.83,0.044,12.47,0.97,0.016,0.037,0.70,3.54,4.71,0.002,6.37,4.35,0.13
+JG-3,Granite,GSJ,Imai et al. (1995),67.29,0.48,15.48,3.69,0.071,1.79,3.69,3.96,2.64,0.122,22.4,14.3,0.35
+JR-1,Rhyolite,GSJ,Imai et al. (1995),75.45,0.11,12.83,0.89,0.099,0.12,0.67,4.02,4.41,0.021,2.83,1.67,1.26
+JR-2,Rhyolite,GSJ,Imai et al. (1995),75.69,0.07,12.72,0.77,0.112,0.04,0.50,3.99,4.45,0.012,3.10,1.99,1.5
+JR-3,Rhyolite,GSJ,Imai et al. (1999),72.76,0.21,11.90,4.72,0.083,0.05,0.09,4.69,4.29,0.017,3.49,1.60,0.65

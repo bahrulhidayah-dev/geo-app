@@ -1,0 +1,89 @@
+{
+ "id": "Miyashiro",
+ "source": "GCDkit 6.3, Diagrams/Classification/English/Miyashiro.r",
+ "panels": [
+  {
+   "xlim": [
+    45.0,
+    78.0
+   ],
+   "ylim": [
+    0.0,
+    6.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "SiO2",
+   "ylab": "FeOt/MgO",
+   "title": "SiO2-FeOt/MgO plot (Miyashiro 1974)",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      42.8,
+      100.4
+     ],
+     "y": [
+      0.0,
+      9.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 77.0,
+     "y": 0.7,
+     "text": "Calc-alkaline\nSeries",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 1.0,
+     "role": "line"
+    },
+    {
+     "x": 47.0,
+     "y": 4.0,
+     "text": "Tholeiite Series",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.0,
+     "role": "line"
+    }
+   ],
+   "fields": [
+    {
+     "name": "calc-alkaline series",
+     "x": [
+      42.8,
+      100.4,
+      100.4
+     ],
+     "y": [
+      0.0,
+      9.0,
+      0.0
+     ]
+    },
+    {
+     "name": "tholeiite series",
+     "x": [
+      42.8,
+      100.4,
+      100.4,
+      42.8
+     ],
+     "y": [
+      0.0,
+      9.0,
+      20.0,
+      20.0
+     ]
+    }
+   ],
+   "name": "SiO2-FeOt/MgO (Miyashiro 1974)"
+  }
+ ]
+}

@@ -1,0 +1,136 @@
+{
+ "id": "PearceNbTiYb",
+ "source": "GCDkit 6.3, Diagrams/Geotectonic/PearceNbTiYb.r",
+ "panels": [
+  {
+   "xlim": [
+    0.1,
+    100.0
+   ],
+   "ylim": [
+    0.1,
+    10.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Nb/Yb",
+   "ylab": "TiO2/Yb",
+   "title": "Nb/Yb - TiO2/Yb (Pearce 2008)",
+   "ternary": false,
+   "lines": [
+    {
+     "abline": {
+      "a": 0.355496,
+      "b": 0.046,
+      "h": null,
+      "v": null
+     },
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      1.591325,
+      1.775364
+     ],
+     "y": [
+      0.4736188,
+      0.1994768
+     ],
+     "lwd": 2.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      8.8,
+      17.4
+     ],
+     "y": [
+      2.458876,
+      0.7297888
+     ],
+     "lwd": 2.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [
+    {
+     "x": [
+      0.1,
+      100.0,
+      100.0,
+      0.1,
+      0.1
+     ],
+     "y": [
+      0.25,
+      0.34,
+      0.8,
+      0.57,
+      0.25
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 7.0,
+     "y": 1.8,
+     "text": "Th",
+     "rot": 2.0,
+     "size": 1.0,
+     "adj": 0,
+     "role": "line"
+    },
+    {
+     "x": 12.0,
+     "y": 1.8,
+     "text": "Alk",
+     "rot": 2.0,
+     "size": 1.0,
+     "adj": 0,
+     "role": "line"
+    },
+    {
+     "x": 0.4,
+     "y": 1.5,
+     "text": "OIB array\n(deep melting)",
+     "rot": 5.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 25.0,
+     "y": 0.5,
+     "text": "MORB array\n(shallow melting)",
+     "rot": 5.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 1.5,
+     "y": 0.25,
+     "text": "N",
+     "rot": 5.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 2.05,
+     "y": 0.25,
+     "text": "E",
+     "rot": 5.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Pearce (2008) Nb-TiO2-Yb"
+  }
+ ]
+}

@@ -1,0 +1,187 @@
+{
+ "id": "Hastie",
+ "source": "GCDkit 6.3, Diagrams/Classification/English/Hastie.r",
+ "panels": [
+  {
+   "xlim": [
+    70.0,
+    0.0
+   ],
+   "ylim": [
+    0.01,
+    100.0
+   ],
+   "log_x": false,
+   "log_y": true,
+   "xlab": "Co",
+   "ylab": "Th",
+   "title": "Co-Th plot (Hastie et al. 2007)",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      70.0,
+      0.0
+     ],
+     "y": [
+      0.245,
+      1.35
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      70.0,
+      0.0
+     ],
+     "y": [
+      2.2,
+      9.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      38.4,
+      24.0
+     ],
+     "y": [
+      0.01,
+      100.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      23.0,
+      7.0
+     ],
+     "y": [
+      0.01,
+      100.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 68.0,
+     "y": 0.1,
+     "text": "Tholeiite\nSeries",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.0,
+     "role": "line"
+    },
+    {
+     "x": 68.0,
+     "y": 1.0,
+     "text": "Calc-alkaline\nSeries",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.0,
+     "role": "line"
+    },
+    {
+     "x": 68.0,
+     "y": 60.0,
+     "text": "High-K calc-alkaline\nand Shoshonite Series",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.0,
+     "role": "line"
+    },
+    {
+     "x": 50.0,
+     "y": 0.02,
+     "text": "B",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 30.0,
+     "y": 0.02,
+     "text": "BA/A",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 10.0,
+     "y": 0.02,
+     "text": "D/R*",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [
+    {
+     "name": "tholeiite series",
+     "x": [
+      70.0,
+      0.0,
+      0.0,
+      70.0,
+      70.0
+     ],
+     "y": [
+      -2.0,
+      -2.0,
+      0.13033376849500614,
+      -0.6108339156354675,
+      -2.0
+     ]
+    },
+    {
+     "name": "calc-alkaline series",
+     "x": [
+      70.0,
+      0.0,
+      0.0,
+      70.0,
+      70.0
+     ],
+     "y": [
+      -0.6108339156354675,
+      0.13033376849500614,
+      0.9542425094393249,
+      0.3424226808222063,
+      -0.6108339156354675
+     ]
+    },
+    {
+     "name": "high-K calc-alkaline and shoshonite series",
+     "x": [
+      70.0,
+      0.0,
+      0.0,
+      70.0,
+      70.0
+     ],
+     "y": [
+      0.3424226808222063,
+      0.9542425094393249,
+      2.0,
+      2.0,
+      0.3424226808222063
+     ]
+    }
+   ],
+   "name": "Co - Th (Hastie et al. 2007)"
+  }
+ ]
+}

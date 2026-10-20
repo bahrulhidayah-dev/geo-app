@@ -1,0 +1,69 @@
+{
+ "id": "Paulick",
+ "source": "GCDkit 6.3, Diagrams/User/Paulick.r",
+ "panels": [
+  {
+   "xlim": [
+    0.0,
+    0.1
+   ],
+   "ylim": [
+    0.0,
+    1.4
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "Al2O3/SiO2",
+   "ylab": "MgO/SiO2",
+   "title": "Al2O3/SiO2 - MgO/SiO2 plot (Paulick et al. 2006)",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      0.0,
+      0.1
+     ],
+     "y": [
+      1.1,
+      0.842
+     ],
+     "lwd": 10.0,
+     "dash": false,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 0.095,
+     "y": 1.008,
+     "text": "Terrestrial Array\n(melting trend)",
+     "rot": -10.0,
+     "size": 1.0,
+     "adj": 1.0,
+     "role": "line"
+    },
+    {
+     "x": 0.002,
+     "y": 1.15,
+     "text": "Depleted",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.0,
+     "role": "line"
+    },
+    {
+     "x": 0.099,
+     "y": 0.83,
+     "text": "Enriched",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 1.0,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Al2O3/SiO2 - MgO/SiO2 (Paulick et al. 2006)"
+  }
+ ]
+}

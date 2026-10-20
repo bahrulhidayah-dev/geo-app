@@ -1,0 +1,481 @@
+{
+ "id": "Verma",
+ "source": "GCDkit 6.3, Diagrams/Geotectonic/Verma.r",
+ "panels": [
+  {
+   "xlim": [
+    -8.0,
+    8.0
+   ],
+   "ylim": [
+    -8.0,
+    8.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "DF1",
+   "ylab": "DF2",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      1.16,
+      5.912
+     ],
+     "y": [
+      -0.333,
+      8.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -0.266,
+      -4.19
+     ],
+     "y": [
+      0.02,
+      8.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -8.0,
+      -0.266
+     ],
+     "y": [
+      -2.49,
+      0.02
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      1.16,
+      3.431
+     ],
+     "y": [
+      -0.333,
+      -8.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      1.16,
+      -0.266
+     ],
+     "y": [
+      -0.333,
+      0.02
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": -6.0,
+     "y": 4.0,
+     "text": "OIB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": -6.0,
+     "y": -4.0,
+     "text": "MORB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 0.0,
+     "y": 7.0,
+     "text": "CRB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 6.0,
+     "y": 4.0,
+     "text": "IAB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": []
+  },
+  {
+   "xlim": [
+    -8.0,
+    8.0
+   ],
+   "ylim": [
+    -8.0,
+    8.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "DF1",
+   "ylab": "DF2",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      -0.733,
+      -3.788
+     ],
+     "y": [
+      -1.405,
+      8.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -0.733,
+      8.0
+     ],
+     "y": [
+      -1.405,
+      5.428
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -1.343,
+      -0.733
+     ],
+     "y": [
+      -8.0,
+      -1.405
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 6.0,
+     "y": -3.0,
+     "text": "OIB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": -1.0,
+     "y": 6.0,
+     "text": "CRB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": -6.0,
+     "y": 6.0,
+     "text": "IAB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": []
+  },
+  {
+   "xlim": [
+    -8.0,
+    8.0
+   ],
+   "ylim": [
+    -8.0,
+    8.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "DF1",
+   "ylab": "DF2",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      8.0,
+      0.361
+     ],
+     "y": [
+      -1.332,
+      -0.619
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -2.673,
+      0.361
+     ],
+     "y": [
+      8.0,
+      -0.619
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -6.779,
+      0.361
+     ],
+     "y": [
+      -8.0,
+      -0.619
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 6.0,
+     "y": -5.0,
+     "text": "IAB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 1.0,
+     "y": 6.0,
+     "text": "CRB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": -5.0,
+     "y": 6.0,
+     "text": "MORB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": []
+  },
+  {
+   "xlim": [
+    -8.0,
+    8.0
+   ],
+   "ylim": [
+    -8.0,
+    8.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "DF1",
+   "ylab": "DF2",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      -0.83,
+      -1.824
+     ],
+     "y": [
+      1.224,
+      8.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -0.83,
+      8.0
+     ],
+     "y": [
+      1.224,
+      -3.583
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -4.865,
+      -0.83
+     ],
+     "y": [
+      -8.0,
+      1.224
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": -4.0,
+     "y": 6.0,
+     "text": "IAB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": -1.0,
+     "y": -6.0,
+     "text": "MORB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 1.0,
+     "y": 6.0,
+     "text": "OIB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": []
+  },
+  {
+   "xlim": [
+    -8.0,
+    8.0
+   ],
+   "ylim": [
+    -8.0,
+    8.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "DF1",
+   "ylab": "DF2",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      0.029,
+      8.0
+     ],
+     "y": [
+      -0.222,
+      4.322
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      0.029,
+      -6.177
+     ],
+     "y": [
+      -0.222,
+      8.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      -0.819,
+      0.029
+     ],
+     "y": [
+      -8.0,
+      -0.222
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": -6.0,
+     "y": 2.0,
+     "text": "MORB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 5.0,
+     "y": -2.0,
+     "text": "CRB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": -1.0,
+     "y": 6.0,
+     "text": "OIB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": []
+  }
+ ]
+}

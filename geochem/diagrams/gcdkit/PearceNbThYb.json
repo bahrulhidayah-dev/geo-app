@@ -1,0 +1,76 @@
+{
+ "id": "PearceNbThYb",
+ "source": "GCDkit 6.3, Diagrams/Geotectonic/PearceNbThYb.r",
+ "panels": [
+  {
+   "xlim": [
+    0.1,
+    1000.0
+   ],
+   "ylim": [
+    0.01,
+    100.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Nb/Yb",
+   "ylab": "Th/Yb",
+   "title": "Nb/Yb - Th/Yb (Pearce 2008)",
+   "ternary": false,
+   "lines": [
+    {
+     "abline": {
+      "a": 1.0969100130080565,
+      "b": 1.019631229684523,
+      "h": null,
+      "v": null
+     },
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [
+    {
+     "x": [
+      0.1,
+      0.3,
+      1000.0,
+      1000.0,
+      800.0,
+      0.1
+     ],
+     "y": [
+      0.01,
+      0.01,
+      48.0,
+      100.0,
+      100.0,
+      0.01
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.15,
+     "y": 1.0,
+     "text": "Volcanic arc array",
+     "rot": 42.0,
+     "size": 1.0,
+     "adj": 0,
+     "role": "line"
+    },
+    {
+     "x": 70.0,
+     "y": 5.0,
+     "text": "MORB-OIB array",
+     "rot": 42.0,
+     "size": 1.0,
+     "adj": 0,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Pearce (2008) Nb-Th-Yb"
+  }
+ ]
+}

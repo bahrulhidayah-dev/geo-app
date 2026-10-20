@@ -1,0 +1,123 @@
+{
+ "id": "Shervais",
+ "source": "GCDkit 6.3, Diagrams/Geotectonic/Shervais.r",
+ "panels": [
+  {
+   "xlim": [
+    0.0,
+    25.0
+   ],
+   "ylim": [
+    0.0,
+    600.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "Ti (ppm)/1000",
+   "ylab": "V (ppm)",
+   "title": "Ti/V (Shervais 1982)",
+   "ternary": false,
+   "lines": [
+    {
+     "abline": {
+      "a": 0.0,
+      "b": 100.0,
+      "h": null,
+      "v": null
+     },
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "abline": {
+      "a": 0.0,
+      "b": 20.0,
+      "h": null,
+      "v": null
+     },
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "abline": {
+      "a": 0.0,
+      "b": 50.0,
+      "h": null,
+      "v": null
+     },
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "abline": {
+      "a": 0.0,
+      "b": 10.0,
+      "h": null,
+      "v": null
+     },
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 10.0,
+     "y": 570.0,
+     "text": "ARC",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 15.0,
+     "y": 570.0,
+     "text": "OFB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 3.0,
+     "y": 540.0,
+     "text": "Ti/V=10",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 13.2,
+     "y": 540.0,
+     "text": "Ti/V=20",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 23.5,
+     "y": 290.0,
+     "text": "Ti/V=100",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 23.5,
+     "y": 540.0,
+     "text": "Ti/V=50",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Shervais (1982)"
+  }
+ ]
+}

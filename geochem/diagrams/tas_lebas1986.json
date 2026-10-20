@@ -1,0 +1,422 @@
+{
+ "id": "TAS",
+ "title": "TAS diagram (total alkali vs silica)",
+ "reference": "Le Bas M.J., Le Maitre R.W., Streckeisen A., Zanettin B. (1986) A chemical classification of volcanic rocks based on the total alkali-silica diagram. Journal of Petrology 27, 745-750.",
+ "source_note": "Field coordinates as compiled in pyrolite (BSD-3) config_lemaitre_combined.json, after Le Maitre et al. (2002).",
+ "x": {
+  "formula": "SiO2",
+  "label": "SiO2 (wt%)",
+  "min": 35,
+  "max": 80
+ },
+ "y": {
+  "formula": "Na2O + K2O",
+  "label": "Na2O + K2O (wt%)",
+  "min": 0,
+  "max": 16
+ },
+ "basis": "Anhydrous (volatile-free), recalculated to 100 wt%",
+ "fields": [
+  {
+   "id": "B",
+   "name": "Basalt",
+   "plutonic": "Gabbro",
+   "polygon": [
+    [
+     45,
+     0
+    ],
+    [
+     45,
+     5
+    ],
+    [
+     52,
+     5
+    ],
+    [
+     52,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "F",
+   "name": "Foidite",
+   "plutonic": "Foidolite",
+   "polygon": [
+    [
+     35,
+     9
+    ],
+    [
+     37,
+     14
+    ],
+    [
+     52.5,
+     18
+    ],
+    [
+     52.5,
+     14
+    ],
+    [
+     48.4,
+     11.5
+    ],
+    [
+     45,
+     9.4
+    ],
+    [
+     41,
+     7
+    ],
+    [
+     41,
+     3
+    ],
+    [
+     37,
+     3
+    ]
+   ]
+  },
+  {
+   "id": "O1",
+   "name": "Basaltic Andesite",
+   "plutonic": "Gabbroic Diorite",
+   "polygon": [
+    [
+     52,
+     0
+    ],
+    [
+     52,
+     5
+    ],
+    [
+     57,
+     5.9
+    ],
+    [
+     57,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "O2",
+   "name": "Andesite",
+   "plutonic": "Diorite",
+   "polygon": [
+    [
+     57,
+     0
+    ],
+    [
+     57,
+     5.9
+    ],
+    [
+     63,
+     7
+    ],
+    [
+     63,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "O3",
+   "name": "Dacite",
+   "plutonic": "Granodiorite",
+   "polygon": [
+    [
+     63,
+     0
+    ],
+    [
+     63,
+     7
+    ],
+    [
+     69,
+     8
+    ],
+    [
+     77.3,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "Pc",
+   "name": "Picrobasalt",
+   "plutonic": "Peridotgabbro",
+   "polygon": [
+    [
+     41,
+     3
+    ],
+    [
+     45,
+     3
+    ],
+    [
+     45,
+     2
+    ],
+    [
+     45,
+     0
+    ],
+    [
+     41,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "Ph",
+   "name": "Phonolite",
+   "plutonic": "Foid Syenite",
+   "polygon": [
+    [
+     52.5,
+     14
+    ],
+    [
+     52.5,
+     18
+    ],
+    [
+     57,
+     18
+    ],
+    [
+     63,
+     16.2
+    ],
+    [
+     61,
+     13.5
+    ],
+    [
+     57.6,
+     11.7
+    ]
+   ]
+  },
+  {
+   "id": "R",
+   "name": "Rhyolite",
+   "plutonic": "Granite",
+   "polygon": [
+    [
+     69,
+     8
+    ],
+    [
+     69,
+     13
+    ],
+    [
+     85.9,
+     6.8
+    ],
+    [
+     87.5,
+     4.7
+    ],
+    [
+     77.3,
+     0
+    ]
+   ]
+  },
+  {
+   "id": "S1",
+   "name": "Trachybasalt",
+   "plutonic": "Monzogabbro",
+   "polygon": [
+    [
+     45,
+     5
+    ],
+    [
+     49.4,
+     7.3
+    ],
+    [
+     52,
+     5
+    ]
+   ]
+  },
+  {
+   "id": "S2",
+   "name": "Basaltic Trachyandesite",
+   "plutonic": "Monzodiorite",
+   "polygon": [
+    [
+     49.4,
+     7.3
+    ],
+    [
+     53,
+     9.3
+    ],
+    [
+     57,
+     5.9
+    ],
+    [
+     52,
+     5
+    ]
+   ]
+  },
+  {
+   "id": "S3",
+   "name": "Trachyandesite",
+   "plutonic": "Monzonite",
+   "polygon": [
+    [
+     53,
+     9.3
+    ],
+    [
+     57.6,
+     11.7
+    ],
+    [
+     61,
+     8.6
+    ],
+    [
+     63,
+     7
+    ],
+    [
+     57,
+     5.9
+    ]
+   ]
+  },
+  {
+   "id": "T1T2",
+   "name": "Trachyte / Trachydacite",
+   "plutonic": "SyeniteQuartz Monzonite",
+   "polygon": [
+    [
+     57.6,
+     11.7
+    ],
+    [
+     61,
+     13.5
+    ],
+    [
+     63,
+     16.2
+    ],
+    [
+     69,
+     13
+    ],
+    [
+     69,
+     8
+    ],
+    [
+     63,
+     7
+    ],
+    [
+     61,
+     8.6
+    ]
+   ]
+  },
+  {
+   "id": "U1",
+   "name": "Tephrite",
+   "plutonic": "Foid Gabbro",
+   "polygon": [
+    [
+     41,
+     3
+    ],
+    [
+     41,
+     7
+    ],
+    [
+     45,
+     9.4
+    ],
+    [
+     49.4,
+     7.3
+    ],
+    [
+     45,
+     5
+    ],
+    [
+     45,
+     3
+    ]
+   ]
+  },
+  {
+   "id": "U2",
+   "name": "Phonotephrite",
+   "plutonic": "Foid Monzodiorite",
+   "polygon": [
+    [
+     45,
+     9.4
+    ],
+    [
+     48.4,
+     11.5
+    ],
+    [
+     53,
+     9.3
+    ],
+    [
+     49.4,
+     7.3
+    ]
+   ]
+  },
+  {
+   "id": "U3",
+   "name": "Tephriphonolite",
+   "plutonic": "Foid Monzosyenite",
+   "polygon": [
+    [
+     48.4,
+     11.5
+    ],
+    [
+     52.5,
+     14
+    ],
+    [
+     57.6,
+     11.7
+    ],
+    [
+     53,
+     9.3
+    ]
+   ]
+  }
+ ]
+}

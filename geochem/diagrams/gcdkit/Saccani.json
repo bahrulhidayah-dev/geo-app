@@ -1,0 +1,152 @@
+{
+ "id": "Saccani",
+ "source": "GCDkit 6.3, Diagrams/Geotectonic/Saccani.r",
+ "panels": [
+  {
+   "xlim": [
+    0.01,
+    100.0
+   ],
+   "ylim": [
+    0.01,
+    1000.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Nb[N]",
+   "ylab": "Th[N]",
+   "title": "NbN - ThN (Saccani 2015)",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      0.01,
+      2.2
+     ],
+     "y": [
+      20.0,
+      8.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      0.01,
+      0.306,
+      100.0
+     ],
+     "y": [
+      0.1,
+      0.708,
+      1000.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      0.306,
+      0.5
+     ],
+     "y": [
+      0.708,
+      0.001
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 2.1,
+     "y": 0.013,
+     "text": "DIVERGENT PLATE &\nWITHIN-PLATE SETTINGS",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 0.0,
+     "role": "minor"
+    },
+    {
+     "x": 0.09,
+     "y": 0.013,
+     "text": "CONVERGENT\nPLATE SETTINGS",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 1.0,
+     "role": "minor"
+    },
+    {
+     "x": 0.2,
+     "y": 17.5,
+     "text": "V o l c a n i c   A r c   A r r a y",
+     "rot": 40.0,
+     "size": 1.5,
+     "adj": 0.5,
+     "role": "minor"
+    },
+    {
+     "x": 2.89,
+     "y": 3.55,
+     "text": "M O R B - O I B  A r r a y",
+     "rot": 40.0,
+     "size": 1.5,
+     "adj": 0.5,
+     "role": "minor"
+    },
+    {
+     "x": 0.35,
+     "y": 0.708,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.8,
+     "y": 40.0,
+     "text": "Continental margin\nvolcanic arc & \npolygenetic crust\nisland arc",
+     "rot": 40.0,
+     "size": 1.0,
+     "adj": 0.0,
+     "role": "line"
+    },
+    {
+     "x": 0.26,
+     "y": 2.74,
+     "text": "forearc &\nintra-arc",
+     "rot": 40.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 0.03,
+     "y": 0.12,
+     "text": "nascent forearc",
+     "rot": 22.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.306
+     ],
+     "y": [
+      0.708
+     ]
+    }
+   ],
+   "name": "Saccani (2015) Nb[N] vs. Th[N]"
+  }
+ ]
+}

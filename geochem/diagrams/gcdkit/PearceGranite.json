@@ -1,0 +1,493 @@
+{
+ "id": "PearceGranite",
+ "source": "GCDkit 6.3, Diagrams/Geotectonic/PearceGranite.r",
+ "panels": [
+  {
+   "xlim": [
+    1.0,
+    2000.0
+   ],
+   "ylim": [
+    1.0,
+    2000.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Y+Nb",
+   "ylab": "Rb",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      2.0,
+      55.0
+     ],
+     "y": [
+      80.0,
+      300.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      55.0,
+      400.0
+     ],
+     "y": [
+      300.0,
+      2000.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      55.0,
+      51.5
+     ],
+     "y": [
+      300.0,
+      8.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      51.5,
+      50.0
+     ],
+     "y": [
+      8.0,
+      1.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      51.5,
+      2000.0
+     ],
+     "y": [
+      8.0,
+      400.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 500.0,
+     "y": 2.0,
+     "text": "ORG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 5.0,
+     "y": 2.0,
+     "text": "VAG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 500.0,
+     "y": 500.0,
+     "text": "WPG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 5.0,
+     "y": 500.0,
+     "text": "syn-COLG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Y+Nb - Rb (Pearce et al. 1984)"
+  },
+  {
+   "xlim": [
+    1.0,
+    2000.0
+   ],
+   "ylim": [
+    1.0,
+    2000.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Y",
+   "ylab": "Nb",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      1.0,
+      50.0
+     ],
+     "y": [
+      200.0,
+      10.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      40.0,
+      50.0
+     ],
+     "y": [
+      1.0,
+      10.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      50.0,
+      1000.0
+     ],
+     "y": [
+      10.0,
+      100.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      25.0,
+      1000.0
+     ],
+     "y": [
+      25.0,
+      400.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 800.0,
+     "y": 3.0,
+     "text": "ORG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 5.0,
+     "y": 25.0,
+     "text": "VAG+\nsyn-COLG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 20.0,
+     "y": 200.0,
+     "text": "WPG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Y - Nb (Pearce et al. 1984)"
+  },
+  {
+   "xlim": [
+    0.5,
+    200.0
+   ],
+   "ylim": [
+    1.0,
+    2000.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Ta+Yb",
+   "ylab": "Rb",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      0.5,
+      6.0
+     ],
+     "y": [
+      140.0,
+      200.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      6.0,
+      50.0
+     ],
+     "y": [
+      200.0,
+      2000.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      6.0,
+      6.0
+     ],
+     "y": [
+      200.0,
+      8.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      6.0,
+      6.0
+     ],
+     "y": [
+      8.0,
+      1.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      6.0,
+      200.0
+     ],
+     "y": [
+      8.0,
+      400.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 1.8,
+     "y": 800.0,
+     "text": "syn-COLG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 50.0,
+     "y": 800.0,
+     "text": "WPG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 1.8,
+     "y": 5.0,
+     "text": "VAG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 50.0,
+     "y": 5.0,
+     "text": "ORG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Yb+Ta - Rb (Pearce et al. 1984)"
+  },
+  {
+   "xlim": [
+    0.1,
+    100.0
+   ],
+   "ylim": [
+    0.05,
+    100.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb",
+   "ylab": "Ta",
+   "title": "",
+   "ternary": false,
+   "lines": [
+    {
+     "x": [
+      0.55,
+      3.0
+     ],
+     "y": [
+      20.0,
+      2.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      0.1,
+      3.0
+     ],
+     "y": [
+      0.35,
+      2.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      3.0,
+      5.0
+     ],
+     "y": [
+      2.0,
+      1.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      5.0,
+      5.0
+     ],
+     "y": [
+      0.05,
+      1.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      5.0,
+      100.0
+     ],
+     "y": [
+      1.0,
+      7.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      3.0,
+      100.0
+     ],
+     "y": [
+      2.0,
+      20.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 0.4,
+     "y": 4.0,
+     "text": "syn-COLG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 5.0,
+     "y": 15.0,
+     "text": "WPG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 0.5,
+     "y": 0.3,
+     "text": "VAG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 20.0,
+     "y": 0.3,
+     "text": "ORG",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Yb - Ta (Pearce et al. 1984)"
+  }
+ ]
+}

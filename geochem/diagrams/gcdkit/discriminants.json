@@ -1,0 +1,46 @@
+{
+ "Agrawal": [
+  {
+   "x": "0.3518*np.log(W(\"La\")/W(\"Th\"))+0.6013*np.log(W(\"Sm\")/W(\"Th\"))-1.3450*np.log(W(\"Yb\")/W(\"Th\"))+2.1056*np.log(W(\"Nb\")/W(\"Th\"))-5.4763",
+   "y": "-0.3050*np.log(W(\"La\")/W(\"Th\"))-1.1801*np.log(W(\"Sm\")/W(\"Th\"))+1.6189*np.log(W(\"Yb\")/W(\"Th\"))+1.2260*np.log(W(\"Nb\")/W(\"Th\"))-0.9944"
+  },
+  {
+   "x": "0.5533*np.log(W(\"La\")/W(\"Th\"))+0.2173*np.log(W(\"Sm\")/W(\"Th\"))-0.0969*np.log(W(\"Yb\")/W(\"Th\"))+2.0454*np.log(W(\"Nb\")/W(\"Th\"))-5.6305",
+   "y": "-2.4498*np.log(W(\"La\")/W(\"Th\"))+4.8562*np.log(W(\"Sm\")/W(\"Th\"))-2.1240*np.log(W(\"Yb\")/W(\"Th\"))-0.1567*np.log(W(\"Nb\")/W(\"Th\"))+0.94"
+  },
+  {
+   "x": "0.3305*np.log(W(\"La\")/W(\"Th\"))+0.3484*np.log(W(\"Sm\")/W(\"Th\"))-0.9562*np.log(W(\"Yb\")/W(\"Th\"))+2.0777*np.log(W(\"Nb\")/W(\"Th\"))-4.5628",
+   "y": "-0.1928*np.log(W(\"La\")/W(\"Th\"))-1.1989*np.log(W(\"Sm\")/W(\"Th\"))+1.7531*np.log(W(\"Yb\")/W(\"Th\"))+0.6607*np.log(W(\"Nb\")/W(\"Th\"))-0.4384"
+  },
+  {
+   "x": "1.7517*np.log(W(\"Sm\")/W(\"Th\"))-1.9508*np.log(W(\"Yb\")/W(\"Th\"))+1.9573*np.log(W(\"Nb\")/W(\"Th\"))-5.0928",
+   "y": "-2.2412*np.log(W(\"Sm\")/W(\"Th\"))+2.2060*np.log(W(\"Yb\")/W(\"Th\"))+1.2481*np.log(W(\"Nb\")/W(\"Th\"))-0.8243"
+  },
+  {
+   "x": "-0.5558*np.log(W(\"La\")/W(\"Th\"))-1.4260*np.log(W(\"Sm\")/W(\"Th\"))+2.2935*np.log(W(\"Yb\")/W(\"Th\"))-0.6890*np.log(W(\"Nb\")/W(\"Th\"))+4.1422",
+   "y": "-0.9207*np.log(W(\"La\")/W(\"Th\"))+3.6520*np.log(W(\"Sm\")/W(\"Th\"))-1.9866*np.log(W(\"Yb\")/W(\"Th\"))+1.0574*np.log(W(\"Nb\")/W(\"Th\"))-4.4283"
+  }
+ ],
+ "Verma": [
+  {
+   "x": "-4.6761*np.log(A(\"TiO2\")/A(\"SiO2\"))+2.5330*np.log(A(\"Al2O3\")/A(\"SiO2\"))-0.3884*np.log(A(\"Fe2O3\")/A(\"SiO2\"))+3.9688*np.log(A(\"FeO\")/A(\"SiO2\"))+0.8980*np.log(A(\"MnO\")/A(\"SiO2\"))-0.5832*np.log(A(\"MgO\")/A(\"SiO2\"))-0.2896*np.log(A(\"CaO\")/A(\"SiO2\"))-0.2704*np.log(A(\"Na2O\")/A(\"SiO2\"))+1.0810*np.log(A(\"K2O\")/A(\"SiO2\"))+0.1845*np.log(A(\"P2O5\")/A(\"SiO2\"))+1.5445",
+   "y": "0.6751*np.log(A(\"TiO2\")/A(\"SiO2\"))+4.5895*np.log(A(\"Al2O3\")/A(\"SiO2\"))+2.0897*np.log(A(\"Fe2O3\")/A(\"SiO2\"))+0.8514*np.log(A(\"FeO\")/A(\"SiO2\"))-0.4334*np.log(A(\"MnO\")/A(\"SiO2\"))+1.4832*np.log(A(\"MgO\")/A(\"SiO2\"))-2.3627*np.log(A(\"CaO\")/A(\"SiO2\"))-1.6558*np.log(A(\"Na2O\")/A(\"SiO2\"))+0.6757*np.log(A(\"K2O\")/A(\"SiO2\"))+0.4130*np.log(A(\"P2O5\")/A(\"SiO2\"))+ 13.1639"
+  },
+  {
+   "x": "3.9998*np.log(A(\"TiO2\")/A(\"SiO2\"))-2.2385*np.log(A(\"Al2O3\")/A(\"SiO2\"))+0.8110*np.log(A(\"Fe2O3\")/A(\"SiO2\"))-2.5865*np.log(A(\"FeO\")/A(\"SiO2\"))-1.2433*np.log(A(\"MnO\")/A(\"SiO2\"))+0.4872*np.log(A(\"MgO\")/A(\"SiO2\"))-0.3153*np.log(A(\"CaO\")/A(\"SiO2\"))+0.4325*np.log(A(\"Na2O\")/A(\"SiO2\"))-1.0262*np.log(A(\"K2O\")/A(\"SiO2\"))+0.0514*np.log(A(\"P2O5\")/A(\"SiO2\"))-0.5718",
+   "y": "-1.3705*np.log(A(\"TiO2\")/A(\"SiO2\"))+3.0104*np.log(A(\"Al2O3\")/A(\"SiO2\"))+0.3239*np.log(A(\"Fe2O3\")/A(\"SiO2\"))+1.8998*np.log(A(\"FeO\")/A(\"SiO2\"))-1.9746*np.log(A(\"MnO\")/A(\"SiO2\"))+1.4411*np.log(A(\"MgO\")/A(\"SiO2\"))-2.2656*np.log(A(\"CaO\")/A(\"SiO2\"))+1.8665*np.log(A(\"Na2O\")/A(\"SiO2\"))+0.2872*np.log(A(\"K2O\")/A(\"SiO2\"))+0.8138*np.log(A(\"P2O5\")/A(\"SiO2\"))+1.8202"
+  },
+  {
+   "x": "-1.5736*np.log(A(\"TiO2\")/A(\"SiO2\"))+6.1498*np.log(A(\"Al2O3\")/A(\"SiO2\"))+1.5544*np.log(A(\"Fe2O3\")/A(\"SiO2\"))+3.4134*np.log(A(\"FeO\")/A(\"SiO2\"))-0.0087*np.log(A(\"MnO\")/A(\"SiO2\"))+1.2480*np.log(A(\"MgO\")/A(\"SiO2\"))-2.1103*np.log(A(\"CaO\")/A(\"SiO2\"))-0.7576*np.log(A(\"Na2O\")/A(\"SiO2\"))+1.1431*np.log(A(\"K2O\")/A(\"SiO2\"))+0.3524*np.log(A(\"P2O5\")/A(\"SiO2\"))+16.8712",
+   "y": "3.9844*np.log(A(\"TiO2\")/A(\"SiO2\"))+0.2200*np.log(A(\"Al2O3\")/A(\"SiO2\"))+1.1516*np.log(A(\"Fe2O3\")/A(\"SiO2\"))-2.2036*np.log(A(\"FeO\")/A(\"SiO2\"))-1.6228*np.log(A(\"MnO\")/A(\"SiO2\"))+1.4291*np.log(A(\"MgO\")/A(\"SiO2\"))-1.2524*np.log(A(\"CaO\")/A(\"SiO2\"))+0.3581*np.log(A(\"Na2O\")/A(\"SiO2\"))-0.6414*np.log(A(\"K2O\")/A(\"SiO2\"))+0.2646*np.log(A(\"P2O5\")/A(\"SiO2\"))+5.0506"
+  },
+  {
+   "x": "5.3396*np.log(A(\"TiO2\")/A(\"SiO2\"))-1.6279*np.log(A(\"Al2O3\")/A(\"SiO2\"))+0.8338*np.log(A(\"Fe2O3\")/A(\"SiO2\"))-4.7362*np.log(A(\"FeO\")/A(\"SiO2\"))-0.1254*np.log(A(\"MnO\")/A(\"SiO2\"))+0.6452*np.log(A(\"MgO\")/A(\"SiO2\"))+1.5153*np.log(A(\"CaO\")/A(\"SiO2\"))-0.8154*np.log(A(\"Na2O\")/A(\"SiO2\"))-0.8888*np.log(A(\"K2O\")/A(\"SiO2\"))-0.2255*np.log(A(\"P2O5\")/A(\"SiO2\"))+5.7755",
+   "y": "1.1799*np.log(A(\"TiO2\")/A(\"SiO2\"))+5.5114*np.log(A(\"Al2O3\")/A(\"SiO2\"))+2.7737*np.log(A(\"Fe2O3\")/A(\"SiO2\"))-0.1341*np.log(A(\"FeO\")/A(\"SiO2\"))+0.6672*np.log(A(\"MnO\")/A(\"SiO2\"))+1.1045*np.log(A(\"MgO\")/A(\"SiO2\"))-1.7231*np.log(A(\"CaO\")/A(\"SiO2\"))-3.8948*np.log(A(\"Na2O\")/A(\"SiO2\"))+0.9471*np.log(A(\"K2O\")/A(\"SiO2\"))-0.1082*np.log(A(\"P2O5\")/A(\"SiO2\"))+15.4984"
+  },
+  {
+   "x": "-0.5183*np.log(A(\"TiO2\")/A(\"SiO2\"))+4.9886*np.log(A(\"Al2O3\")/A(\"SiO2\"))+2.2204*np.log(A(\"Fe2O3\")/A(\"SiO2\"))+1.1801*np.log(A(\"FeO\")/A(\"SiO2\"))-0.3008*np.log(A(\"MnO\")/A(\"SiO2\"))+1.3297*np.log(A(\"MgO\")/A(\"SiO2\"))-2.1834*np.log(A(\"CaO\")/A(\"SiO2\"))-1.9319*np.log(A(\"Na2O\")/A(\"SiO2\"))+0.6976*np.log(A(\"K2O\")/A(\"SiO2\"))+0.8998*np.log(A(\"P2O5\")/A(\"SiO2\"))+13.2625",
+   "y": "5.0509*np.log(A(\"TiO2\")/A(\"SiO2\"))-0.4972*np.log(A(\"Al2O3\")/A(\"SiO2\"))+1.0046*np.log(A(\"Fe2O3\")/A(\"SiO2\"))-3.3848*np.log(A(\"FeO\")/A(\"SiO2\"))+0.5528*np.log(A(\"MnO\")/A(\"SiO2\"))+0.2925*np.log(A(\"MgO\")/A(\"SiO2\"))+0.4007*np.log(A(\"CaO\")/A(\"SiO2\"))-2.8637*np.log(A(\"Na2O\")/A(\"SiO2\"))-0.2189*np.log(A(\"K2O\")/A(\"SiO2\"))-1.0558*np.log(A(\"P2O5\")/A(\"SiO2\"))+2.8877"
+  }
+ ]
+}

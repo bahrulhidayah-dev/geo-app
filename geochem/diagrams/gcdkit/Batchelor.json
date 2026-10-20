@@ -1,0 +1,177 @@
+{
+ "id": "Batchelor",
+ "source": "GCDkit 6.3, Diagrams/Geotectonic/Batchelor.r",
+ "panels": [
+  {
+   "xlim": [
+    -1000.0,
+    4000.0
+   ],
+   "ylim": [
+    0.0,
+    4000.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "",
+   "ylab": "",
+   "title": "R1-R2 (Batchelor + Bowden 1985)",
+   "ternary": false,
+   "lines": [
+    {
+     "abline": {
+      "a": null,
+      "b": null,
+      "h": 0.0,
+      "v": null
+     },
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "abline": {
+      "a": null,
+      "b": null,
+      "h": null,
+      "v": 0.0
+     },
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      525.0,
+      2875.0
+     ],
+     "y": [
+      500.0,
+      280.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      3000.0,
+      2150.0
+     ],
+     "y": [
+      270.0,
+      1720.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      2310.0,
+      1435.0
+     ],
+     "y": [
+      575.0,
+      1310.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      2250.0,
+      1095.0
+     ],
+     "y": [
+      580.0,
+      1000.0
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    },
+    {
+     "x": [
+      0.0,
+      2875.27
+     ],
+     "y": [
+      0.0,
+      2875.84
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 2600.0,
+     "y": 1700.0,
+     "text": "Mantle\nFractionates",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 2100.0,
+     "y": 1250.0,
+     "text": "Pre-plate\nCollision",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 1600.0,
+     "y": 1000.0,
+     "text": "Post-\ncollision\nUplift",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 1400.0,
+     "y": 700.0,
+     "text": "Late-\norogenic",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 1100.0,
+     "y": 350.0,
+     "text": "Anorogenic",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 2500.0,
+     "y": 500.0,
+     "text": "Syn-collision",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 2900.0,
+     "y": 250.0,
+     "text": "Post-\norogenic",
+     "rot": 0.0,
+     "size": 0.7,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [],
+   "name": "Batchelor + Bowden (1985)"
+  }
+ ]
+}
