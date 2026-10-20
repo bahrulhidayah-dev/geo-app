@@ -47,7 +47,8 @@ GeoChemApp-<version>-windows-portable\
 ## 2. Online version (Streamlit Community Cloud)
 
 Streamlit Community Cloud runs the app for free from a GitHub repository
-and gives it a public address such as `https://geochem-app.streamlit.app`.
+and gives it a public address. The official instance is https://geo-app-hidayah.streamlit.app
+(repository: https://github.com/bahrulhidayah-dev/geo-app).
 
 ### Step 1 - Put the code on GitHub
 

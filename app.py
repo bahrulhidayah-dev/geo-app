@@ -20,6 +20,8 @@ from geochem.i18n import LANGUAGES, t
 APP_VERSION = "0.9.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
+APP_URL = "https://geo-app-hidayah.streamlit.app"
+REPO_URL = "https://github.com/bahrulhidayah-dev/geo-app"
 HERE = Path(__file__).parent
 EXAMPLE_FILE = HERE / "geochem" / "example_data.csv"
 # Online deployment (Streamlit Community Cloud mounts apps under /mount/src,
@@ -1224,6 +1226,8 @@ def page_about():
             st.markdown(f"**{t('Developer')}**")
             st.markdown(f"{DEVELOPER}  \n[{DEVELOPER_EMAIL}](mailto:{DEVELOPER_EMAIL})  \n"
                         + t("Hokkaido University, Japan"))
+            st.markdown(f":material/public: [{APP_URL}]({APP_URL})  \n"
+                        f":material/code: [{REPO_URL}]({REPO_URL})")
             st.caption(t("Bug reports, diagram requests and translations are welcome by "
                          "e-mail. Please attach a screenshot and, if possible, a small "
                          "example file."))
@@ -1236,7 +1240,8 @@ def page_about():
         with st.container(border=True):
             st.markdown(f"**{t('How to cite')}**")
             st.code(f"Hidayah B. (2026) GeoChem App: a free web application for "
-                    f"whole-rock geochemistry, version {APP_VERSION}.\n\n"
+                    f"whole-rock geochemistry, version {APP_VERSION}. "
+                    f"{APP_URL}\n\n"
                     "Janousek V., Farrow C.M., Erban V. (2006) Interpretation of "
                     "whole-rock geochemical data in igneous geochemistry: introducing "
                     "Geochemical Data Toolkit (GCDkit). Journal of Petrology 47(6), "

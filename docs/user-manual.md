@@ -500,7 +500,7 @@ There are three ways to give GeoChem App to colleagues and students:
 | Way | What the user does |
 |---|---|
 | **Portable Windows ZIP** | Extracts the ZIP file and double-clicks *Start GeoChem App.bat*. No installation, no internet. |
-| **Online version** | Opens the link (for example `https://geochem-app.streamlit.app`) in any browser, also on a tablet or phone. |
+| **Online version** | Opens https://geo-app-hidayah.streamlit.app in any browser, also on a tablet or phone. |
 | **Source code** | Installs Python and the libraries (chapter 2). For macOS and Linux users. |
 
 **Make the portable ZIP:** double-click `tools\portable\build_portable.bat`

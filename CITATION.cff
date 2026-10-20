@@ -4,6 +4,8 @@ title: "GeoChem App: a free web application for whole-rock geochemistry"
 version: 0.9.0
 date-released: 2026-10-19
 license: GPL-3.0-or-later
+url: "https://geo-app-hidayah.streamlit.app"
+repository-code: "https://github.com/bahrulhidayah-dev/geo-app"
 authors:
   - family-names: Hidayah
     given-names: Bahrul

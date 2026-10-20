@@ -4,6 +4,8 @@ A free, open-source web app for whole-rock geochemistry (XRF and ICP data),
 inspired by GCDkit. Version 0.5.0.
 Developed by Bahrul Hidayah (bahrul.hidayah@gmail.com).
 
+**Try it online:** https://geo-app-hidayah.streamlit.app (no installation needed).
+
 **User manual:** [docs/user-manual.md](docs/user-manual.md) (also inside the app:
 top bar > Documentation). **Portable and online versions:**
 [docs/deployment.md](docs/deployment.md). Changes: [CHANGELOG.md](CHANGELOG.md). How to cite:
