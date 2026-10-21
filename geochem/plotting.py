@@ -12,6 +12,8 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+from matplotlib import patheffects
 import numpy as np
 import pandas as pd
 from matplotlib.path import Path as MplPath
@@ -39,7 +41,8 @@ APPEARANCE_DEFAULT = {
     "font_field": 1.0,             # multiplier for field names in diagrams
     "font_legend": 8.0,
     "font_point": 7.0,             # sample labels
-    "field_labels": "template",    # template | horizontal | hidden
+    "field_labels": "template",    # template | horizontal | numbered | hidden
+    "point_labels": "auto",        # auto (placed to avoid overlap) | fixed | numbered
     "tick_rotation_x": 0,          # degrees
     "ylabel_rotation": "vertical",  # vertical | horizontal
     "line_width": 0.9,             # diagram boundaries
@@ -67,7 +70,10 @@ def load_diagram(filename):
 def _figure(size):
     k = float(_APP["size_scale"])
     fig = Figure(figsize=(size[0] * k, size[1] * k))
+    FigureCanvasAgg(fig)           # a renderer is needed to measure text
     fig.patch.set_alpha(1)
+    fig._geo_numbers = {}          # sample -> number (numbered point labels)
+    fig._geo_field_keys = []       # (panel name, [(number, field name)])
     return fig
 
 
@@ -99,6 +105,7 @@ def _new_axes(style, size=(6.2, 4.8)):
     # Figure objects (not pyplot) are safe to build in background threads,
     # which Streamlit uses for deferred downloads.
     fig = _figure(size)
+    fig._geo_style = s
     ax = fig.subplots()
     fig.patch.set_facecolor(s["bg"])
     _style_axes(ax, s)
@@ -125,12 +132,16 @@ def _draw_points(ax, x, y, sty, s, labels=None):
         ax.scatter(x.loc[idx], y.loc[idx], label=None if g in seen else g, **kw)
         seen.add(g)
     if labels is not None:
+        # Labels are only collected here. They are placed by _finish() once the
+        # layout is fixed, so that they can avoid each other and the field names.
+        pending = getattr(ax, "_geo_labels", [])
+        nums = ax.figure._geo_numbers
         for i in sty.index:
-            if pd.notna(x.at[i]) and pd.notna(y.at[i]):
-                ax.annotate(str(labels.at[i]), (x.at[i], y.at[i]),
-                            xytext=(4, 3), textcoords="offset points",
-                            fontsize=_APP["font_point"], color=s["fg"], zorder=5,
-                            family=_APP["font_family"])
+            if pd.notna(x.at[i]) and pd.notna(y.at[i]) and pd.notna(labels.at[i]):
+                nums.setdefault(i, (len(nums) + 1, str(labels.at[i])))
+                pending.append((float(x.at[i]), float(y.at[i]), i,
+                                float(sty.at[i, "size"])))
+        ax._geo_labels = pending
 
 
 def _legend(ax, s, title=None, where="upper right"):
@@ -165,8 +176,7 @@ def plot_binary(df, x_col, y_col, sty, labels=None, log_x=False, log_y=False,
     ax.grid(color=s["grid"], lw=0.6)
     ax.set_axisbelow(True)
     _legend(ax, s, legend_title, legend)
-    fig.tight_layout()
-    return fig
+    return _finish(fig)
 
 
 # ---------------- free ternary plot ----------------
@@ -182,6 +192,7 @@ def plot_ternary(abc, apices, sty, labels=None, grid=True, style="dark",
     as returned by calc.ternary_closure. apices: three axis labels."""
     s = STYLES[style]
     fig = _figure(size)
+    fig._geo_style = s
     fig.patch.set_facecolor(s["bg"])
     ax = fig.subplots()
     ax.set_facecolor(s["bg"])
@@ -218,8 +229,7 @@ def plot_ternary(abc, apices, sty, labels=None, grid=True, style="dark",
     ax.set_xlim(-0.1, 1.1)
     ax.set_ylim(-0.12, SQRT3_2 + 0.1)
     _legend(ax, s, legend_title, legend)
-    fig.tight_layout()
-    return fig
+    return _finish(fig)
 
 
 # ---------------- spider ----------------
@@ -256,8 +266,7 @@ def plot_spider(norm_df, reference, sty, style="dark", size=(6.2, 4.6),
     ax.grid(color=s["grid"], lw=0.6, which="major")
     ax.set_axisbelow(True)
     _legend(ax, s, legend_title, legend)
-    fig.tight_layout()
-    return fig
+    return _finish(fig)
 
 
 # ---------------- catalogue diagrams (GCDkit geometry) ----------------
@@ -309,6 +318,21 @@ def _halign(adj):
     return "left" if a < 0.25 else ("right" if a > 0.75 else "center")
 
 
+def field_text_name(text):
+    """Field name on one line: 'Trachy-\nandesite' -> 'Trachyandesite',
+    'Tephrite\nBasanite' -> 'Tephrite/Basanite'."""
+    parts = text.split("\n")
+    out = parts[0]
+    for nxt in parts[1:]:
+        if out.endswith("-"):
+            out = out[:-1] + nxt
+        elif nxt[:1].isupper() and out[:1].isupper():
+            out = out + "/" + nxt
+        else:
+            out = out + " " + nxt
+    return out
+
+
 def _draw_geometry(ax, geom, s, ternary, xlim, log_x, log_y):
     n0 = (len(ax.lines), len(ax.texts), len(ax.patches), len(ax.collections))
     lw = float(_APP["line_width"])
@@ -344,13 +368,29 @@ def _draw_geometry(ax, geom, s, ternary, xlim, log_x, log_y):
         ax.scatter(pt["x"], pt["y"], marker="s", s=22, color=s["muted"], zorder=3)
     mode = _APP["field_labels"]
     if mode != "hidden":
+        key = []
         for t in geom.get("texts", []):
-            rot = t.get("rot", 0) if mode == "template" else 0
+            fs = 6.8 * float(t.get("size") or 1) * float(_APP["font_field"])
+            name = field_text_name(t["text"]).strip()
+            if not name:
+                continue
+            # numbered mode: long names become numbers; short abbreviations
+            # (ORG, VAG, IAT ...) and minor labels stay as text
+            if mode == "numbered" and t.get("role") != "minor" and len(name) > 5:
+                # small number in the field, full name in the key below the plot
+                key.append((len(key) + 1, name))
+                ax.text(t["x"], t["y"], str(len(key)), ha="center", va="center",
+                        fontsize=max(fs, 6.8 * float(_APP["font_field"])),
+                        fontweight="bold", color=s["muted"], zorder=3, clip_on=True,
+                        family=_APP["font_family"])
+                continue
+            rot = t.get("rot", 0) if mode in ("template", "numbered") else 0
             ax.text(t["x"], t["y"], t["text"], rotation=rot, rotation_mode="anchor",
-                    ha=_halign(t.get("adj")), va="center",
-                    fontsize=6.8 * float(t.get("size") or 1) * float(_APP["font_field"]),
+                    ha=_halign(t.get("adj")), va="center", fontsize=fs,
                     color=s["muted"], zorder=3, clip_on=True,
                     family=_APP["font_family"])
+        if key:
+            ax.figure._geo_field_keys.append((geom.get("name") or "", key))
     # Template items often reach beyond the axes (they are clipped); keep them
     # out of the layout so the saved figure has no empty border.
     for art in (ax.lines[n0[0]:] + ax.texts[n0[1]:] + ax.patches[n0[2]:]
@@ -370,6 +410,7 @@ def plot_catalog(diagram, coords_list, sty, labels=None, style="dark",
     nrow = int(np.ceil(n / ncol))
     fig = _figure((panel_size[0] * ncol, panel_size[1] * nrow))
     fig.patch.set_facecolor(s["bg"])
+    fig._geo_style = s
     axes = np.atleast_1d(fig.subplots(nrow, ncol)).ravel()
     for ax in axes[n:]:
         ax.set_visible(False)
@@ -422,8 +463,7 @@ def plot_catalog(diagram, coords_list, sty, labels=None, style="dark",
                          loc="left", family=ff)
         if i == idx[0]:
             _legend(ax, s, legend_title, legend)
-    fig.tight_layout()
-    return fig
+    return _finish(fig)
 
 
 # ---------------- variation diagrams (Harker, MgO) ----------------
@@ -448,6 +488,7 @@ def plot_variation(table, x, panels, sty, labels=None, style="dark", basis="anhy
     nrow = int(np.ceil(n / ncol)) if n else 1
     fig = _figure((panel_size[0] * ncol, panel_size[1] * nrow))
     fig.patch.set_facecolor(s["bg"])
+    fig._geo_style = s
     axes = np.atleast_1d(fig.subplots(nrow, ncol)).ravel()
     for ax in axes[n:]:
         ax.set_visible(False)
@@ -501,7 +542,158 @@ def plot_variation(table, x, panels, sty, labels=None, style="dark", basis="anhy
             ax.set_ylim(y0, y1)
         if k == 0:
             _legend(ax, s, legend_title, legend)
+    return _finish(fig)
+
+
+# ---------------- sample labels and keys ----------------
+# Point labels are placed after the layout is fixed. For every label, eight
+# positions around the point are tried (first close to it, then further away
+# with a thin leader line). The position with the least overlap with other
+# labels, data points, field names, the legend and the plot edge is kept.
+# The search is deterministic: the same data always give the same plot.
+_DIRS = ((0.7, 0.7), (1, 0), (0.7, -0.7), (0, 1), (-0.7, 0.7), (-1, 0),
+         (-0.7, -0.7), (0, -1))        # NE first (the classic position)
+
+
+def _overlap(box, arr):
+    """Overlap area of box (x0, y0, x1, y1) with every row of arr."""
+    if not len(arr):
+        return 0.0
+    w = np.clip(np.minimum(box[2], arr[:, 2]) - np.maximum(box[0], arr[:, 0]), 0, None)
+    h = np.clip(np.minimum(box[3], arr[:, 3]) - np.maximum(box[1], arr[:, 1]), 0, None)
+    return float((w * h).sum())
+
+
+def _place_labels(ax, s, renderer):
+    pending = getattr(ax, "_geo_labels", [])
+    if not pending:
+        return
+    fig = ax.figure
+    mode = _APP["point_labels"]
+    px_pt = fig.dpi / 72.0
+    halo = [patheffects.withStroke(linewidth=2.4, foreground=s["bg"])]
+    kw = dict(fontsize=_APP["font_point"], color=s["fg"], zorder=6,
+              family=_APP["font_family"], path_effects=halo, annotation_clip=False)
+    if mode == "numbered":
+        kw["fontweight"] = "bold"
+    if mode == "fixed":
+        for x, y, i, _ in pending:
+            ax.annotate(fig._geo_numbers[i][1], (x, y), xytext=(4, 3),
+                        textcoords="offset points", **dict(kw, annotation_clip=True))
+        return
+    frame = ax.get_window_extent(renderer)
+    # obstacles: data points, field names and other texts, legend
+    pts = []
+    for coll in ax.collections:
+        offs = coll.get_offsets()
+        if not len(offs):
+            continue
+        xy = coll.get_offset_transform().transform(offs)
+        sizes = coll.get_sizes()
+        r = np.sqrt(sizes if len(sizes) else [36.0]) / 2 * px_pt
+        r = np.broadcast_to(r if len(r) == len(xy) else r[:1], (len(xy),))
+        pts.append(np.column_stack([xy[:, 0] - r, xy[:, 1] - r, xy[:, 0] + r, xy[:, 1] + r]))
+    pts = np.vstack(pts) if pts else np.empty((0, 4))
+    pts = pts[np.isfinite(pts).all(axis=1)]
+    texts = []
+    for t in ax.texts:
+        if t.get_visible() and t.get_text().strip():
+            b = t.get_window_extent(renderer)
+            texts.append((b.x0, b.y0, b.x1, b.y1))
+    leg = ax.get_legend()
+    if leg is not None:
+        b = leg.get_window_extent(renderer)
+        texts.append((b.x0, b.y0, b.x1, b.y1))
+    texts = np.array(texts) if texts else np.empty((0, 4))
+    placed = []
+    for x, y, i, size in pending:
+        num, name = fig._geo_numbers[i]
+        label = str(num) if mode == "numbered" else name
+        px, py = ax.transData.transform((x, y))
+        if not (np.isfinite(px) and np.isfinite(py)
+                and frame.x0 <= px <= frame.x1 and frame.y0 <= py <= frame.y1):
+            continue                    # point outside the plot: no label
+        probe = ax.text(0, 0, label, fontsize=kw["fontsize"], family=kw["family"],
+                        fontweight=kw.get("fontweight", "normal"))
+        tb = probe.get_window_extent(renderer)
+        probe.remove()
+        w, h = tb.width, tb.height
+        g0 = (size / 2 + 2) * px_pt
+        best = None
+        pl = np.array(placed) if placed else np.empty((0, 4))
+        for ring, g in enumerate((g0, g0 + 1.6 * h, g0 + 3.2 * h)):
+            for k, (dx, dy) in enumerate(_DIRS):
+                cx, cy = px + dx * g, py + dy * g
+                x0 = cx if dx > 0.1 else (cx - w if dx < -0.1 else cx - w / 2)
+                y0 = cy if dy > 0.1 else (cy - h if dy < -0.1 else cy - h / 2)
+                box = (x0, y0, x0 + w, y0 + h)
+                inside = (max(0, min(box[2], frame.x1) - max(box[0], frame.x0))
+                          * max(0, min(box[3], frame.y1) - max(box[1], frame.y0)))
+                clash = (4 * _overlap(box, pl) + 3 * _overlap(box, pts)
+                         + 1.5 * _overlap(box, texts) + 6 * (w * h - inside))
+                score = clash + (0.02 * k + 0.25 * ring) * w * h
+                if best is None or score < best[0]:
+                    best = (score, box, ring, clash)
+            if best[3] < 1e-6:          # a free position was found: stop here
+                break
+        _, box, ring, _ = best
+        placed.append(box)
+        off = ((box[0] - px) / px_pt, (box[1] - py) / px_pt)
+        arrow = None
+        if ring:
+            arrow = dict(arrowstyle="-", lw=0.5, color=s["muted"], shrinkA=1,
+                         shrinkB=size / 2 + 0.5)
+        ax.annotate(label, (x, y), xytext=off, textcoords="offset points",
+                    ha="left", va="bottom", arrowprops=arrow, **kw)
+
+
+def _wrap_items(items, width_chars):
+    lines, cur = [], ""
+    for it in items:
+        add = it if not cur else cur + "    " + it
+        if len(add) > width_chars and cur:
+            lines.append(cur)
+            cur = it
+        else:
+            cur = add
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def _add_keys(fig, s):
+    """Keys for numbered field names and numbered sample labels, below the plot."""
+    blocks = []
+    for name, key in fig._geo_field_keys:
+        head = f"{name} fields:" if name and len(fig._geo_field_keys) > 1 else "Fields:"
+        blocks.append([head] + [f"{n} {nm}" for n, nm in key])
+    if _APP["point_labels"] == "numbered" and fig._geo_numbers and any(
+            getattr(ax, "_geo_labels", None) for ax in fig.axes):
+        nums = sorted(fig._geo_numbers.values())
+        blocks.append(["Samples:"] + [f"{n} {nm}" for n, nm in nums])
+    if not blocks:
+        return
+    fs = _APP["font_legend"] * 0.95
+    width = fig.get_figwidth() * 72 / (fs * 0.55)
+    renderer = fig.canvas.get_renderer()
+    y = -0.01
+    for block in blocks:
+        lines = _wrap_items(block[1:], max(30, int(width) - len(block[0]) - 2))
+        txt = block[0] + " " + ("\n" + " " * (len(block[0]) + 1)).join(lines)
+        t = fig.text(0.01, y, txt, ha="left", va="top", fontsize=fs, color=s["fg"],
+                     family=_APP["font_family"], linespacing=1.35)
+        b = t.get_window_extent(renderer).transformed(fig.transFigure.inverted())
+        y = b.y0 - 0.015
+
+
+def _finish(fig):
     fig.tight_layout()
+    renderer = fig.canvas.get_renderer()
+    s = getattr(fig, "_geo_style", None) or STYLES["dark"]
+    for ax in fig.axes:
+        if ax.get_visible():
+            _place_labels(ax, s, renderer)
+    _add_keys(fig, s)
     return fig
 
 

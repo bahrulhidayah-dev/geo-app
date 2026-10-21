@@ -400,8 +400,8 @@
      "role": "line"
     },
     {
-     "x": 63.5,
-     "y": 11.2,
+     "x": 66.0,
+     "y": 11.6,
      "text": "Trachyte\nTrachydacite",
      "rot": 0.0,
      "size": 1.0,
@@ -487,7 +487,7 @@
      "rot": 45.0,
      "size": 1.0,
      "adj": 0.5,
-     "role": "line"
+     "role": "minor"
     },
     {
      "x": 55.0,
@@ -496,7 +496,7 @@
      "rot": 5.0,
      "size": 1.0,
      "adj": 0.5,
-     "role": "line"
+     "role": "minor"
     },
     {
      "x": 41.0,

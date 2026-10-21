@@ -2,6 +2,19 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.15.0 - 2026-10-21
+
+- Overlapping text in diagrams:
+  - Sample labels are placed automatically to avoid other labels, points,
+    field names, the legend and the plot edge, with a leader line when
+    needed (Plot appearance → Sample labels: Auto-arrange, Fixed or
+    Numbers with a key).
+  - All sample labels have a thin outline in the background colour.
+  - Field names can be shown as numbers with a key below the plot.
+  - TAS: "Trachyte / Trachydacite" moved to the middle of its field.
+- Scientific methods: chapter 7 and the conventions table (chapter 9).
+  Manual: chapter 12.
+
 ## 0.14.0 - 2026-10-21
 
 - New page **Variation diagrams** (Plots menu): Harker diagrams (SiO2 on the

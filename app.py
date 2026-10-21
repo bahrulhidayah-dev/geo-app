@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.14.0"
+APP_VERSION = "0.15.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -1372,12 +1372,29 @@ def page_appearance():
             a["font_point"] = st.slider(t("Sample labels (pt)"), 4.0, 12.0, float(a["font_point"]), 0.5, key=f"ap_fp_{ver}")
         with st.container(border=True):
             st.markdown(f"**{t('Label orientation')}**")
-            modes = ["template", "horizontal", "hidden"]
+            modes = ["template", "horizontal", "numbered", "hidden"]
             mode_lab = {"template": "Rotated along boundaries (Janoušek et al. 2006)",
-                        "horizontal": "All horizontal", "hidden": "Hidden"}
+                        "horizontal": "All horizontal",
+                        "numbered": "Numbers, with a key below the plot",
+                        "hidden": "Hidden"}
             a["field_labels"] = st.radio(t("Field names"), modes,
                                          format_func=lambda v: t(mode_lab[v]),
-                                         index=modes.index(a["field_labels"]), key=f"ap_fm_{ver}")
+                                         index=modes.index(a["field_labels"]), key=f"ap_fm_{ver}",
+                                         help=t("Numbers keep small fields readable. Short "
+                                                "abbreviations (for example VAG, ORG) stay as text."))
+            pmodes = ["auto", "fixed", "numbered"]
+            pm_lab = {"auto": "Auto-arrange (avoid overlaps)",
+                      "fixed": "Fixed (upper right of each point)",
+                      "numbered": "Numbers, with a key below the plot"}
+            a["point_labels"] = st.radio(t("Sample labels"), pmodes,
+                                         format_func=lambda v: t(pm_lab[v]),
+                                         index=pmodes.index(a.get("point_labels", "auto")),
+                                         key=f"ap_pl_{ver}",
+                                         help=t("Sample labels are shown when a column is chosen "
+                                                "in 'Label points with' (left panel). Auto-arrange "
+                                                "tries eight positions around each point and keeps "
+                                                "the one with the least overlap; far labels get a "
+                                                "thin leader line."))
             a["tick_rotation_x"] = st.select_slider(t("X tick labels (degrees)"),
                                                     [0, 30, 45, 60, 90],
                                                     value=int(a["tick_rotation_x"]), key=f"ap_tr_{ver}")

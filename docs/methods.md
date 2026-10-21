@@ -293,6 +293,31 @@ Special cases:
     Al/Si), not oxide ratios. Their values are not mixed into this oxide
     plot. (Rollinson and Pease 2021, section 3.3.2 d, give the same
     conversion: element wt% = 0.529 Al2O3, 0.467 SiO2, 0.603 MgO.)
+- **Text positions changed by GeoChem App.** In the TAS diagram the label
+  "Trachyte / Trachydacite" is moved from (63.5, 11.2) to (66.0, 11.6), the
+  middle of its field, so it no longer crosses the 63 wt% SiO2 line. The
+  labels "Alkaline" and "Subalkaline/Tholeiitic" name series, not fields;
+  they are never replaced by numbers. Only labels move; no boundary
+  changes. [App convention]
+- **Field names as numbers** (Plot appearance → Field names → Numbers).
+  Field names longer than five characters are replaced by a number, and a
+  key below the plot lists the names. Short abbreviations (VAG, ORG, IAT …)
+  stay as text. [App convention]
+- **Sample labels** (Plot appearance → Sample labels). Labels only
+  change the display; they never change a value or a classification.
+  [App convention]
+  - *Auto-arrange* (default): for each label, eight positions around its
+    point are tried, first next to the point and then at two larger
+    distances. The position with the least overlap with other labels,
+    data points, other text (field names), the legend and the plot edge is
+    kept. A label placed away from its point gets a thin leader line. The
+    search has no random step, so the same data always give the same plot.
+    Labels of points outside the plot are not drawn.
+  - *Fixed*: every label at the upper right of its point.
+  - *Numbers*: each sample gets a number (in data order, the same number in
+    every panel), and a key below the plot lists the sample names.
+  - All labels have a thin outline in the background colour so that they
+    stay readable over lines.
 - **Styles.** Screen styles and the *Publication* style change only colours
   and fonts, never positions. Figures are made with Matplotlib (SVG on
   screen; PNG, SVG or PDF on download).
@@ -328,6 +353,9 @@ Report these in your methods section if they affect your results.
 | Variation diagrams: trace elements | as measured; Ni and Cr by default on MgO diagrams | Variation diagrams page |
 | Variation diagrams: iso-Mg# and olivine lines | Auto (only with ultramafic samples) | Variation diagrams page |
 | Variation diagrams: panels per row | 3 | Variation diagrams page |
+| Sample labels | Auto-arrange (least overlap, 8 positions × 3 distances) | Plot appearance |
+| Field names | rotated along boundaries (Janoušek et al. 2006); numbers optional | Plot appearance |
+| TAS label "Trachyte / Trachydacite" | moved to (66.0, 11.6) | `TAS.json` |
 
 ## 10. Checks and tests
 

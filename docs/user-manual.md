@@ -477,9 +477,21 @@ Change how every diagram and graph looks, on screen and in exported files:
 
 - **Text**: font family (sans-serif or serif journal style) and the size of
   axis titles, tick labels, field names, legend and sample labels.
-- **Label orientation**: field names rotated along the
-  boundaries (as in Janoušek et al. 2006), all horizontal, or hidden; the angle of the x tick labels;
-  the y-axis title vertical or horizontal.
+- **Label orientation**:
+  - **Field names**: rotated along the boundaries (as in Janoušek et al.
+    2006), all horizontal, numbers with a key below the plot, or hidden.
+    Numbers help when fields are small and names overlap.
+  - **Sample labels** (shown when a column is chosen in *Label points
+    with*):
+    - *Auto-arrange* (default) moves each label to the free place around
+      its point, with a thin leader line when it must go further away;
+    - *Fixed* puts every label at the upper right of its point;
+    - *Numbers* puts a number at each point and a key with the sample
+      names below the plot. Good for many samples.
+  - The angle of the x tick labels; the y-axis title vertical or
+    horizontal.
+- Tip: with many samples, use *Numbers* for samples and keep field names
+  as text, so the two kinds of numbers are not mixed.
 - **Lines and size**: boundary line width, symbol outline width, figure
   size, grid lines and panel titles.
 
