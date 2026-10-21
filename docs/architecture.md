@@ -106,6 +106,8 @@ The developer runs it once per diagram; users never need it.
    - Spider diagrams: `calc.normalize` divides each element by the
      normalising value.
    - XY plots: the two chosen columns.
+   - Ternary plots: `calc.ternary_closure` sums the chosen columns of each
+     apex, applies the factor and closes A, B and C to 100 %.
 8. **Load the boundaries** of the diagram from its JSON file.
 9. **Draw** with the plotting engine. Symbols and colours come from
    `symbols.resolve` (group styles or the file's own style columns); fonts,

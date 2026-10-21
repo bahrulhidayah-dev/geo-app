@@ -1,0 +1,24 @@
+GeoChem App presentation - fonts
+================================
+
+All fonts are free and open source (SIL Open Font License 1.1, see OFL.txt
+in each folder). Source: Google Fonts (github.com/google/fonts).
+
+1 Classic deck
+  - Domine ............ headings
+  - IBM Plex Sans ..... body text (regular and italic)
+
+2 Vaporwave deck
+  - Orbitron .......... headings
+  - Space Grotesk ..... body text
+  - VT323 ............. retro terminal labels
+  - Noto Sans JP ...... Japanese text
+
+How to install on Windows
+  1. Extract the whole ZIP file (right-click > Extract All).
+  2. Open a font folder, select the .ttf file(s), right-click and choose
+     "Install" (or "Install for all users").
+  3. Close and reopen PowerPoint so it sees the new fonts.
+
+Note: these are "variable" fonts. One file contains all weights
+(regular, semibold, bold ...). Windows 10 and 11 support them.

@@ -20,6 +20,7 @@ programming or with GCDkit is needed.
 - Plots **27 classification and discrimination diagrams** from GCDkit,
   grouped into six categories, and names the field of every sample.
 - Draws REE and multi-element **spider diagrams**, free **XY plots** and
+  **ternary plots**, and
   **group statistics**.
 - Calculates FeOt, Mg#, anhydrous values and the **CIPW norm**.
 - Lets you choose the **symbol, colour and size** of each group and the
@@ -333,6 +334,31 @@ missing.
 Plot any numeric column against any other. Tick **Log scale X** or
 **Log scale Y** for ratios and trace elements. Groups, symbols and labels
 follow the left panel.
+
+### Ternary plot
+
+Plot any three components in a triangle. Apex A is on the left, B at the
+top and C on the right, as in GCDkit. The first time, the app suggests the
+AFM components (Na2O + K2O, FeOt, MgO) when your file has them.
+
+1. For each apex, choose one or more **columns**. Several columns are added
+   together (for example Na2O + K2O).
+2. Optional: choose **×** or **÷** and a **factor**, for example Rb ÷ 30 or
+   Ta × 3 (Harris et al. 1986). Use a factor when one component is much
+   larger than the others and the points crowd in one corner. The factor is
+   shown in the apex label; always report it with the figure.
+3. Tick or untick **Grid lines (every 20 %)**.
+
+The three values are closed to 100 %: A% = 100 A / (A + B + C). Samples with
+a missing or negative value, or a total of zero, are left out and listed
+under the plot. FeOt is calculated from FeO and Fe2O3 when the file has no
+FeOt column. The **Plotted values** tab shows the A, B and C percentages of
+every sample (CSV download); **Scientific basis** gives the formulas and
+references.
+
+A ternary plot shows only relative proportions: samples with very different
+concentrations can plot at the same point. Your choices are saved in project
+files.
 
 ## 10. Statistics
 

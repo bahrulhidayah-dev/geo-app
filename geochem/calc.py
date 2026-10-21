@@ -155,3 +155,31 @@ def milli(df, oxide):
     if oxide == "FeOt":
         return 1000 * need(df, "FeOt") / MW["FeO"]
     return 1000 * CATIONS[oxide] * need(df, oxide) / MW[oxide]
+
+
+def ternary_closure(df, specs):
+    """Three components closed to 100 % for a ternary plot.
+
+    specs: three (columns, factor) pairs for apices A, B and C. Each component
+    is factor * (sum of its columns). Returns (abc, reasons):
+    abc     - DataFrame with columns a, b, c in % (rows sum to 100),
+              only for samples that can be plotted;
+    reasons - Series (index = left-out samples) with the reason in English.
+    """
+    comp = {}
+    missing = pd.Series(False, index=df.index)
+    negative = pd.Series(False, index=df.index)
+    for key, (cols, factor) in zip("abc", specs):
+        vals = df[list(cols)].apply(pd.to_numeric, errors="coerce")
+        missing |= vals.isna().any(axis=1)
+        negative |= (vals < 0).any(axis=1)
+        comp[key] = vals.sum(axis=1, min_count=1) * float(factor)
+    abc = pd.DataFrame(comp)
+    total = abc.sum(axis=1)
+    reasons = pd.Series(pd.NA, index=df.index, dtype=object)
+    reasons[(total <= 0) & ~missing & ~negative] = "zero total"
+    reasons[negative & ~missing] = "negative value"
+    reasons[missing] = "missing value"
+    keep = reasons.isna()
+    abc = abc[keep].div(total[keep], axis=0) * 100
+    return abc, reasons[~keep]

@@ -1,6 +1,6 @@
 # geochem/plotting.py
 # Plotting engine: catalogue diagrams (GCDkit geometry, binary and ternary,
-# single plots and plates), free XY plots and spider diagrams.
+# single plots and plates), free XY and ternary plots and spider diagrams.
 # Appearance (fonts, label orientation, line widths ...) is set once per run
 # with set_appearance(). Part of GeoChem App (GPL-3.0).
 
@@ -164,6 +164,59 @@ def plot_binary(df, x_col, y_col, sty, labels=None, log_x=False, log_y=False,
     _style_axes(ax, s, x_col, y_col)
     ax.grid(color=s["grid"], lw=0.6)
     ax.set_axisbelow(True)
+    _legend(ax, s, legend_title, legend)
+    fig.tight_layout()
+    return fig
+
+
+# ---------------- free ternary plot ----------------
+def _tern_xy(a, b, c):
+    """Fractions (a + b + c = 1) to plot coordinates.
+    GCDkit apex order: a left, b top, c right."""
+    return c + b / 2, b * SQRT3_2
+
+
+def plot_ternary(abc, apices, sty, labels=None, grid=True, style="dark",
+                 size=(5.8, 5.2), legend_title=None, legend="upper right"):
+    """Free ternary plot. abc: columns a, b, c in % (rows sum to 100),
+    as returned by calc.ternary_closure. apices: three axis labels."""
+    s = STYLES[style]
+    fig = _figure(size)
+    fig.patch.set_facecolor(s["bg"])
+    ax = fig.subplots()
+    ax.set_facecolor(s["bg"])
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ff = _APP["font_family"]
+    lw = float(_APP["line_width"])
+    if grid:
+        ft = _APP["font_tick"] * 0.9
+        for k in (0.2, 0.4, 0.6, 0.8):
+            m = 1 - k
+            # lines of equal a, b and c; each family is labelled on one edge
+            for (p0, p1, lab, off, ha) in (
+                    ((k, m, 0), (k, 0, m), (k, 0, m), (0, -0.035), "center"),   # a: bottom
+                    ((m, k, 0), (0, k, m), (m, k, 0), (-0.03, 0), "right"),     # b: left
+                    ((m, 0, k), (0, m, k), (0, m, k), (0.03, 0), "left")):      # c: right
+                x0, y0 = _tern_xy(*p0)
+                x1, y1 = _tern_xy(*p1)
+                ax.plot([x0, x1], [y0, y1], color=s["grid"], lw=0.6, zorder=1)
+                lx, ly = _tern_xy(*lab)
+                ax.text(lx + off[0], ly + off[1], f"{k * 100:.0f}", ha=ha, va="center",
+                        color=s["muted"], fontsize=ft, family=ff)
+    ax.plot([0, 1, 0.5, 0], [0, 0, SQRT3_2, 0], color=s["fg"], lw=lw * 1.2, zorder=2)
+    fs = _APP["font_axis"]
+    a, b, c = apices
+    ax.text(-0.02, -0.07, a, ha="right", va="top", color=s["fg"], fontsize=fs, family=ff)
+    ax.text(0.5, SQRT3_2 + 0.035, b, ha="center", va="bottom", color=s["fg"],
+            fontsize=fs, family=ff)
+    ax.text(1.02, -0.07, c, ha="left", va="top", color=s["fg"], fontsize=fs, family=ff)
+    f = abc[["a", "b", "c"]].astype(float) / 100
+    x, y = _tern_xy(f["a"], f["b"], f["c"])
+    _draw_points(ax, x, y, sty.loc[abc.index], s,
+                 None if labels is None else labels.loc[abc.index])
+    ax.set_xlim(-0.1, 1.1)
+    ax.set_ylim(-0.12, SQRT3_2 + 0.1)
     _legend(ax, s, legend_title, legend)
     fig.tight_layout()
     return fig

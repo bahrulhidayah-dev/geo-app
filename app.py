@@ -43,7 +43,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.11.0"
+APP_VERSION = "0.12.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -101,6 +101,8 @@ if _pending is not None:
     _meta, _ds, _xrf = project.unpack(_pending)
     for _k, _v in _meta.get("state", {}).items():
         st.session_state[_k] = _v
+    for _k in [k for k in st.session_state if str(k).startswith("tern_")]:
+        del st.session_state[_k]                              # take ternary choices from the project
     for _k in ("group_keep",):
         if _k not in _meta.get("state", {}):
             st.session_state.pop(_k, None)
@@ -918,6 +920,114 @@ def page_xy():
                                                  style=s, **kw), f"{x}_vs_{y}")
 
 
+TERN_KEYS = ("a", "b", "c")
+
+
+def tern_label(cols, op, val):
+    """Apex label from its columns and factor, e.g. Na2O + K2O, Rb/30, Ta*3."""
+    name = " + ".join(cols)
+    if val == 1:
+        return name
+    if len(cols) > 1:
+        name = f"({name})"
+    return f"{name}/{val:g}" if op == "/" else f"{name}*{val:g}"
+
+
+def tern_defaults(num):
+    """AFM components (Irvine and Baragar 1971) when present, else the first
+    three numeric columns."""
+    afm = [["Na2O", "K2O"], ["FeOt"], ["MgO"]]
+    if all(c in num for cols in afm for c in cols):
+        return afm
+    return [[c] for c in (num + num + num)[:3]]
+
+
+def page_ternary():
+    header(t("Ternary plot"))
+    if ctx is None:
+        empty_state()
+        return
+    df = view().copy()
+    kw = opts(df)
+    if "FeOt" not in df:                       # offer total iron when it can be calculated
+        fe = calc.feot(df)
+        if fe.notna().any():
+            df["FeOt"] = fe
+    num = df.select_dtypes(include="number").columns.tolist()
+    if len(num) < 3:
+        st.warning(t("At least three numeric columns are needed."))
+        return
+    saved = st.session_state.setdefault("ternary", {})
+    dflt = tern_defaults(num)
+    specs, apices = [], []
+    left, right = st.columns([1, 3], gap="large")
+    with left:
+        for i, k in enumerate(TERN_KEYS):
+            st.markdown(f"**{t('Apex')} {k.upper()}** "
+                        f"<span style='opacity:.65'>({t(['left', 'top', 'right'][i])})</span>",
+                        unsafe_allow_html=True)
+            key = f"tern_{k}_cols"
+            cur = [c for c in st.session_state.get(key, saved.get(f"{k}_cols", dflt[i]))
+                   if c in num]
+            st.session_state[key] = cur or dflt[i]
+            cols = st.multiselect(t("Columns (added together)"), num, key=key)
+            c1, c2 = st.columns([1, 2])
+            st.session_state.setdefault(f"tern_{k}_op", saved.get(f"{k}_op", "*"))
+            st.session_state.setdefault(f"tern_{k}_val", float(saved.get(f"{k}_val", 1.0)))
+            op = c1.selectbox(t("Operation"), ["*", "/"], key=f"tern_{k}_op",
+                              format_func=lambda o: "\u00d7" if o == "*" else "\u00f7")
+            val = c2.number_input(t("Factor"), min_value=0.0001, step=1.0,
+                                  key=f"tern_{k}_val")
+            saved.update({f"{k}_cols": cols, f"{k}_op": op, f"{k}_val": val})
+            specs.append((cols, val if op == "*" else 1 / val))
+            apices.append(tern_label(cols, op, val) if cols else k.upper())
+        st.session_state.setdefault("tern_grid", saved.get("grid", True))
+        grid = st.checkbox(t("Grid lines (every 20 %)"), key="tern_grid")
+        saved["grid"] = grid
+    if not all(cols for cols, _ in specs):
+        right.info(t("Choose at least one column for each apex."))
+        return
+    abc, reasons = calc.ternary_closure(df, specs)
+    with right:
+        if abc.empty:
+            st.warning(t("No sample has values for all three apices."))
+        else:
+            make = lambda s: plotting.plot_ternary(abc, apices, grid=grid, style=s, **kw)
+            show(make(SCREEN), max_width="760px")
+            downloads(make, "ternary_" + "_".join(a.replace("/", "-").replace("*", "x")
+                                                  .replace(" + ", "+").replace(" ", "")
+                                                  for a in apices))
+        if len(reasons):
+            names = df.loc[reasons.index].iloc[:, 0].astype(str)
+            st.caption(t("Left out ({n} samples): {s}").format(
+                n=len(reasons),
+                s="; ".join(f"{nm} ({t(r)})" for nm, r in zip(names, reasons))))
+        t1, t2 = st.tabs([t("Plotted values"), t("Scientific basis")])
+        with t1:
+            table = pd.concat([df.loc[abc.index].iloc[:, [0]],
+                               abc.round(2).set_axis([f"{a} (%)" for a in apices], axis=1)],
+                              axis=1)
+            st.dataframe(table, hide_index=True, height=260)
+            csv_download(t("Download plotted values (CSV)"), lambda: table,
+                         "ternary_values.csv")
+        with t2:
+            st.markdown(
+                f"- {t('Each apex is the sum of its columns, multiplied or divided by its factor.')}\n"
+                f"- {t('The three values are closed to 100 %: A% = 100 A / (A + B + C), and the same for B and C.')}\n"
+                f"- {t('Plot position: x = C + B/2, y = B sqrt(3)/2 (as fractions), with A left, B top and C right, as in GCDkit (Janousek et al. 2006).')}\n"
+                f"- {t('A ternary plot shows only relative proportions. Samples with very different concentrations can plot at the same point (closure; Aitchison 1986).')}\n"
+                f"- {t('Factors (for example Rb/30 or Ta*3; Harris et al. 1986) spread the points when one component is much larger than the others. Always report them with the figure.')}\n"
+                f"- {t('Samples with a missing or negative value, or a total of zero, are left out.')}\n"
+                f"- {t('Total iron (FeOt) is calculated from FeO and Fe2O3 when it is not in the file.')}")
+            st.caption("Aitchison J. (1986) The Statistical Analysis of Compositional Data. "
+                       "Chapman and Hall, London. | Janousek V., Farrow C.M., Erban V. (2006) "
+                       "Interpretation of whole-rock geochemical data in igneous geochemistry: "
+                       "introducing Geochemical Data Toolkit (GCDkit). Journal of Petrology 47, "
+                       "1255-1259. | Harris N.B.W., Pearce J.A., Tindle A.G. (1986) Geochemical "
+                       "characteristics of collision-zone magmatism. Geological Society, London, "
+                       "Special Publications 19, 67-81.")
+
+
 def page_stats():
     header(t("Statistics"))
     if ctx is None:
@@ -1701,6 +1811,8 @@ PAGES = {
     "spider": st.Page(page_spider, title=t("Spider diagrams"), icon=":material/show_chart:",
                       url_path="spider"),
     "xy": st.Page(page_xy, title=t("XY plot"), icon=":material/scatter_plot:", url_path="xy"),
+    "ternary": st.Page(page_ternary, title=t("Ternary plot"), icon=":material/change_history:",
+                       url_path="ternary"),
     "stats": st.Page(page_stats, title=t("Statistics"), icon=":material/bar_chart:",
                      url_path="statistics"),
     "symbols": st.Page(page_symbols, title=t("Symbols and colours"),
@@ -1721,7 +1833,7 @@ PAGES = {
                      url_path="about"),
 }
 NAV_GROUPS = [("Overview", ["dashboard", "data", "project"]),
-              ("Plots", ["diagrams", "spider", "xy"]),
+              ("Plots", ["diagrams", "spider", "xy", "ternary"]),
               ("Tools", ["stats"] + (["xrfqc"] if settings["xrf_qc"] else [])
                + ["symbols", "appearance", "settings"])]
 nav = st.navigation([p for k, p in PAGES.items() if k != "xrfqc" or settings["xrf_qc"]],

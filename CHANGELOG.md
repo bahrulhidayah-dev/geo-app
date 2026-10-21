@@ -2,6 +2,17 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.12.0 - 2026-10-21
+
+- New page **Ternary plot** (Plots menu): any three components, each the sum
+  of one or more columns with an optional factor (for example Rb/30, Ta*3).
+  Values are closed to 100 % with the GCDkit apex order (A left, B top,
+  C right); optional 20 % grid lines; samples with missing or negative values
+  are left out and listed. Plotted values as CSV; scientific basis with
+  references. FeOt is calculated when it is not in the file. Choices are
+  saved in project files.
+- Manual: ternary plot section in chapter 9.
+
 ## 0.11.0 - 2026-10-20
 
 - Project page. Project files (`.geochem`) hold the data file and the whole

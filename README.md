@@ -1,7 +1,7 @@
 # GeoChem App
 
 A free, open-source web app for whole-rock geochemistry (XRF and ICP data),
-inspired by GCDkit. Version 0.11.0.
+inspired by GCDkit. Version 0.12.0.
 Developed by Bahrul Hidayah (bahrul.hidayah@gmail.com).
 
 **Try it online:** https://geo-app-hidayah.streamlit.app (no installation needed).
@@ -40,7 +40,8 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
 - Units read from column names or a units row and converted (ppb, ppm, wt%);
   Column setup for any lab layout: header row, sample name, rock type,
   locality, group, and the meaning and unit of each column (save and reuse).
-- Free XY plot, group statistics, calculated values (FeOt, Mg#, anhydrous
+- Free XY plot and free ternary plot (any three components, sums of
+  columns, factors such as Rb/30), group statistics, calculated values (FeOt, Mg#, anhydrous
   oxides).
 - Symbols and colours per group (colour, symbol, size, filled or open), used by
   every diagram; saved and loaded as CSV. Per-sample Symbol, Colour and Size
