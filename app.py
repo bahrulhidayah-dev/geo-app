@@ -2023,7 +2023,9 @@ def changelog_sections():
     out = []
     for part in parts:
         head, _, body = part.partition("\n")
-        out.append((head.strip(), body.strip()))
+        # show the version only, not the release date ("0.15.1 - 2026-10-21")
+        head = re.sub(r"\s+[-–]\s+\d{4}-\d{2}-\d{2}\s*$", "", head.strip())
+        out.append((head, body.strip()))
     return out
 
 

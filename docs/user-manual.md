@@ -208,7 +208,8 @@ with one row per sample (see chapter 18 for the options).
   - **Label points with**: write a text column (for example the sample name)
     next to every point.
 - **Bottom of the left panel:** **What's new** with the version number. It
-  opens the changelog: the latest version first, earlier versions folded.
+  opens the changelog: the latest version first, earlier versions folded
+  (version numbers only; release dates are kept in `CHANGELOG.md`).
   Below it are the developer and the license.
 - The name of the file and the number of samples shown appear next to the
   page title.
