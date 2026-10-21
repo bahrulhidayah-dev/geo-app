@@ -436,6 +436,13 @@ TR = {
     'Auto-arrange (avoid overlaps)': ('Atur otomatis (hindari tumpang-tindih)', '自動配置（重なりを避ける）'),
     'Fixed (upper right of each point)': ('Tetap (kanan atas setiap titik)', '固定（各点の右上）'),
     "Sample labels are shown when a column is chosen in 'Label points with' (left panel). Auto-arrange tries eight positions around each point and keeps the one with the least overlap; far labels get a thin leader line.": ("Label sampel muncul bila sebuah kolom dipilih di 'Label points with' (panel kiri). Atur otomatis mencoba delapan posisi di sekitar setiap titik dan memilih yang paling sedikit tumpang-tindih; label yang jauh diberi garis penunjuk tipis.", '左パネルの「Label points with」で列を選ぶと試料ラベルが表示されます。自動配置は各点の周囲 8 か所を試し、重なりが最も少ない位置を選びます。離れたラベルには細い引き出し線が付きます。'),
+    "What's new": ('Apa yang baru', '新機能'),
+    'What is new': ('Apa yang baru', '新機能'),
+    "What's new (changelog)": ('Apa yang baru (changelog)', '新機能（変更履歴）'),
+    'Changes in every version of GeoChem App. Version numbers follow MAJOR.MINOR.PATCH.': ('Perubahan di setiap versi GeoChem App. Nomor versi mengikuti MAJOR.MINOR.PATCH.', 'GeoChem App の各バージョンの変更点。バージョン番号は MAJOR.MINOR.PATCH 形式です。'),
+    'No changelog found.': ('Changelog tidak ditemukan.', '変更履歴が見つかりません。'),
+    'Latest version': ('Versi terbaru', '最新バージョン'),
+    'Earlier versions': ('Versi sebelumnya', '以前のバージョン'),
 }
 
 

@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.15.0"
+APP_VERSION = "0.15.1"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -180,6 +180,7 @@ html, body, p, li, label, h1, h2, h3, h4, input, textarea, td, th,
 .gc-credit {{ font-size: 0.74rem; color: {PAL['sub']}; line-height: 1.45; margin-top: 1.2rem;
              padding-top: 0.7rem; border-top: 1px solid {PAL['border']}; }}
 .gc-credit a {{ color: {PAL['sub']}; }}
+.gc-credit-gap {{ margin-top: 0.8rem; }}
 .stButton button[kind="tertiary"], .stButton button[kind="primary"] {{ justify-content: flex-start;
           text-align: left; padding: 0.25rem 0.55rem; min-height: 2rem; }}
 .stButton button[kind="tertiary"] p, .stButton button[kind="primary"] p {{ font-size: 0.88rem; text-align: left; }}
@@ -2009,9 +2010,39 @@ def page_about():
                           "(2006), released under the GPL. "
                           "The XRF module follows Mikuni, Ishikawa and Sato (2025, CC BY "
                           "4.0). Built with Streamlit, pandas, NumPy and Matplotlib."))
-        with st.expander(t("What is new (changelog)")):
-            if docs.CHANGELOG.exists():
-                st.markdown(re.sub(r"^# .*\n", "", docs.CHANGELOG.read_text(encoding="utf-8")))
+        st.page_link(PAGES["changelog"], label=t("What's new (changelog)"),
+                     icon=":material/new_releases:")
+
+
+def changelog_sections():
+    """CHANGELOG.md split into (heading, text) per version, newest first."""
+    if not docs.CHANGELOG.exists():
+        return []
+    text = docs.CHANGELOG.read_text(encoding="utf-8")
+    parts = re.split(r"^## ", text, flags=re.M)[1:]
+    out = []
+    for part in parts:
+        head, _, body = part.partition("\n")
+        out.append((head.strip(), body.strip()))
+    return out
+
+
+def page_changelog():
+    header(t("What's new"), t("Changes in every version of GeoChem App. "
+                              "Version numbers follow MAJOR.MINOR.PATCH."))
+    sections = changelog_sections()
+    if not sections:
+        st.info(t("No changelog found."))
+        return
+    head, body = sections[0]
+    with st.container(border=True):
+        st.markdown(f"**{t('Latest version')}: {head}**")
+        st.markdown(body)
+    if len(sections) > 1:
+        st.markdown(f"**{t('Earlier versions')}**")
+        for head, body in sections[1:]:
+            with st.expander(head):
+                st.markdown(body)
 
 
 PAGES = {
@@ -2043,6 +2074,8 @@ PAGES = {
                     url_path="docs"),
     "references": st.Page(page_references, title=t("References"),
                           icon=":material/library_books:", url_path="references"),
+    "changelog": st.Page(page_changelog, title=t("What's new"),
+                         icon=":material/new_releases:", url_path="changelog"),
     "about": st.Page(page_about, title=t("About"), icon=":material/info:",
                      url_path="about"),
 }
@@ -2117,6 +2150,9 @@ if ctx is not None:
     st.sidebar.page_link(PAGES["symbols"], label=t("Edit symbols and colours"),
                          icon=":material/palette:")
 
+st.sidebar.markdown('<div class="gc-credit-gap"></div>', unsafe_allow_html=True)
+st.sidebar.page_link(PAGES["changelog"], label=f'{t("What is new")} · v{APP_VERSION}',
+                     icon=":material/new_releases:")
 st.sidebar.markdown(
     f'<div class="gc-credit">{t("Developed by")} <b>{DEVELOPER}</b><br>'
     f'<a href="mailto:{DEVELOPER_EMAIL}">{DEVELOPER_EMAIL}</a><br>'

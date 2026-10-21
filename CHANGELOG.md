@@ -2,6 +2,12 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.15.1 - 2026-10-21
+
+- New page **What's new** (changelog): latest version on top, earlier
+  versions folded. Opened from the link "What's new · version" at the bottom
+  of the left panel, above the developer credit, and from the About page.
+
 ## 0.15.0 - 2026-10-21
 
 - Overlapping text in diagrams:
