@@ -1,6 +1,6 @@
 {
  "id": "Paulick",
- "source": "GCDkit 6.3, Diagrams/User/Paulick.r",
+ "source": "Janou\u0161ek et al. (2006), template User/Paulick.r; oceanic array and abyssal field added after Niu (2004)",
  "panels": [
   {
    "xlim": [
@@ -30,6 +30,40 @@
      "lwd": 10.0,
      "dash": false,
      "role": "line"
+    },
+    {
+     "x": [
+      0.0,
+      0.1
+     ],
+     "y": [
+      1.019,
+      0.7593999999999999
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "line",
+     "note": "Oceanic array, Niu (2004): MgO/SiO2 = 1.019 - 2.596 Al2O3/SiO2"
+    },
+    {
+     "x": [
+      0.01,
+      0.07,
+      0.07,
+      0.01,
+      0.01
+     ],
+     "y": [
+      0.75,
+      0.75,
+      1.05,
+      1.05,
+      0.75
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "minor",
+     "note": "Abyssal peridotites, Niu (2004): 0.01-0.07 Al2O3/SiO2, 0.75-1.05 MgO/SiO2"
     }
    ],
    "polygons": [],
@@ -59,6 +93,24 @@
      "rot": 0.0,
      "size": 1.0,
      "adj": 1.0,
+     "role": "line"
+    },
+    {
+     "x": 0.071,
+     "y": 0.8,
+     "text": "Oceanic array (Niu 2004)",
+     "rot": -10.0,
+     "size": 0.9,
+     "adj": 0.0,
+     "role": "line"
+    },
+    {
+     "x": 0.012,
+     "y": 0.77,
+     "text": "Abyssal peridotites (Niu 2004)",
+     "rot": 0.0,
+     "size": 0.9,
+     "adj": 0.0,
      "role": "line"
     }
    ],

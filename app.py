@@ -18,7 +18,8 @@ import importlib
 import json
 
 import geochem
-from geochem import calc, catalog, data, docs, norms, plotting, project, symbols, xrfcal, xrfqc
+from geochem import (calc, catalog, data, docs, norms, plotting, project, screening,
+                     symbols, xrfcal, xrfqc)
 from geochem import i18n
 from geochem.i18n import LANGUAGES, t
 
@@ -27,8 +28,8 @@ from geochem.i18n import LANGUAGES, t
 # reruns app.py but keeps the old geochem modules in memory. Reload every
 # module whose file changed, in dependency order, so all code is current.
 def _reload_changed_modules():
-    order = [calc, data, norms, symbols, i18n, plotting, catalog, xrfqc, xrfcal, docs,
-             project]
+    order = [calc, data, norms, screening, symbols, i18n, plotting, catalog, xrfqc,
+             xrfcal, docs, project]
     stamps = getattr(geochem, "_file_stamps", {})
     changed = False
     for mod in order:
@@ -43,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.12.0"
+APP_VERSION = "0.13.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -491,8 +492,30 @@ def classification_table(d, df):
         names = plotting.classify_panel(d, i, c)
         if names is not None:
             label = d["title"] if len(coords) == 1 else d["geometry"][i].get("name", f"Panel {i + 1}")
+            if d["id"] == "TAS":
+                # IUGS order (Le Maitre et al. 2002): high-Mg rocks and
+                # nephelinites first, then the TAS field.
+                name, hm = screening.tas_names(df, names, settings["fe3_ratio"],
+                                               settings["um_mgo"])
+                cols[t("IUGS name")] = name
+                cols[t("TAS field")] = names
+                fresh = screening.freshness(df, hm)
+                fresh[screening.rock_type_ultramafic(df)] = "Not applicable (ultramafic rock)"
+                cols[t("Freshness for TAS")] = fresh
+                continue
             cols[label] = names
     return pd.DataFrame(cols, index=df.index)
+
+
+def ultramafic_count(df):
+    """Number of ultramafic samples (anhydrous MgO >= setting, or rock type)."""
+    return int(screening.ultramafic_mask(df, settings["um_mgo"]).sum())
+
+
+def iron_not_measured(df):
+    """True for samples whose FeO was not measured (iron must be split)."""
+    feo = df["FeO"] if "FeO" in df else pd.Series(float("nan"), index=df.index)
+    return feo.isna()
 
 
 def card_head(title, sub, key, target=None, did=None):
@@ -564,8 +587,9 @@ def diagram_status(d, df):
 
 
 def page_diagrams():
-    header(t("Diagrams"), t("Classification and discrimination diagrams. Boundaries "
-                            "are taken from GCDkit 6.3, so results match GCDkit."))
+    header(t("Diagrams"), t("Classification and discrimination diagrams. Field "
+                            "boundaries follow the templates of Janoušek et al. (2006); "
+                            "every diagram lists its original reference."))
     if ctx is None:
         empty_state()
         return
@@ -635,6 +659,15 @@ def page_diagrams():
                     c=", ".join(sorted(set(miss)))))
             downloads(lambda s_: catalog_figure(d, df, style=s_, kw=kw,
                                                 panel_size=size), d["id"])
+        n_um = ultramafic_count(df) if d.get("ultramafic_warning") else 0
+        if n_um:
+            st.warning(t("{n} ultramafic samples.").format(n=n_um) + " "
+                       + t(d["ultramafic_warning"]), icon=":material/warning:")
+        if d["id"] == "OhtaArai" and ok:
+            n_rep = catalog.ohta_replaced(df)
+            if n_rep:
+                st.caption(t("In {n} samples a missing or zero TiO2, CaO, Na2O or K2O "
+                             "was replaced by 0.005 wt% (Ohta and Arai 2007).").format(n=n_rep))
         t1, t2 = st.tabs([t("Results"), t("Scientific basis")])
         with t1:
             ct = classification_table(d, df) if ok else pd.DataFrame()
@@ -643,7 +676,7 @@ def page_diagrams():
                              "read the position of each sample on the plot."))
             else:
                 res = pd.concat([df.iloc[:, [0]], ct], axis=1)
-                if ct.shape[1] == 1:
+                if ct.shape[1] == 1 or d["id"] == "TAS":
                     st.dataframe(ct.iloc[:, 0].value_counts().rename_axis(t("Field"))
                                  .reset_index(name=t("Samples")), hide_index=True)
                 st.dataframe(res, hide_index=True, height=260)
@@ -665,7 +698,7 @@ def page_diagrams():
             if d.get("notes"):
                 st.markdown(d["notes"])
             st.markdown(f"**{t('Reference')}:** {d['reference']}\n\n"
-                        f"**{t('Boundaries')}:** {d['source']} (Janousek et al. 2006, GPL).")
+                        f"**{t('Boundaries')}:** {d['source']} (GPL).")
 
 
 def column_setup_tab():
@@ -804,6 +837,28 @@ def page_data():
             st.warning(t("Some cells could not be read as numbers and were set to "
                          "missing. Check that this is what you expect."))
             st.dataframe(ctx["report"], hide_index=True)
+        um_mask = screening.ultramafic_mask(df, settings["um_mgo"])
+        if um_mask.any():
+            st.info(t("{n} ultramafic samples (anhydrous MgO >= {m} wt%, or Rock type "
+                      "serpentinite, peridotite ...). TAS names do not apply to "
+                      "plutonic or metamorphic ultramafic rocks; use the Ultramafic "
+                      "rocks diagrams.").format(n=int(um_mask.sum()), m=settings["um_mgo"]),
+                    icon=":material/landscape:")
+            if (um_mask & iron_not_measured(df)).any():
+                st.warning(t("FeO was not measured for {n} ultramafic samples. "
+                             "Serpentinization oxidises Fe2+ to Fe3+ (Deschamps et al. "
+                             "2013), so the fixed Fe3+/Fe(total) of Settings is not "
+                             "reliable for them: the CIPW norm and Verma et al. (2006) "
+                             "results are approximate. Ask the lab for FeO by "
+                             "titration.").format(n=int((um_mask & iron_not_measured(df)).sum())),
+                           icon=":material/warning:")
+        fresh = screening.freshness(df, screening.high_mg_names(df))
+        n_sus = int(fresh.str.startswith("Suspect").sum())
+        if n_sus:
+            st.warning(t("{n} samples are suspect for TAS: H2O+ > 2 wt% or CO2 > 0.5 wt% "
+                         "(Le Bas et al. 1986), or LOI > 2.5 wt% as a proxy. See the "
+                         "Freshness column in Calculated values.").format(n=n_sus),
+                       icon=":material/water_drop:")
         if settings["xrf_qc"]:
             um = ultramafic_rows(df)
             if um is not None and not um.empty:
@@ -823,11 +878,25 @@ def page_data():
         for did, label in (("TAS", "TAS"), ("AFM", "AFM")):
             ct = classification_table(DIA[did], df)
             if not ct.empty:
-                derived[label] = ct.iloc[:, 0]
+                if did == "TAS":
+                    for c in ct.columns:
+                        derived[c] = ct[c]
+                else:
+                    derived[label] = ct.iloc[:, 0]
+        um_mask = screening.ultramafic_mask(df, settings["um_mgo"])
+        deficit = screening.mgo_deficit(df)
+        if deficit is not None and um_mask.any():
+            derived[t("MgO deficit vs terrestrial array (%)")] = deficit.where(um_mask)
         out = pd.concat([df.iloc[:, [0]], derived], axis=1)
         st.dataframe(out.round(3), hide_index=True)
         st.caption(t("FeOt = FeO + 0.8998 x Fe2O3. Mg# = 100 x Mg / (Mg + Fe2+), "
                      "molar, with all iron as Fe2+."))
+        if deficit is not None and um_mask.any():
+            st.caption(t("MgO deficit (ultramafic samples only) = 100 x [1 - (MgO/SiO2) / "
+                         "(1.107 - 2.598 x Al2O3/SiO2)], against the terrestrial array of "
+                         "Niu (2004). It assumes SiO2 and Al2O3 were immobile. Positive "
+                         "values mean MgO lost (Niu 2004 found about 10 % on average in "
+                         "abyssal peridotites)."))
         csv_download(t("Download data with calculated values (CSV)"),
                      lambda: pd.concat([df, derived], axis=1), "geochem_calculated.csv")
     with tab4:
@@ -842,8 +911,14 @@ def page_data():
                 st.caption(t("Iron was split into FeO and Fe2O3 for {n} samples with "
                              "Fe3+/Fe(total) = {r} (change in Settings).")
                            .format(n=n_split, r=settings["fe3_ratio"]))
-            st.caption(t("CIPW norm after Hutchison (1974, 1975), ported from GCDkit. "
-                         "Values in wt%."))
+                n_um_fe = int((screening.ultramafic_mask(df, settings["um_mgo"])
+                               & iron_not_measured(df)).sum())
+                if n_um_fe:
+                    st.warning(t("{n} of these samples are ultramafic. Serpentinization "
+                                 "raises Fe3+/Fe(total), so their norm is approximate.")
+                               .format(n=n_um_fe), icon=":material/warning:")
+            st.caption(t("CIPW norm after Hutchison (1974, 1975), as implemented by "
+                         "Janoušek et al. (2006). Values in wt%."))
             csv_download(t("Download CIPW norm (CSV)"), lambda: res, "cipw_norm.csv")
 
 
@@ -885,8 +960,7 @@ def page_spider():
             st.caption(t("Not in your data, so not plotted: {c}").format(c=", ".join(missing)))
         with st.expander(t("Scientific basis")):
             st.markdown(f"- {t('Normalizing values')}: {ref['reference']}\n"
-                        f"- {t('Source of the values')}: GCDkit 6.3 (spider.data; "
-                        f"Janousek et al. 2006)\n"
+                        f"- {t('Source of the values')}: Janoušek et al. (2006)\n"
                         f"- {t('K, Ti and P are calculated from K2O, TiO2 and P2O5 when the element columns are missing.')}\n"
                         f"- {t('Values below detection limit are left out; dotted lines bridge the gaps.')}")
             if ref.get("note"):
@@ -1014,13 +1088,13 @@ def page_ternary():
             st.markdown(
                 f"- {t('Each apex is the sum of its columns, multiplied or divided by its factor.')}\n"
                 f"- {t('The three values are closed to 100 %: A% = 100 A / (A + B + C), and the same for B and C.')}\n"
-                f"- {t('Plot position: x = C + B/2, y = B sqrt(3)/2 (as fractions), with A left, B top and C right, as in GCDkit (Janousek et al. 2006).')}\n"
+                f"- {t('Plot position: x = C + B/2, y = B sqrt(3)/2 (as fractions), with A left, B top and C right, as in Janoušek et al. (2006).')}\n"
                 f"- {t('A ternary plot shows only relative proportions. Samples with very different concentrations can plot at the same point (closure; Aitchison 1986).')}\n"
                 f"- {t('Factors (for example Rb/30 or Ta*3; Harris et al. 1986) spread the points when one component is much larger than the others. Always report them with the figure.')}\n"
                 f"- {t('Samples with a missing or negative value, or a total of zero, are left out.')}\n"
                 f"- {t('Total iron (FeOt) is calculated from FeO and Fe2O3 when it is not in the file.')}")
             st.caption("Aitchison J. (1986) The Statistical Analysis of Compositional Data. "
-                       "Chapman and Hall, London. | Janousek V., Farrow C.M., Erban V. (2006) "
+                       "Chapman and Hall, London. | Janoušek V., Farrow C.M., Erban V. (2006) "
                        "Interpretation of whole-rock geochemical data in igneous geochemistry: "
                        "introducing Geochemical Data Toolkit (GCDkit). Journal of Petrology 47, "
                        "1255-1259. | Harris N.B.W., Pearce J.A., Tindle A.G. (1986) Geochemical "
@@ -1134,10 +1208,10 @@ def page_symbols():
             settings["use_file_styles"] = o2.toggle(
                 t("Use the style columns in my data file"), settings["use_file_styles"],
                 help=t("Found: {c}. Per-sample values override the group style "
-                       "(GCDkit convention).").format(c=", ".join(fc.values())))
+                       "(convention of Janoušek et al. 2006).").format(c=", ".join(fc.values())))
         else:
             o2.caption(t("Tip: a data file can carry its own Symbol, Colour and Size "
-                         "columns, as in GCDkit. They are picked up automatically."))
+                         "columns (Janoušek et al. 2006). They are picked up automatically."))
         st.divider()
         s1, s2 = st.columns(2)
         with s1:
@@ -1185,7 +1259,7 @@ def page_appearance():
         with st.container(border=True):
             st.markdown(f"**{t('Label orientation')}**")
             modes = ["template", "horizontal", "hidden"]
-            mode_lab = {"template": "As in GCDkit (rotated along boundaries)",
+            mode_lab = {"template": "Rotated along boundaries (Janoušek et al. 2006)",
                         "horizontal": "All horizontal", "hidden": "Hidden"}
             a["field_labels"] = st.radio(t("Field names"), modes,
                                          format_func=lambda v: t(mode_lab[v]),
@@ -1367,7 +1441,14 @@ def page_settings():
             value=settings["tas_recalc"], help=t("Recommended by Le Bas et al. (1986)."))
         settings["fe3_ratio"] = st.slider(
             t("Fe3+/Fe(total) used when only total iron is measured (CIPW norm, Verma 2006)"),
-            0.0, 0.5, float(settings["fe3_ratio"]), 0.01)
+            0.0, 0.5, float(settings["fe3_ratio"]), 0.01,
+            help=t("Le Maitre et al. (2002): if only total iron was measured, the user "
+                   "must justify how it is split. Not valid for serpentinised rocks."))
+        settings["um_mgo"] = st.slider(
+            t("Ultramafic samples: anhydrous MgO at or above (wt%)"), 15.0, 45.0,
+            float(settings["um_mgo"]), 1.0, key="um_mgo_general",
+            help=t("Used for the ultramafic warnings and the MgO deficit. Samples whose "
+                   "Rock type is serpentinite, peridotite, dunite ... count too."))
     with st.container(border=True):
         st.markdown(f"**{t('Optional modules')}**")
         st.caption(t("Turn on only what fits your samples. A module adds its own page "
@@ -1381,9 +1462,7 @@ def page_settings():
             settings["xrf_qc"] = on
             st.rerun()
         if on:
-            settings["um_mgo"] = st.slider(
-                t("Ultramafic check: MgO at or above (wt%)"), 15.0, 45.0,
-                float(settings["um_mgo"]), 1.0)
+            st.caption(t("The ultramafic threshold is set under Calculations above."))
     with st.container(border=True):
         st.markdown(f"**{t('Figure export')}**")
         labels = {"publication": t("Publication (white background, no field colours)"),
@@ -1761,10 +1840,11 @@ def page_about():
     with a:
         with st.container(border=True):
             st.markdown(f"**{t('Purpose')}**")
-            st.markdown(t("GeoChem App brings the diagrams of GCDkit to a simple web "
-                          "interface, so that students and researchers, also those with "
-                          "limited funding or no programming background, can plot and "
-                          "check their geochemical data with confidence."))
+            st.markdown(t("GeoChem App brings widely used whole-rock geochemistry "
+                          "diagrams and calculations to a simple web interface, so that "
+                          "students and researchers, also those with limited funding or no "
+                          "programming background, can plot and check their geochemical "
+                          "data with confidence."))
         with st.container(border=True):
             st.markdown(f"**{t('Developer')}**")
             st.markdown(f"{DEVELOPER}  \n[{DEVELOPER_EMAIL}](mailto:{DEVELOPER_EMAIL})  \n"
@@ -1785,16 +1865,17 @@ def page_about():
             st.code(f"Hidayah B. (2026) GeoChem App: a free web application for "
                     f"whole-rock geochemistry, version {APP_VERSION}. "
                     f"{APP_URL}\n\n"
-                    "Janousek V., Farrow C.M., Erban V. (2006) Interpretation of "
+                    "Janoušek V., Farrow C.M., Erban V. (2006) Interpretation of "
                     "whole-rock geochemical data in igneous geochemistry: introducing "
                     "Geochemical Data Toolkit (GCDkit). Journal of Petrology 47(6), "
-                    "1255-1259.", language=None, wrap_lines=True)
+                    "1255-1259. https://doi.org/10.1093/petrology/egl013",
+                    language=None, wrap_lines=True)
             st.caption(t("Also cite the original reference of every diagram you used "
                          "(see References)."))
         with st.container(border=True):
             st.markdown(f"**{t('Acknowledgements')}**")
-            st.markdown(t("Diagram boundaries and the CIPW norm are converted from GCDkit "
-                          "6.3 by V. Janousek, C.M. Farrow, V. Erban and co-authors (GPL). "
+            st.markdown(t("Diagram boundaries and the CIPW norm follow Janoušek et al. "
+                          "(2006), released under the GPL. "
                           "The XRF module follows Mikuni, Ishikawa and Sato (2025, CC BY "
                           "4.0). Built with Streamlit, pandas, NumPy and Matplotlib."))
         with st.expander(t("What is new (changelog)")):

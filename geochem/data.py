@@ -15,6 +15,7 @@ ALIASES = {
     "FeOt": ["feot", "feotot", "feototal", "feo*", "tfeo"],
     "MnO": ["mno"], "MgO": ["mgo"], "CaO": ["cao"], "Na2O": ["na2o"],
     "K2O": ["k2o"], "P2O5": ["p2o5"], "LOI": ["loi"],
+    "H2O+": ["h2o+", "h2oplus", "h2op"], "CO2": ["co2"],
     "Cr2O3": ["cr2o3"], "NiO": ["nio"],
     "Latitude": ["latitude", "lat"], "Longitude": ["longitude", "lon", "long"],
 }
@@ -51,7 +52,7 @@ def load_file(name, content, header_row=1):
 
 # ---------------- units ----------------
 OXIDES = ["SiO2", "TiO2", "Al2O3", "Fe2O3", "FeO", "Fe2O3t", "FeOt", "MnO", "MgO",
-          "CaO", "Na2O", "K2O", "P2O5", "LOI", "Cr2O3", "NiO"]
+          "CaO", "Na2O", "K2O", "P2O5", "LOI", "H2O+", "CO2", "Cr2O3", "NiO"]
 UNITS = ["wt%", "ppm", "ppb"]
 TO_PPM = {"wt%": 1e4, "ppm": 1.0, "ppb": 1e-3}
 

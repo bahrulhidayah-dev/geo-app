@@ -121,6 +121,19 @@ def expr_panel(did, i, axis):
     return f
 
 
+OHTA_ZERO = 0.005      # wt%, replacement for zeros (Ohta and Arai 2007)
+
+
+def ohta_replaced(df):
+    """Number of samples in which Ohta and Arai's 0.005 wt% replacement was
+    used for TiO2, CaO (silicate), Na2O or K2O."""
+    n = pd.Series(0, index=df.index)
+    for c in ("TiO2", "Na2O", "K2O", "CaO"):
+        if c in df:
+            n += (df[c].isna() | (df[c] <= 0)).astype(int)
+    return int((n > 0).sum())
+
+
 def ohta_arai(df):
     """F, M, W apices of Ohta and Arai (2007), as coded in GCDkit."""
     ox = {}
@@ -134,6 +147,11 @@ def ohta_arai(df):
     ox["CaO_corr"] = ox["CaO"] - (co2 / m_co2) * m_cao - apatite * m_cao * 10
     t = pd.DataFrame(ox)
     t = t[["SiO2", "TiO2", "Al2O3", "Fe2O3t", "MgO", "CaO_corr", "Na2O", "K2O"]]
+    # Ohta and Arai (2007, section 2): missing values and rounding zeros are
+    # replaced by 0.005 wt%, because log(0) is undefined. GCDkit sets them to 0
+    # instead, which loses the sample. The four main oxides must be measured.
+    minor = ["TiO2", "CaO_corr", "Na2O", "K2O"]
+    t[minor] = t[minor].where(t[minor] > 0, OHTA_ZERO)
     t = t.div(t.sum(axis=1), axis=0) * 100
     L = {c: np.log(t[c].where(t[c] > 0)) for c in t}
     M = np.exp(-0.395 * L["SiO2"] + 0.206 * L["TiO2"] - 0.316 * L["Al2O3"]
@@ -167,10 +185,28 @@ DIAGRAMS = [
                    "SiO2 (wt%)", "Na2O + K2O (wt%)", "anhydrous")],
          reference="Le Bas M.J., Le Maitre R.W., Streckeisen A., Zanettin B. (1986) "
                    "A chemical classification of volcanic rocks based on the total "
-                   "alkali-silica diagram. Journal of Petrology 27, 745-750.",
+                   "alkali-silica diagram. Journal of Petrology 27, 745-750. "
+                   "Naming order (high-Mg rocks and nephelinites first): Le Maitre R.W. "
+                   "(ed.) (2002) Igneous Rocks: A Classification and Glossary of Terms, "
+                   "2nd ed. Cambridge University Press.",
          notes="IUGS-recommended classification of fresh volcanic rocks. The dashed "
                "line separates alkaline and subalkaline series (Irvine and "
-               "Baragar 1971). Not meant for altered or ultramafic rocks."),
+               "Baragar 1971).\n\n"
+               "**Checks before TAS (Le Maitre et al. 2002, p. 34).** The Results "
+               "tab first tests the IUGS 'high-Mg' rules (wt%, anhydrous): "
+               "SiO2 > 52, MgO > 8, TiO2 < 0.5 = boninite; 30 < SiO2 < 52, "
+               "MgO > 18, Na2O + K2O < 2 = komatiite (TiO2 < 1) or meimechite "
+               "(TiO2 > 1); 30 < SiO2 < 52, MgO > 12, Na2O + K2O < 3 = picrite. "
+               "Samples in the foidite and basanite/tephrite fields are tested "
+               "with the CIPW norm: ne > 20 % = nephelinite; ne < 20 % with "
+               "ab < 5 % = melanephelinite. Samples whose Rock type is "
+               "serpentinite, peridotite, dunite, harzburgite or lherzolite are "
+               "marked 'TAS not applicable'.\n\n"
+               "**Freshness (Le Bas et al. 1986).** Analyses with H2O+ > 2 wt% or "
+               "CO2 > 0.5 wt% are suspect; LOI > 2.5 wt% is used as a proxy when "
+               "H2O+ and CO2 were not measured. The rule is withdrawn for "
+               "high-Mg rocks. TAS is not meant for plutonic, cumulate, "
+               "metasomatised or strongly altered rocks."),
     dict(id="MiddlemostPlut", title="TAS for plutonic rocks (Middlemost 1985)",
          category="Classification", scope="Plutonic rocks", year=1985,
          panels=[B(lambda d, s: anh(d, s)["SiO2"],
@@ -186,8 +222,17 @@ DIAGRAMS = [
                    "diagrams. In: Wyman D.A. (ed.) Trace Element Geochemistry of "
                    "Volcanic Rocks. Geological Association of Canada Short Course "
                    "Notes 12, 79-113. After Winchester and Floyd (1977).",
-         notes="Uses immobile elements, so it works for altered and metamorphosed "
-               "volcanic rocks where TAS fails. Ti may come from TiO2."),
+         notes="Uses immobile elements, so it is often used for altered and "
+               "metamorphosed volcanic rocks where TAS fails. Ti may come from "
+               "TiO2.\n\n"
+               "**Reliability.** Verma et al. (2010, Turkish Journal of Earth "
+               "Sciences 19, 239-265) tested the original Winchester and Floyd "
+               "(1977) Nb/Y - Zr/TiO2 diagram (not this Pearce 1996 version) "
+               "with fresh volcanic rocks named by TAS and the CIPW norm. "
+               "Correct names: alkali basalt 74 %, andesite 75 %, phonolite 76 %, "
+               "but subalkaline basalt 32 %, basanite 30 %, trachyandesite 29 %, "
+               "trachyte 30 %, dacite 25 %, rhyolite 17 %. Treat the field name "
+               "as a guide, not a final name."),
     dict(id="Jensen", title="Jensen cation plot (Jensen 1976)",
          category="Classification", scope="Subalkaline volcanic rocks", year=1976,
          panels=[T(lambda d, s: milli(d, "Al2O3"),
@@ -216,7 +261,7 @@ DIAGRAMS = [
          reference="Peccerillo A., Taylor S.R. (1976) Geochemistry of Eocene "
                    "calc-alkaline volcanic rocks from the Kastamonu area, Northern "
                    "Turkey. Contributions to Mineralogy and Petrology 58, 63-81.",
-         notes="Boundaries extrapolated as in GCDkit (Rickwood 1989)."),
+         notes="Boundaries extrapolated after Rickwood (1989), as in Janoušek et al. (2006)."),
     dict(id="Miyashiro", title="SiO2 - FeOt/MgO (Miyashiro 1974)",
          category="Magma series", scope="Subalkaline rocks", year=1974,
          panels=[B(lambda d, s: need(d, "SiO2"),
@@ -234,7 +279,13 @@ DIAGRAMS = [
                    "immobile trace elements: development of the Th-Co discrimination "
                    "diagram. Journal of Petrology 48, 2341-2357.",
          notes="Immobile-element replacement for SiO2-K2O in altered arc rocks. "
-               "The Co axis runs from high to low."),
+               "The Co axis runs from high to low.\n\n"
+               "**Reliability.** Verma et al. (2010, Turkish Journal of Earth "
+               "Sciences 19, 239-265) found a minimum misclassification of "
+               "25-93 % for 7 of 14 rock-type and setting combinations. The "
+               "diagram has only three rock-name regions; its main use is the "
+               "series name (tholeiitic, calc-alkaline, high-K and shoshonitic), "
+               "and only for rocks known to come from an arc."),
     # ----------------------------- granitoids ----------------------------------
     dict(id="Shand", title="A/CNK - A/NK (Shand 1943)", category="Granitoids",
          scope="Granitoids, felsic rocks", year=1943,
@@ -310,7 +361,7 @@ DIAGRAMS = [
                    "YbN", "(La/Yb)N")],
          reference="Martin H. (1986) Effect of steeper Archean geothermal gradient on "
                    "geochemistry of subduction-zone magmas. Geology 14, 753-756.",
-         notes="Chondrite values La 0.33, Yb 0.22 ppm as in GCDkit."),
+         notes="Chondrite values La 0.33, Yb 0.22 ppm, as in Janoušek et al. (2006)."),
     # ----------------------------- basalts / ophiolites -----------------------
     dict(id="PearceNbThYb", title="Nb/Yb - Th/Yb (Pearce 2008)",
          category="Basalts and ophiolites", scope="Basalts, ophiolites", year=2008,
@@ -422,7 +473,12 @@ DIAGRAMS = [
                    "major-element data. Journal of Earth System Science 115, 485-528.",
          notes="Log ratios to SiO2 of anhydrous major elements with FeO and Fe2O3. "
                "When only total iron is measured it is split with the Fe3+/Fetot "
-               "ratio set in Settings. Only samples with SiO2 < 52 wt% are plotted."),
+               "ratio set in Settings. Only samples with SiO2 < 52 wt% are plotted. "
+               "Not suitable for serpentinised rocks: serpentinization oxidises "
+               "Fe2+ to Fe3+ (Deschamps et al. 2013; Paulick et al. 2006).",
+         ultramafic_warning="Serpentinization raises Fe3+/Fe(total). Unless FeO "
+                            "was measured, the iron split used here is not "
+                            "reliable for these samples."),
     dict(id="OhtaArai", title="F - M - W weathering (Ohta and Arai 2007)",
          category="Weathering and alteration", scope="Igneous rocks, weathered",
          year=2007,
@@ -434,7 +490,19 @@ DIAGRAMS = [
          notes="M mafic and F felsic igneous sources, W weathering intensity. "
                "Dashed: igneous trend; dotted: weathering trends of model rocks "
                "(Rhyo, Gra, Dac, And, Bas, Kom). CaO is corrected for apatite and "
-               "carbonate."),
+               "carbonate. The eight oxides are closed to 100 %; missing or zero "
+               "TiO2, CaO, Na2O and K2O are replaced by 0.005 wt%, as in the "
+               "paper (section 2).\n\n"
+               "**Limits (Ohta and Arai 2007, section 4).** Built from fresh and "
+               "weathered igneous rocks. FeO-rich minerals (biotite, fayalite, "
+               "chlorite) plot near W even when fresh, and the authors did not "
+               "test metamorphic rocks.",
+         ultramafic_warning="In ultramafic and serpentinised rocks, CaO and the "
+                            "alkalis are close to zero. Loss of CaO during "
+                            "serpentinization (Deschamps et al. 2013) alone can "
+                            "raise W from about 14 to about 76 in a rock that "
+                            "is not weathered. Do not read W as weathering for "
+                            "these samples."),
     # ----------------------------- ultramafic ----------------------------------
     dict(id="Paulick", title="Al2O3/SiO2 - MgO/SiO2 (Paulick et al. 2006)",
          category="Ultramafic rocks", scope="Mantle peridotites, serpentinites",
@@ -445,11 +513,27 @@ DIAGRAMS = [
          reference="Paulick H., Bach W., Godard M., De Hoog J.C.M., Suhr G., Harvey J. "
                    "(2006) Geochemistry of abyssal peridotites (Mid-Atlantic Ridge, "
                    "15 20'N, ODP Leg 209): implications for fluid/rock interaction in "
-                   "slow spreading environments. Chemical Geology 234, 179-210.",
-         notes="Grey band: the terrestrial array (melting trend). Samples below "
-               "the array have lost MgO, for example by seafloor weathering or "
-               "serpentinization-related Mg loss; samples above may have gained "
-               "Mg or lost Si."),
+                   "slow spreading environments. Chemical Geology 234, 179-210. "
+                   "Oceanic array and abyssal peridotite field added after Niu Y. (2004) "
+                   "Journal of Petrology 45, 2423-2458.",
+         notes="Grey band: the terrestrial array (melting trend; Jagoutz et al. "
+               "1979), MgO/SiO2 = 1.107 - 2.598 Al2O3/SiO2 (Niu 2004). Dashed "
+               "line: oceanic array of abyssal peridotites, MgO/SiO2 = 1.019 - "
+               "2.596 Al2O3/SiO2, about 10 % lower MgO because of seafloor "
+               "weathering (Niu 2004; Snow and Dick 1995). Dotted box: abyssal "
+               "peridotites, 0.01 < Al2O3/SiO2 < 0.07 and 0.75 < MgO/SiO2 < 1.05 "
+               "(Niu 2004). MgO/SiO2 about 1.2 is Fo90 olivine; dunites plot "
+               "above the array, and MgO/SiO2 > 1.3 often means brucite "
+               "(Paulick et al. 2006; Deschamps et al. 2013). Oxide ratios do "
+               "not change with LOI.\n\n"
+               "This diagram cannot tell abyssal, mantle-wedge and subducted "
+               "serpentinites apart (Deschamps et al. 2013). The Data page "
+               "gives the relative MgO deficit against the terrestrial array "
+               "for ultramafic samples (assumes SiO2 and Al2O3 immobile, as "
+               "Niu 2004).\n\n"
+               "Niu Y. (2004) Journal of Petrology 45, 2423-2458. Snow J.E., "
+               "Dick H.J.B. (1995) Geochimica et Cosmochimica Acta 59, "
+               "4219-4235. Deschamps F. et al. (2013) Lithos 178, 96-127."),
 ]
 
 BY_ID = {d["id"]: d for d in DIAGRAMS}

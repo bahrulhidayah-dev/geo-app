@@ -3,13 +3,13 @@
 GeoChem App is a free, open-source web application for whole-rock
 geochemistry. It runs in your web browser and does not need an internet
 connection or a programming background. Classification and discrimination
-diagrams follow GCDkit (Janoušek et al. 2006), so your results match the
-published boundaries.
+diagrams follow the published boundaries as implemented by Janoušek et al.
+(2006), and every diagram lists its original reference.
 
 This manual explains every page of the app, the data format and the
 calculations, so that you can use the results in theses and papers with
 confidence. It is written for beginners: no previous experience with
-programming or with GCDkit is needed.
+programming is needed.
 
 ## 1. Introduction
 
@@ -17,8 +17,8 @@ programming or with GCDkit is needed.
 
 - Reads your data from a CSV or Excel file and cleans it for you
   (values below detection limit, decimal commas, units rows).
-- Plots **27 classification and discrimination diagrams** from GCDkit,
-  grouped into six categories, and names the field of every sample.
+- Plots **27 classification and discrimination diagrams** (boundaries after
+  Janoušek et al. 2006), grouped into six categories, and names the field of every sample.
 - Draws REE and multi-element **spider diagrams**, free **XY plots** and
   **ternary plots**, and
   **group statistics**.
@@ -187,7 +187,7 @@ with one row per sample (see chapter 18 for the options).
 
 - **Latitude** and **Longitude** (decimal degrees) show a sample map on the
   Dashboard.
-- **Symbol**, **Colour** and **Size** columns (GCDkit convention; also
+- **Symbol**, **Colour** and **Size** columns (convention of Janoušek et al. 2006; also
   `pch`, `col`, `cex`) give each sample its own style. Symbol numbers follow
   R (0-25); colours can be names (`red`) or codes (`#1f77b4`).
 
@@ -234,11 +234,21 @@ The **Data** page has five tabs.
 - **Column setup**: header row, sample name, rock type, locality, group,
   and the meaning and unit of each column (chapter 3).
 - **Data check**: unit conversions, cells that were set to missing (and
-  why), and the list of recognised columns. Check this tab first with every new file.
+  why), and the list of recognised columns. It also warns about:
+  - ultramafic samples (anhydrous MgO at or above the Settings threshold,
+    or a Rock type or Group such as serpentinite, peridotite or ultramafic);
+  - ultramafic samples whose FeO was not measured (their CIPW norm is only
+    approximate, see chapter 13);
+  - samples that are suspect for TAS (H2O+ > 2 wt% or CO2 > 0.5 wt%, or
+    LOI > 2.5 wt% as a proxy).
+
+  Check this tab first with every new file.
 - **Calculated values**: major-oxide total, FeOt, Mg#, anhydrous SiO2 and
-  Na2O + K2O, and the TAS and AFM names. Download them as CSV.
-- **CIPW norm**: normative minerals (Hutchison 1974, 1975; ported from
-  GCDkit) in wt%. The switch **Recast the norm to 100 %** normalises the
+  Na2O + K2O, the IUGS name, the TAS field, the freshness for TAS and the
+  AFM name. For ultramafic samples it also gives the MgO deficit against
+  the terrestrial array (chapter 17). Download them as CSV.
+- **CIPW norm**: normative minerals (Hutchison 1974, 1975, as implemented
+  by Janoušek et al. 2006) in wt%. The switch **Recast the norm to 100 %** normalises the
   result.
 
 ![Data check](img/data.png)
@@ -260,8 +270,9 @@ discrimination diagrams.
 - **Scientific basis** tab: the axis formulas, the basis (for example
   anhydrous values), notes on correct use and the original reference.
 
-Boundary lines and field names are converted unchanged from the GCDkit 6.3
-templates, so a sample falls in the same field as in GCDkit.
+Boundary lines and field names are converted unchanged from the templates
+of Janoušek et al. (2006), so a sample falls in the same field as in their
+implementation.
 
 ### Diagram list
 
@@ -301,11 +312,49 @@ A diagram is only valid for the rock types and conditions of its original
 study. For example, TAS is for fresh volcanic rocks, not for altered or
 ultramafic rocks; discrimination diagrams for basalts should not be used for
 granites. Read the **Scientific basis** tab before you interpret a result.
+Some diagrams show a warning above the Results tab when your data contain
+ultramafic samples (F-M-W, Verma et al. 2006).
+
+### How TAS names are given
+
+Every rule, formula and default of the app, with its source, is in the
+document **Scientific methods** (Documentation page).
+
+The IUGS rules (Le Maitre et al. 2002, p. 34) are applied in this order. All
+values are wt%, recalculated to 100 % without volatiles:
+
+1. **Rock type or Group** says serpentinite, peridotite, dunite, harzburgite,
+   lherzolite or ultramafic → *TAS not applicable (ultramafic rock)*.
+2. **"High-Mg" volcanic rocks**:
+
+   | Conditions | Name |
+   |---|---|
+   | SiO2 > 52, MgO > 8, TiO2 < 0.5 | boninite |
+   | 30 < SiO2 < 52, MgO > 18, Na2O + K2O < 2, TiO2 < 1 | komatiite |
+   | 30 < SiO2 < 52, MgO > 18, Na2O + K2O < 2, TiO2 > 1 | meimechite |
+   | 30 < SiO2 < 52, MgO > 12, Na2O + K2O < 3 | picrite |
+
+   These rules use chemistry only, so a peridotite also passes the
+   komatiite rule. If such a sample has MgO above the ultramafic threshold
+   and no Rock type, the name ends with *(if volcanic; give Rock type for
+   peridotites)*.
+3. **Nephelinites.** Samples in the foidite and basanite/tephrite fields are
+   tested with the CIPW norm: ne > 20 % → nephelinite; ne < 20 % with
+   ab < 5 % → melanephelinite.
+4. Otherwise, the **TAS field** is the name.
+
+The Results tab shows the **IUGS name**, the **TAS field** (the field the
+point falls in) and the **Freshness for TAS**:
+
+- *Fresh* or *Suspect*: from H2O+ > 2 wt% or CO2 > 0.5 wt%
+  (Le Bas et al. 1986).
+- *(LOI proxy)*: LOI > 2.5 wt% is used when H2O+ and CO2 were not measured.
+- *Rule withdrawn*: the limit does not apply to high-Mg rocks.
 
 ## 8. Spider diagrams
 
 Choose the **pattern** and what the samples are **normalised to**. All 35
-sets of normalising values of GCDkit 6.3 are available:
+sets of normalising values compiled by Janoušek et al. (2006) are available:
 
 - **REE**: chondrite (McDonough and Sun 1995, the default; Boynton 1984;
   Nakamura 1974; Anders and Grevesse 1989; Palme and O'Neill 2014;
@@ -319,8 +368,8 @@ sets of normalising values of GCDkit 6.3 are available:
   upper-crust sediments and GLOSS-II.
 
 The **Scientific basis** box shows the reference and every normalising value.
-For the Sun and McDonough (1989) primitive mantle, the app uses the GCDkit
-values (Cs 0.0079, Pb 0.071 ppm); some compilations quote Cs 0.032 and
+For the Sun and McDonough (1989) primitive mantle, the app uses the values
+compiled by Janoušek et al. 2006 (Cs 0.0079, Pb 0.071 ppm); some compilations quote Cs 0.032 and
 Pb 0.185 ppm, so check the original table if Cs or Pb matter for you.
 
 Values below detection limit are left out; dotted lines bridge the gaps.
@@ -338,7 +387,7 @@ follow the left panel.
 ### Ternary plot
 
 Plot any three components in a triangle. Apex A is on the left, B at the
-top and C on the right, as in GCDkit. The first time, the app suggests the
+top and C on the right, as in Janoušek et al. (2006). The first time, the app suggests the
 AFM components (Na2O + K2O, FeOt, MgO) when your file has them.
 
 1. For each apex, choose one or more **columns**. Several columns are added
@@ -391,8 +440,8 @@ Change how every diagram and graph looks, on screen and in exported files:
 
 - **Text**: font family (sans-serif or serif journal style) and the size of
   axis titles, tick labels, field names, legend and sample labels.
-- **Label orientation**: field names as in GCDkit (rotated along the
-  boundaries), all horizontal, or hidden; the angle of the x tick labels;
+- **Label orientation**: field names rotated along the
+  boundaries (as in Janoušek et al. 2006), all horizontal, or hidden; the angle of the x tick labels;
   the y-axis title vertical or horizontal.
 - **Lines and size**: boundary line width, symbol outline width, figure
   size, grid lines and panel titles.
@@ -407,7 +456,14 @@ Change how every diagram and graph looks, on screen and in exported files:
   (recommended by Le Bas et al. 1986). It also applies to other diagrams
   marked *anhydrous* in their scientific basis.
 - **Fe³⁺/Fe(total)** used when only total iron is measured
-  (CIPW norm and Verma et al. 2006). Default 0.15.
+  (CIPW norm and Verma et al. 2006). Default 0.15. IUGS asks you to justify
+  how total iron is split (Le Maitre et al. 2002). The value is **not valid
+  for serpentinised rocks**: serpentinization oxidises Fe²⁺ to Fe³⁺, so
+  measure FeO by titration for these samples.
+- **Ultramafic samples: anhydrous MgO at or above** (default 30 wt%). This
+  threshold is used for the ultramafic warnings, the MgO deficit and the XRF
+  ultramafic check. Samples whose Rock type or Group names an ultramafic
+  rock count too.
 - **Optional modules**: switch on the XRF quality-control module
   (chapter 14).
 - **Figure export**: *Publication* style (white background, no field
@@ -560,7 +616,9 @@ available; use project files there.
 | ASI (Frost) | Al / (Ca − 1.67P + Na + K), molar |
 | FSSI (Frost) | (Q − (Lc + 2(Ne + Kp))) / 100, CIPW norm |
 | Spider diagrams | sample (ppm) / normalising value (ppm) |
-| CIPW norm | Hutchison (1974, 1975), as in GCDkit |
+| CIPW norm | Hutchison (1974, 1975), as implemented by Janoušek et al. (2006); uses H2O+ and CO2 when the file has them |
+| MgO deficit (ultramafic samples) | 100 × [1 − (MgO/SiO2) / (1.107 − 2.598 × Al2O3/SiO2)], terrestrial array of Niu (2004); assumes SiO2 and Al2O3 immobile |
+| F-M-W (Ohta and Arai 2007) | eight oxides closed to 100 %; missing or zero TiO2, CaO, Na2O, K2O set to 0.005 wt% |
 
 The **Scientific basis** tab of every diagram gives its exact axis
 formulas.
@@ -583,7 +641,7 @@ when its group is hidden in **Show groups**.
 oxides must be in wt% and trace elements in ppm (not ppb, not %).
 
 **Can I use the results in a publication?** Yes. Cite the original authors of
-each diagram (see **References**) and GCDkit (Janoušek et al. 2006). See
+each diagram (see **References**) and Janoušek et al. (2006). See
 chapter 19 for how to cite this app.
 
 **Does the app send my data anywhere?** The desktop and portable versions
@@ -623,10 +681,11 @@ interferes, add `localhost` to its exception list.
 When you publish results made with GeoChem App, please cite:
 
 1. the original reference of every diagram you used (see **References**);
-2. GCDkit: Janoušek V., Farrow C.M., Erban V. (2006) Interpretation of
-   whole-rock geochemical data in igneous geochemistry: introducing
-   Geochemical Data Toolkit (GCDkit). *Journal of Petrology* 47(6),
-   1255-1259;
+2. Janoušek V., Farrow C.M., Erban V. (2006) Interpretation of whole-rock
+   geochemical data in igneous geochemistry: introducing Geochemical Data
+   Toolkit (GCDkit). *Journal of Petrology* 47(6), 1255–1259.
+   https://doi.org/10.1093/petrology/egl013 (diagram boundaries and CIPW
+   norm);
 3. this app: Hidayah B. (2026) GeoChem App: a free web application for
    whole-rock geochemistry, version shown in **About**.
    https://geo-app-hidayah.streamlit.app (source code:
@@ -639,7 +698,8 @@ When you publish results made with GeoChem App, please cite:
 GeoChem App is free software under the **GNU General Public License v3.0**
 (GPL-3.0). You may use, study, share and change it. If you share a changed
 version, it must stay under the GPL and keep the credits. The diagram
-boundaries come from GCDkit (GPL), whose authors are credited throughout.
+boundaries follow Janoušek et al. (2006), released under the GPL; the
+authors are credited throughout.
 
 ### Contributing and feedback
 

@@ -14,6 +14,7 @@ DOCS = ROOT / "docs"
 MANUAL = DOCS / "user-manual.md"
 # Documents shown on the Documentation page (title: file)
 DOCUMENTS = {"User manual": MANUAL,
+             "Scientific methods": DOCS / "methods.md",
              "Architecture and workflows": DOCS / "architecture.md",
              "Portable and online versions": DOCS / "deployment.md"}
 CHANGELOG = ROOT / "CHANGELOG.md"
@@ -77,18 +78,54 @@ def embed_images(md):
 
 # ---------------- references ----------------
 GENERAL = [
-    ("Software", "Janoušek V., Farrow C.M., Erban V. (2006) Interpretation of whole-rock "
+    ("Diagram templates and software", "Janoušek V., Farrow C.M., Erban V. (2006) Interpretation of whole-rock "
      "geochemical data in igneous geochemistry: introducing Geochemical Data Toolkit "
-     "(GCDkit). Journal of Petrology 47(6), 1255-1259. doi:10.1093/petrology/egl013"),
+     "(GCDkit). Journal of Petrology 47(6), 1255-1259. "
+     "https://doi.org/10.1093/petrology/egl013"),
     ("CIPW norm", "Hutchison C.S. (1974) Laboratory Handbook of Petrographic Techniques. "
      "John Wiley and Sons, New York."),
     ("CIPW norm", "Hutchison C.S. (1975) The norm, its variations, their calculation and "
      "relationships. Schweizerische Mineralogische und Petrographische Mitteilungen 55, "
      "243-256."),
+    ("Screening and naming", "Le Bas M.J., Le Maitre R.W., Streckeisen A., Zanettin B. "
+     "(1986) A chemical classification of volcanic rocks based on the total alkali-silica "
+     "diagram. Journal of Petrology 27, 745-750. (freshness limits H2O+ < 2 wt%, "
+     "CO2 < 0.5 wt%; recalculation to 100 % volatile-free)"),
+    ("Screening and naming", "Le Bas M.J., Le Maitre R.W., Woolley A.R. (1992) The "
+     "construction of the Total Alkali-Silica chemical classification of volcanic rocks. "
+     "Mineralogy and Petrology 46, 1-22."),
+    ("Screening and naming", "Le Maitre R.W. (ed.) (2002) Igneous Rocks: A Classification "
+     "and Glossary of Terms. Recommendations of the IUGS Subcommission on the Systematics "
+     "of Igneous Rocks, 2nd edition. Cambridge University Press. (high-Mg rocks and "
+     "nephelinites before TAS; iron partitioning)"),
+    ("Screening and naming", "Le Bas M.J. (2000) IUGS reclassification of the high-Mg and "
+     "picritic volcanic rocks. Journal of Petrology 41, 1467-1470. (as cited in "
+     "Le Maitre et al. 2002)"),
+    ("Screening and naming", "Le Bas M.J. (1989) Nephelinitic and basanitic rocks. Journal "
+     "of Petrology 30, 1299-1312. (as cited in Le Maitre et al. 2002)"),
+    ("Serpentinites and peridotites", "Niu Y. (2004) Bulk-rock major and trace element "
+     "compositions of abyssal peridotites: implications for mantle melting, melt "
+     "extraction and post-melting processes beneath mid-ocean ridges. Journal of "
+     "Petrology 45, 2423-2458. (terrestrial and oceanic arrays, MgO deficit)"),
+    ("Serpentinites and peridotites", "Snow J.E., Dick H.J.B. (1995) Pervasive magnesium "
+     "loss by marine weathering of peridotite. Geochimica et Cosmochimica Acta 59, "
+     "4219-4235."),
+    ("Serpentinites and peridotites", "Deschamps F., Godard M., Guillot S., Hattori K. "
+     "(2013) Geochemistry of subduction zone serpentinites: a review. Lithos 178, 96-127. "
+     "doi:10.1016/j.lithos.2013.05.019 (Fe oxidation and Ca loss during serpentinization)"),
+    ("Serpentinites and peridotites", "Hart S.R., Zindler A. (1986) In search of a "
+     "bulk-Earth composition. Chemical Geology 57, 247-267. (terrestrial array; metal "
+     "ratios)"),
+    ("Reliability of diagrams", "Verma S.P., Rodríguez-Ríos R., González-Ramírez R. (2010) "
+     "Statistical evaluation of classification diagrams for altered igneous rocks. "
+     "Turkish Journal of Earth Sciences 19, 239-265. doi:10.3906/yer-0902-9"),
+    ("Reliability of diagrams", "Winchester J.A., Floyd P.A. (1977) Geochemical "
+     "discrimination of different magma series and their differentiation products using "
+     "immobile elements. Chemical Geology 20, 325-343."),
     ("Spider diagrams", "McDonough W.F., Sun S.-s. (1995) The composition of the Earth. "
      "Chemical Geology 120, 223-253. (CI chondrite)"),
     ("Spider diagrams", "35 sets of normalising values (chondrite, primitive mantle, "
-     "MORB, OIB, continental crust, sediments ...) from GCDkit 6.3 (spider.data); the "
+     "MORB, OIB, continental crust, sediments ...) as compiled by Janoušek et al. (2006); the "
      "reference of each set is shown on the Spider diagrams page."),
     ("Spider diagrams", "Sun S.-s., McDonough W.F. (1989) Chemical and isotopic "
      "systematics of oceanic basalts: implications for mantle composition and processes. "

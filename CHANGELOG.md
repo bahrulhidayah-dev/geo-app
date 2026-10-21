@@ -2,11 +2,53 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.13.0 - 2026-10-21
+
+Checks from the Stage A and B literature review (`reference/stage_AB_findings.md`).
+
+- **TAS names follow the IUGS order** (Le Maitre et al. 2002, p. 34).
+  "High-Mg" rocks (boninite, komatiite, meimechite, picrite) are named
+  first, then nephelinite and melanephelinite (CIPW norm), then the TAS
+  field. Samples whose Rock type or Group names an ultramafic rock get
+  "TAS not applicable". Before this change a serpentinite was named, for
+  example, foidite. The TAS Results tab shows the IUGS name, the TAS field
+  and the freshness for TAS.
+- **Freshness for TAS** (Le Bas et al. 1986): H2O+ > 2 wt% or
+  CO2 > 0.5 wt% is suspect; LOI > 2.5 wt% is used as a proxy; the rule is
+  withdrawn for high-Mg rocks.
+- **H2O+ and CO2 columns are recognised.** They are used by the freshness
+  check, the CIPW norm (as in Janoušek et al. 2006) and the carbonate correction of F-M-W.
+- **F-M-W (Ohta and Arai 2007)**: missing or zero TiO2, CaO, Na2O and K2O
+  are replaced by 0.005 wt%, as in the paper. Before, such samples were
+  lost. A warning explains that Ca loss during serpentinization raises W.
+- **Ultramafic samples** (anhydrous MgO threshold in Settings, or Rock type
+  or Group) are detected everywhere, not only in the XRF module. There are
+  warnings when FeO was not measured (CIPW norm, Verma et al. 2006).
+- **Paulick diagram**: oceanic array and abyssal peridotite field of
+  Niu (2004) added. New column "MgO deficit vs terrestrial array (%)" for
+  ultramafic samples.
+- Reliability notes from Verma et al. (2010) for Nb/Y - Zr/Ti (Pearce 1996)
+  and Co - Th (Hastie et al. 2007).
+- Manual: chapters 6, 7, 13 and 17 updated.
+- New document **Scientific methods** (Documentation page). It describes
+  every reading, screening, calculation, classification and plotting step
+  with its source. Steps from papers, steps from Janoušek et al. (2006) and the app's own
+  conventions are marked separately, and all app conventions are listed in
+  one table.
+- Citation style: the source of diagram templates, the CIPW norm, normalising
+  values and conventions is now cited as Janoušek et al. (2006) everywhere
+  (interface in all three languages, diagram notes, documents), with the
+  full reference and DOI in the reference lists.
+- References page: new sources added (Le Bas et al. 1986, 1992; Le Maitre
+  et al. 2002; Le Bas 1989, 2000; Niu 2004; Snow and Dick 1995; Deschamps
+  et al. 2013; Hart and Zindler 1986; Verma et al. 2010; Winchester and
+  Floyd 1977).
+
 ## 0.12.0 - 2026-10-21
 
 - New page **Ternary plot** (Plots menu): any three components, each the sum
   of one or more columns with an optional factor (for example Rb/30, Ta*3).
-  Values are closed to 100 % with the GCDkit apex order (A left, B top,
+  Values are closed to 100 % with the apex order of Janoušek et al. (2006) (A left, B top,
   C right); optional 20 % grid lines; samples with missing or negative values
   are left out and listed. Plotted values as CSV; scientific basis with
   references. FeOt is calculated when it is not in the file. Choices are
@@ -33,9 +75,9 @@ All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 - Column setup (Data page): header row for files with title rows, sample
   name column, rock type, locality and group roles, and the meaning and unit
   of every column; save and load the setup as JSON.
-- Spider diagrams: all 35 normalisation sets of GCDkit 6.3 (REE,
+- Spider diagrams: all 35 normalisation sets compiled by Janoušek et al. (2006) (REE,
   multi-element, crust and sediments), with the values shown in Scientific
-  basis. The default primitive mantle now uses the GCDkit values (Cs 0.0079,
+  basis. The default primitive mantle now uses the values of Janoušek et al. (2006) (Cs 0.0079,
   Pb 0.071 ppm; previously 0.032 and 0.185).
 - Fix: a file without recognised oxide columns no longer stops the Data page.
 - New example: `examples/layout_and_units_example.xlsx`.
@@ -97,7 +139,7 @@ All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
 ## 0.5.0
 
-- Stage 2 of the diagram catalogue: 27 diagrams from GCDkit 6.3, including
+- Stage 2 of the diagram catalogue: 27 diagrams from Janoušek et al. (2006), including
   R1-R2, Batchelor and Bowden, Agrawal et al. (2008), Verma et al. (2006),
   Ohta and Arai (2007) and Paulick et al. (2006).
 - CIPW norm (Hutchison 1974, 1975).
@@ -106,9 +148,9 @@ All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
 ## 0.4.0 and earlier
 
-- Stage 1 diagram catalogue converted from GCDkit 6.3 templates.
+- Stage 1 diagram catalogue converted from the templates of Janoušek et al. (2006).
 - Symbols and colours per group, legend position, style columns from the
-  data file (GCDkit convention).
+  data file (convention of Janoušek et al. 2006).
 - Dashboard, data cleaning and data check, spider diagrams, XY plots,
   statistics, figure export (PNG, SVG, PDF) without automatic downloads.
 - Windows desktop shortcut.

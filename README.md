@@ -1,7 +1,7 @@
 # GeoChem App
 
 A free, open-source web app for whole-rock geochemistry (XRF and ICP data),
-inspired by GCDkit. Version 0.12.0.
+following Janoušek et al. (2006). Version 0.13.0.
 Developed by Bahrul Hidayah (bahrul.hidayah@gmail.com).
 
 **Try it online:** https://geo-app-hidayah.streamlit.app (no installation needed).
@@ -20,14 +20,14 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
 - Column names such as `SiO2 (wt%)`, `Fe2O3T` or `La_ppm` are recognised.
 - Dashboard with TAS, AFM and spider diagrams plus a sample map and table.
 - Diagram catalogue (27 diagrams: stage 1 and 2) with boundaries taken unchanged from
-  GCDkit 6.3 templates: TAS (IUGS), Middlemost plutonic TAS, Pearce 1996
+  Janoušek et al. (2006) templates: TAS (IUGS), Middlemost plutonic TAS, Pearce 1996
   Nb/Y-Zr/Ti, Jensen, AFM, Peccerillo and Taylor, Miyashiro, Hastie Co-Th,
   Shand, Frost and Frost 2008, Pearce et al. 1984, Whalen et al. 1987,
   Martin 1986, Pearce 2008 (Th/Yb, TiO2/Yb), Saccani 2015, Shervais,
   Pearce and Cann, Meschede, Wood, Paulick et al. 2006; stage 2: R1-R2
   volcanic and plutonic (De la Roche et al. 1980), Batchelor and Bowden 1985,
   Agrawal et al. 2008, Verma et al. 2006, Ohta and Arai 2007 (F-M-W).
-- CIPW norm (Hutchison 1974, 1975; ported from GCDkit) with download.
+- CIPW norm (Hutchison 1974, 1975; ported from Janoušek et al. 2006) with download.
 - Top bar with Documentation (full user manual with screenshots),
   References, About, and the language (Indonesian, English, Japanese) and
   theme (light, dark or system) menus; the session is kept when the page
@@ -35,8 +35,8 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
 - Plot appearance: fonts, field-label orientation, tick-label angle, y-axis
   title orientation, line widths, figure size, grid.
 - Automatic field names for every sample in classification diagrams.
-- REE, multi-element and crust/sediment spider diagrams with all 35 GCDkit
-  normalisation sets (chondrite, primitive mantle, N-MORB, E-MORB, OIB ...).
+- REE, multi-element and crust/sediment spider diagrams with all 35
+  normalisation sets of Janoušek et al. (2006) (chondrite, primitive mantle, N-MORB, E-MORB, OIB ...).
 - Units read from column names or a units row and converted (ppb, ppm, wt%);
   Column setup for any lab layout: header row, sample name, rock type,
   locality, group, and the meaning and unit of each column (save and reuse).
@@ -45,7 +45,7 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
   oxides).
 - Symbols and colours per group (colour, symbol, size, filled or open), used by
   every diagram; saved and loaded as CSV. Per-sample Symbol, Colour and Size
-  columns in the data file are read as in GCDkit.
+  columns in the data file are read as in Janoušek et al. (2006).
 - Figure export as PNG, SVG or PDF in a white publication style. Files are only
   created when a download button is clicked.
 - Optional module (Settings > Optional modules): XRF quality control after
@@ -108,20 +108,21 @@ tools/portable/            portable Windows build (build_portable.bat, launcher)
 examples/                  example data files (synthetic and published)
 LICENSE                    GNU GPL v3.0
 .devcontainer/             settings for editing in GitHub Codespaces (added by Streamlit)
-geochem/diagrams/gcdkit/   boundary geometry converted from GCDkit 6.3 templates
-tools/gcdkit_import.py     converter from GCDkit R templates to JSON
+geochem/diagrams/gcdkit/   boundary geometry converted from the templates of Janoušek et al. (2006)
+tools/gcdkit_import.py     converter from the R templates (Janoušek et al. 2006) to JSON
 geochem/diagrams/*.json    spider-plot normalizing values
 geochem/example_data.csv   synthetic test data with known answers
 ```
 
 ## References
 
-- Diagram boundaries: GCDkit 6.3 (Janousek et al. 2006, GPL >= 2), files in
-  GCDkit/Diagrams; every diagram page lists its original reference.
+- Diagram boundaries: Janoušek et al. (2006), GPL >= 2; every diagram page
+  lists its original reference.
 
-- GCDkit: Janousek V., Farrow C. M., Erban V. (2006) Interpretation of
-  whole-rock geochemical data in igneous geochemistry: introducing Geochemical
-  Data Toolkit (GCDkit). Journal of Petrology 47, 1255-1259.
+- Janoušek V., Farrow C. M., Erban V. (2006) Interpretation of whole-rock
+  geochemical data in igneous geochemistry: introducing Geochemical Data
+  Toolkit (GCDkit). Journal of Petrology 47(6), 1255-1259.
+  https://doi.org/10.1093/petrology/egl013
 - TAS: Le Bas M.J. et al. (1986) Journal of Petrology 27, 745-750. Field
   coordinates as compiled in pyrolite (BSD-3).
 - AFM: Irvine T.N., Baragar W.R.A. (1971) Canadian Journal of Earth Sciences 8,
