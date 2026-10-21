@@ -56,6 +56,7 @@ every click and rebuilds the page; values that must survive are kept in
 | `data.py` | Read CSV/Excel (with a chosen header row); clean text values; recognise column names (`SiO2 (wt%)` to `SiO2`); detect and convert units (wt%, ppm, ppb); apply the user's column setup; report changes |
 | `calc.py` | FeOt, Mg#, anhydrous recalculation, molar values, millications, element from oxide, normalisation |
 | `norms.py` | CIPW norm (Hutchison 1974, 1975; ported from Janoušek et al. 2006), iron split by Fe³⁺/Fe(total) |
+| `variation.py` | Variation diagrams: Harker (SiO2) and MgO plates, anhydrous or as measured; iso-Mg# and olivine lines |
 | `screening.py` | Checks before naming: IUGS high-Mg rules and nephelinites before TAS, freshness for TAS, ultramafic samples, MgO deficit against the terrestrial array |
 | `catalog.py` | The 27 diagrams: title, category, rock scope, year, axis formulas per panel, sample subset, notes, reference |
 | `plotting.py` | Plotting engine: binary, ternary and logarithmic panels, multi-panel plates, spider and XY plots, sample classification (point in polygon), styles (dark, light, publication) and appearance options |

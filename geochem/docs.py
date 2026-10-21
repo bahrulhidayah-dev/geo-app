@@ -116,6 +116,11 @@ GENERAL = [
     ("Serpentinites and peridotites", "Hart S.R., Zindler A. (1986) In search of a "
      "bulk-Earth composition. Chemical Geology 57, 247-267. (terrestrial array; metal "
      "ratios)"),
+    ("Variation diagrams", "Rollinson H., Pease V. (2021) Using Geochemical Data: To "
+     "Understand Geological Processes, 2nd edition. Cambridge University Press. "
+     "(Harker and MgO variation diagrams, Mg#, interpretation of trends, closure)"),
+    ("Variation diagrams", "Harker A. (1909) The Natural History of Igneous Rocks. "
+     "Methuen, London. (as cited in Rollinson and Pease 2021)"),
     ("Reliability of diagrams", "Verma S.P., Rodríguez-Ríos R., González-Ramírez R. (2010) "
      "Statistical evaluation of classification diagrams for altered igneous rocks. "
      "Turkish Journal of Earth Sciences 19, 239-265. doi:10.3906/yer-0902-9"),

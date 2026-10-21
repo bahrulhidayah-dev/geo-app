@@ -378,7 +378,44 @@ missing.
 
 ![Spider diagram](img/spider.png)
 
-## 9. XY plot
+## 9. Variation diagrams, XY plot and ternary plot
+
+### Variation diagrams
+
+**Plots → Variation diagrams** draws one plate with a panel for every major
+oxide.
+
+- **X axis**:
+  - **SiO2** gives Harker diagrams, the usual choice for volcanic and
+    plutonic suites.
+  - **MgO** gives MgO variation diagrams, better for mafic and ultramafic
+    rocks, peridotites and serpentinites.
+- **Major oxides**:
+  - **Anhydrous** (default) recalculates the oxides to 100 % without
+    volatiles. Use it when LOI differs between samples, for example in
+    serpentinites.
+  - **As measured** keeps the values of your file.
+- **Panels per row**: 2, 3 or 4.
+- **Trace elements to add**: any element in your file (ppm, as measured).
+  Ni and Cr are suggested for MgO diagrams.
+- **Reference lines** (MgO diagrams only, on the FeOt panel):
+  - *iso-Mg# lines* (Mg# 85–95) and the *olivine line*;
+  - each one can be *Auto* (only when ultramafic samples are present),
+    *Always* or *Off*.
+- **Plotted values** gives the numbers of every panel (CSV), and
+  **Scientific basis** gives the formulas and references.
+
+All panels share the same x range, so you can compare them directly. Your
+choices are saved in project files.
+
+How to read the plate (Rollinson and Pease 2021, section 3.3): a straight
+trend usually means mixing, for example a melt losing or gaining crystals,
+two magmas mixing, or partial melting. Different processes can give the same
+trend, so check it with trace elements or mineral data. Because oxides add
+up to 100 %, some trends, mainly against SiO2, can appear from the constant
+sum alone (closure). Treat a trend as a hypothesis to test.
+
+### XY plot
 
 Plot any numeric column against any other. Tick **Log scale X** or
 **Log scale Y** for ratios and trace elements. Groups, symbols and labels
@@ -607,7 +644,7 @@ available; use project files there.
 | Quantity | Formula |
 |---|---|
 | FeOt | FeO + 0.8998 × Fe2O3, or 0.8998 × Fe2O3t |
-| Mg# | 100 × Mg / (Mg + Fe²⁺), molar, all iron as Fe²⁺ (0.896 in some papers = 89.6 here) |
+| Mg# | 100 × Mg / (Mg + Fe²⁺), molar, all iron as Fe²⁺ (Rollinson and Pease 2021; 0.896 in some papers = 89.6 here) |
 | Anhydrous values | oxide / (sum of major oxides without LOI) × 100 |
 | A/CNK | Al2O3 / (CaO + Na2O + K2O), molar |
 | A/NK | Al2O3 / (Na2O + K2O), molar |

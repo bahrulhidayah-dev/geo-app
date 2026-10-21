@@ -33,7 +33,7 @@ CONFIG = Path.home() / ".geochem_app" / "config.json"
 # session keys stored in a project (the data files are stored separately)
 STATE_KEYS = ["settings", "symbols", "appearance", "col_setups", "group_col",
               "group_keep", "label_col", "diagram_id", "lang", "spider_group",
-              "spider_norm", "ternary"]
+              "spider_norm", "ternary", "variation"]
 
 
 # ---------------- project files ----------------

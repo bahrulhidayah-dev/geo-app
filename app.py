@@ -19,7 +19,7 @@ import json
 
 import geochem
 from geochem import (calc, catalog, data, docs, norms, plotting, project, screening,
-                     symbols, xrfcal, xrfqc)
+                     symbols, variation, xrfcal, xrfqc)
 from geochem import i18n
 from geochem.i18n import LANGUAGES, t
 
@@ -28,8 +28,8 @@ from geochem.i18n import LANGUAGES, t
 # reruns app.py but keeps the old geochem modules in memory. Reload every
 # module whose file changed, in dependency order, so all code is current.
 def _reload_changed_modules():
-    order = [calc, data, norms, screening, symbols, i18n, plotting, catalog, xrfqc,
-             xrfcal, docs, project]
+    order = [calc, data, norms, screening, variation, symbols, i18n, plotting, catalog,
+             xrfqc, xrfcal, docs, project]
     stamps = getattr(geochem, "_file_stamps", {})
     changed = False
     for mod in order:
@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.13.0"
+APP_VERSION = "0.14.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -75,7 +75,7 @@ MULTI = NORMS[NORM_DEFAULT["Multi-element"]]
 # has to be loaded again.
 STATE_KEYS = ["dataset", "settings", "symbols", "lang", "group_col", "group_keep",
               "label_col", "diagram_id", "appearance", "theme_choice", "xrf_int",
-              "col_setups", "work_folder", "spider_group", "spider_norm"]
+              "col_setups", "work_folder", "spider_group", "spider_norm", "variation"]
 
 
 MAX_SESSIONS = 50          # remembered sessions on this server (oldest dropped)
@@ -102,8 +102,8 @@ if _pending is not None:
     _meta, _ds, _xrf = project.unpack(_pending)
     for _k, _v in _meta.get("state", {}).items():
         st.session_state[_k] = _v
-    for _k in [k for k in st.session_state if str(k).startswith("tern_")]:
-        del st.session_state[_k]                              # take ternary choices from the project
+    for _k in [k for k in st.session_state if str(k).startswith(("tern_", "var_"))]:
+        del st.session_state[_k]                    # take ternary and variation choices from the project
     for _k in ("group_keep",):
         if _k not in _meta.get("state", {}):
             st.session_state.pop(_k, None)
@@ -992,6 +992,120 @@ def page_xy():
              max_width="820px")
         downloads(lambda s: plotting.plot_binary(df, x, y, log_x=lx, log_y=ly,
                                                  style=s, **kw), f"{x}_vs_{y}")
+
+
+VAR_X_LABELS = {"SiO2": "SiO2 (Harker diagrams)", "MgO": "MgO (MgO variation diagrams)"}
+VAR_BASIS = {"anhydrous": "Anhydrous (100 % volatile-free)", "as measured": "As measured"}
+VAR_LINES = {"auto": "Auto: only when there are ultramafic samples", "on": "Always", "off": "Off"}
+
+
+def page_variation():
+    header(t("Variation diagrams"), t("Harker diagrams (SiO2 on the x axis) or MgO "
+                                      "variation diagrams, one panel per major oxide."))
+    if ctx is None:
+        empty_state()
+        return
+    df = view()
+    kw = opts(df)
+    saved = st.session_state.setdefault("variation", {})
+
+    def remember(key, default):
+        st.session_state.setdefault(f"var_{key}", saved.get(key, default))
+        return f"var_{key}"
+
+    left, right = st.columns([1, 3], gap="large")
+    with left:
+        x = st.radio(t("X axis"), list(VAR_X_LABELS), format_func=lambda v: t(VAR_X_LABELS[v]),
+                     key=remember("x", "SiO2"))
+        basis = st.radio(t("Major oxides"), list(VAR_BASIS), format_func=lambda v: t(VAR_BASIS[v]),
+                         key=remember("basis", "anhydrous"))
+        ncol = st.select_slider(t("Panels per row"), [2, 3, 4], key=remember("ncol", 3))
+        traces = [el for el in data.TRACE if calc.element_ppm(df, el) is not None
+                  and el not in ("K", "Ti", "P")]
+        # default trace elements: Ni and Cr for MgO diagrams, none for Harker diagrams
+        dkey = f"extra_{x}"
+        default = [el for el in (("Ni", "Cr") if x == "MgO" else ()) if el in traces]
+        cur = [el for el in saved.get(dkey, default) if el in traces]
+        if f"var_{dkey}" not in st.session_state:
+            st.session_state[f"var_{dkey}"] = cur
+        extra = st.multiselect(t("Trace elements to add (ppm)"), traces, key=f"var_{dkey}",
+                               help=t("Trace elements are plotted as measured, without the "
+                                      "anhydrous recalculation."))
+        mg_mode = ol_mode = "off"
+        if x == "MgO":
+            st.markdown(f"**{t('Reference lines on the FeOt panel')}**")
+            mg_mode = st.selectbox(t("Iso-Mg# lines (85-95)"), list(VAR_LINES),
+                                   format_func=lambda v: t(VAR_LINES[v]),
+                                   key=remember("mg_lines", "auto"))
+            ol_mode = st.selectbox(t("Olivine line (Fo100-Fa100)"), list(VAR_LINES),
+                                   format_func=lambda v: t(VAR_LINES[v]),
+                                   key=remember("olivine", "auto"))
+        saved.update({"x": x, "basis": basis, "ncol": ncol, dkey: extra,
+                      "mg_lines": mg_mode if x == "MgO" else saved.get("mg_lines", "auto"),
+                      "olivine": ol_mode if x == "MgO" else saved.get("olivine", "auto")})
+    try:
+        table, panels, missing = variation.variation_table(df, x, basis, extra)
+    except calc.MissingData as e:
+        right.info(t("This diagram needs these columns: {c}. Check the Data page to see "
+                     "which columns were recognised.").format(c=str(e.args[0])))
+        return
+    has_um = bool(screening.ultramafic_mask(df, settings["um_mgo"]).any())
+    on = lambda mode: mode == "on" or (mode == "auto" and has_um)     # noqa: E731
+    mg_on, ol_on = on(mg_mode), on(ol_mode)
+    with right:
+        if not panels:
+            st.warning(t("No oxide besides {x} was found.").format(x=x))
+            return
+        make = lambda s_, size=None: plotting.plot_variation(              # noqa: E731
+            table, x, panels, style=s_, basis=basis, ncol=ncol, mg_lines=mg_on,
+            olivine=ol_on, **kw)
+        show(make(SCREEN), max_width="100%")
+        downloads(make, ("harker" if x == "SiO2" else "MgO_variation") + "_" + basis.replace(" ", "_"))
+        if missing:
+            st.caption(t("Not in your data, so not plotted: {c}").format(c=", ".join(missing)))
+        t1, t2 = st.tabs([t("Plotted values"), t("Scientific basis")])
+        with t1:
+            out = pd.concat([df.iloc[:, [0]], table.round(3)], axis=1)
+            st.dataframe(out, hide_index=True, height=260)
+            csv_download(t("Download plotted values (CSV)"), lambda: out,
+                         f"variation_{x}_values.csv")
+        with t2:
+            rows = [
+                t("Harker diagrams plot SiO2 against each major oxide (Harker 1909, as "
+                  "cited in Rollinson and Pease 2021). MgO variation diagrams use MgO "
+                  "instead, which suits mafic and ultramafic suites whose SiO2 varies "
+                  "little (Rollinson and Pease 2021; Niu 2004; Deschamps et al. 2013)."),
+                t("Most trends are mixing lines: between magmas, between a melt and crystals "
+                  "that are added or removed, during partial melting, or between sediment "
+                  "components. Partial melting and fractional crystallisation can give the "
+                  "same major-element trend (Rollinson and Pease 2021)."),
+                t("Closure: oxides sum to 100 %, so some correlations, especially against "
+                  "SiO2, can come from the constant sum alone. Test a trend against a "
+                  "specific hypothesis (Rollinson and Pease 2021)."),
+                t("Major oxides are recalculated to 100 wt% without volatiles when "
+                  "'Anhydrous' is chosen (Le Bas et al. 1986). This matters for "
+                  "serpentinites, whose LOI is often 10-15 wt%."),
+                t("Total iron is shown as FeOt = FeO + 0.8998 Fe2O3."),
+                t("Trace elements are plotted as measured (App convention)."),
+                t("All panels share the same x range."),
+            ]
+            if x == "MgO":
+                rows += [
+                    t("Iso-Mg# lines: FeOt = MgO x (71.844 / 40.304) x (100 / Mg# - 1), "
+                      "all iron as Fe2+ (Deschamps et al. 2013, Fig. 3b)."),
+                    t("Olivine line: from forsterite (MgO 57.30 wt%) to fayalite "
+                      "(FeO 70.51 wt%) (Deschamps et al. 2013, Fig. 3b)."),
+                    t("'Auto' shows the lines only when ultramafic samples are present "
+                      "(threshold in Settings)."),
+                ]
+            st.markdown("\n".join(f"- {r}" for r in rows))
+            st.caption("Rollinson H., Pease V. (2021) Using Geochemical Data: To Understand "
+                       "Geological Processes, 2nd ed. Cambridge University Press. | Harker A. "
+                       "(1909) The Natural History of Igneous Rocks. Methuen, London (as cited "
+                       "in Rollinson and Pease 2021). | Le Bas M.J., Le Maitre R.W., "
+                       "Streckeisen A., Zanettin B. (1986) Journal of Petrology 27, 745-750. | "
+                       "Niu Y. (2004) Journal of Petrology 45, 2423-2458. | Deschamps F., "
+                       "Godard M., Guillot S., Hattori K. (2013) Lithos 178, 96-127.")
 
 
 TERN_KEYS = ("a", "b", "c")
@@ -1894,6 +2008,8 @@ PAGES = {
     "xy": st.Page(page_xy, title=t("XY plot"), icon=":material/scatter_plot:", url_path="xy"),
     "ternary": st.Page(page_ternary, title=t("Ternary plot"), icon=":material/change_history:",
                        url_path="ternary"),
+    "variation": st.Page(page_variation, title=t("Variation diagrams"),
+                         icon=":material/stacked_line_chart:", url_path="variation"),
     "stats": st.Page(page_stats, title=t("Statistics"), icon=":material/bar_chart:",
                      url_path="statistics"),
     "symbols": st.Page(page_symbols, title=t("Symbols and colours"),
@@ -1914,7 +2030,7 @@ PAGES = {
                      url_path="about"),
 }
 NAV_GROUPS = [("Overview", ["dashboard", "data", "project"]),
-              ("Plots", ["diagrams", "spider", "xy", "ternary"]),
+              ("Plots", ["diagrams", "variation", "spider", "xy", "ternary"]),
               ("Tools", ["stats"] + (["xrfqc"] if settings["xrf_qc"] else [])
                + ["symbols", "appearance", "settings"])]
 nav = st.navigation([p for k, p in PAGES.items() if k != "xrfqc" or settings["xrf_qc"]],

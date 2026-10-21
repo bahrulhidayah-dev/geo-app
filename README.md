@@ -1,7 +1,7 @@
 # GeoChem App
 
 A free, open-source web app for whole-rock geochemistry (XRF and ICP data),
-following Janoušek et al. (2006). Version 0.13.0.
+following Janoušek et al. (2006). Version 0.14.0.
 Developed by Bahrul Hidayah (bahrul.hidayah@gmail.com).
 
 **Try it online:** https://geo-app-hidayah.streamlit.app (no installation needed).
@@ -40,6 +40,9 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
 - Units read from column names or a units row and converted (ppb, ppm, wt%);
   Column setup for any lab layout: header row, sample name, rock type,
   locality, group, and the meaning and unit of each column (save and reuse).
+- Variation diagrams: Harker (SiO2) or MgO plates of all major oxides,
+  anhydrous or as measured, with optional trace elements and iso-Mg# and
+  olivine lines.
 - Free XY plot and free ternary plot (any three components, sums of
   columns, factors such as Rb/30), group statistics, calculated values (FeOt, Mg#, anhydrous
   oxides).

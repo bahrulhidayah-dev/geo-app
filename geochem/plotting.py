@@ -426,6 +426,85 @@ def plot_catalog(diagram, coords_list, sty, labels=None, style="dark",
     return fig
 
 
+# ---------------- variation diagrams (Harker, MgO) ----------------
+def _var_label(name, basis):
+    """Axis label: oxides in wt% (anhydrous when recalculated), elements in ppm."""
+    from .variation import OXIDES
+    if name in OXIDES:
+        return f"{name} (wt%{', anhydrous' if basis == 'anhydrous' else ''})"
+    return f"{name} (ppm)"
+
+
+def plot_variation(table, x, panels, sty, labels=None, style="dark", basis="anhydrous",
+                   legend_title=None, legend="upper right", panel_size=(3.4, 2.8),
+                   mg_lines=False, olivine=False, ncol=3):
+    """Plate of variation diagrams: x (SiO2 or MgO) against every panel column.
+    mg_lines / olivine: reference lines on the FeOt panel when x is MgO
+    (Deschamps et al. 2013, Fig. 3b)."""
+    from .variation import iso_mg_lines, olivine_line
+    s = STYLES[style]
+    n = len(panels)
+    ncol = max(1, min(int(ncol), n))
+    nrow = int(np.ceil(n / ncol)) if n else 1
+    fig = _figure((panel_size[0] * ncol, panel_size[1] * nrow))
+    fig.patch.set_facecolor(s["bg"])
+    axes = np.atleast_1d(fig.subplots(nrow, ncol)).ravel()
+    for ax in axes[n:]:
+        ax.set_visible(False)
+    xs = table[x]
+    # one x range for every panel, so the panels can be compared directly
+    xok = xs.dropna()
+    if len(xok):
+        pad_x = (xok.max() - xok.min()) * 0.06 or 1.0
+        xr = (xok.min() - pad_x, xok.max() + pad_x)
+    else:
+        xr = (0.0, 1.0)
+    for k, (ax, col) in enumerate(zip(axes, panels)):
+        _style_axes(ax, s, _var_label(x, basis), _var_label(col, basis))
+        if _APP["grid"]:
+            ax.grid(color=s["grid"], lw=0.5)
+            ax.set_axisbelow(True)
+        ys = table[col]
+        _draw_points(ax, xs, ys, sty.loc[table.index], s,
+                     None if labels is None else labels.loc[table.index])
+        ok = xs.notna() & ys.notna()
+        ax.set_xlim(*xr)
+        if ok.any():
+            pad_y = (ys[ok].max() - ys[ok].min()) * 0.08 or 0.1
+            ax.set_ylim(max(0.0, ys[ok].min() - pad_y), ys[ok].max() + pad_y)
+        else:
+            ax.text(0.5, 0.5, "No data", transform=ax.transAxes, ha="center",
+                    va="center", color=s["muted"], fontsize=9)
+        if x == "MgO" and col == "FeOt":
+            x0, x1 = ax.get_xlim()
+            y0, y1 = ax.get_ylim()
+            lw = float(_APP["line_width"]) * 0.8
+            if mg_lines:
+                for mg, (mx, fy) in iso_mg_lines(mgo_max=max(x1, 1.0)).items():
+                    ax.plot(mx, fy, color=s["muted"], lw=lw, ls="--", zorder=1)
+                    xi = min(x1 * 0.97, mx[-1])
+                    yi = xi * (fy[-1] / mx[-1])
+                    if y0 < yi < y1:
+                        ax.text(xi, yi, f"Mg# {mg:g}", fontsize=6.5, color=s["muted"],
+                                ha="right", va="bottom", zorder=3, clip_on=True,
+                                family=_APP["font_family"])
+            if olivine:
+                ox_, oy_ = olivine_line()
+                ax.plot(ox_, oy_, color=s["line"], lw=lw * 1.4, zorder=1)
+                # label where the line enters the plot, if it does
+                yt = y1 * 0.985
+                xt = ox_[0] * (1 - yt / oy_[1])
+                if x0 < xt < x1:
+                    ax.text(xt, yt, "Olivine", fontsize=6.5, color=s["fg"], ha="right",
+                            va="top", zorder=3, family=_APP["font_family"])
+            ax.set_xlim(x0, x1)
+            ax.set_ylim(y0, y1)
+        if k == 0:
+            _legend(ax, s, legend_title, legend)
+    fig.tight_layout()
+    return fig
+
+
 # ---------------- output ----------------
 def figure_bytes(fig, fmt, dpi=300):
     buf = io.BytesIO()

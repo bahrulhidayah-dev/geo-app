@@ -2,6 +2,23 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.14.0 - 2026-10-21
+
+- New page **Variation diagrams** (Plots menu): Harker diagrams (SiO2 on the
+  x axis) or MgO variation diagrams, one panel per major oxide, in one plate.
+  - Basis anhydrous (default) or as measured.
+  - 2, 3 or 4 panels per row; all panels share the x range.
+  - Optional trace elements (as measured); Ni and Cr suggested for MgO
+    diagrams.
+  - On MgO diagrams: iso-Mg# lines (85–95) and the olivine line on the FeOt
+    panel (Deschamps et al. 2013), each Auto, Always or Off.
+  - Plotted values as CSV; scientific basis with references; choices saved
+    in project files.
+- Sources: Rollinson and Pease (2021) for the choice of x axis, Mg#, the
+  reading of trends and the closure caveat; Harker (1909) as cited there.
+- Scientific methods: variation diagrams (chapter 5), new app conventions
+  (chapter 9) and tests (chapter 10). Manual: chapter 9.
+
 ## 0.13.0 - 2026-10-21
 
 Checks from the Stage A and B literature review (`reference/stage_AB_findings.md`).

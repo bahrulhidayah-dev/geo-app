@@ -210,6 +210,53 @@ Special cases:
   detection limit are left out; dotted lines bridge the gaps. All 35
   normalising sets are those compiled by Janoušek et al. (2006), each with its
   reference.
+- **Variation diagrams** (Plots → Variation diagrams; `geochem/variation.py`).
+  - *Harker diagrams*: SiO2 on the x axis against every major oxide. This
+    type of variation diagram was popularised by Harker (1909, as cited in
+    Rollinson and Pease 2021, section 3.3). SiO2 is chosen because it is
+    the main constituent and usually varies most (Rollinson and Pease 2021,
+    section 3.3.2).
+  - *MgO variation diagrams*: MgO on the x axis. Rollinson and Pease (2021,
+    section 3.3.2) recommend MgO for mafic and ultramafic suites, whose SiO2
+    range is small, because MgO is held in olivine and pyroxene and varies
+    strongly with melting or crystal removal. The same plots are used for
+    peridotites and serpentinites (Niu 2004; Deschamps et al. 2013).
+  - *Reading the trends.* Most trends are mixing lines: between magmas,
+    between a melt and crystals that are added or removed (fractional
+    crystallisation, accumulation), during partial melting, or between
+    sediment components. Partial melting and fractional crystallisation can
+    give the same trend on major-element plots; trace elements, isotopes
+    and mineral compositions plotted on the same diagram help to tell them
+    apart (Rollinson and Pease 2021, section 3.3.1).
+  - *Closure.* Because oxides sum to 100 %, some correlations, especially
+    against SiO2, can be produced by the constant sum alone. Aitchison and
+    Egozcue (2005, as cited in Rollinson and Pease 2021) called Harker
+    diagrams misleading. Rollinson and Pease (2021, section 3.3.2.2) answer
+    that bivariate plots give geologically meaningful results in practice.
+    They advise testing trends against a specific hypothesis. GeoChem App
+    shows the plots and leaves this judgement to the user.
+  - Panels: TiO2, Al2O3, FeOt, MnO, MgO or SiO2, CaO, Na2O, K2O and P2O5,
+    when present; FeOt = FeO + 0.8998 Fe2O3.
+  - Basis: *anhydrous* (default; the same recalculation as for TAS,
+    chapter 2) or *as measured*. [Source: Le Bas et al. 1986; Niu 2004;
+    Deschamps et al. 2013]
+  - Trace elements chosen by the user are plotted as measured, without the
+    anhydrous recalculation. [App convention] Default: none for Harker
+    diagrams; Ni and Cr for MgO diagrams, when present. [App convention]
+  - All panels share one x range, so they can be compared. [App convention]
+  - Mg# is 100 × Mg/(Mg + Fe²⁺) in atomic proportions with all iron as
+    Fe²⁺, the definition used by Rollinson and Pease (2021, section 3.3.2,
+    e). They note that several definitions exist and that the one used
+    should always be stated.
+  - *Iso-Mg# lines* on the FeOt panel (MgO diagrams only):
+    FeOt = MgO × (71.844 / 40.304) × (100 / Mg# − 1), all iron as Fe²⁺, for
+    Mg# 85, 87.5, 90, 92.5 and 95 (Deschamps et al. 2013, Fig. 3b).
+  - *Olivine line*: the straight line from forsterite (MgO 57.30 wt%) to
+    fayalite (FeO 70.51 wt%). Mixing by mass is linear, so all olivine
+    compositions lie on it (Deschamps et al. 2013, Fig. 3b).
+  - Both lines can be *Auto* (shown only when the data contain ultramafic
+    samples, chapter 4.1), *Always* or *Off*. Default: Auto.
+    [App convention]
 
 ## 6. Naming samples from a diagram (classification)
 
@@ -244,7 +291,8 @@ Special cases:
     within about 0.6 %.
   - Hart and Zindler (1986) give the array in metal weight ratios (Mg/Si,
     Al/Si), not oxide ratios. Their values are not mixed into this oxide
-    plot.
+    plot. (Rollinson and Pease 2021, section 3.3.2 d, give the same
+    conversion: element wt% = 0.529 Al2O3, 0.467 SiO2, 0.603 MgO.)
 - **Styles.** Screen styles and the *Publication* style change only colours
   and fonts, never positions. Figures are made with Matplotlib (SVG on
   screen; PNG, SVG or PDF on download).
@@ -276,6 +324,10 @@ Report these in your methods section if they affect your results.
 | Column without a unit | wt% (oxides), ppm (elements) | Column setup |
 | Oxides left out of the anhydrous sum | LOI, H2O+, CO2, Cr2O3, NiO | — |
 | Boundary points in classification | counted as inside | — |
+| Variation diagrams: basis | anhydrous | Variation diagrams page |
+| Variation diagrams: trace elements | as measured; Ni and Cr by default on MgO diagrams | Variation diagrams page |
+| Variation diagrams: iso-Mg# and olivine lines | Auto (only with ultramafic samples) | Variation diagrams page |
+| Variation diagrams: panels per row | 3 | Variation diagrams page |
 
 ## 10. Checks and tests
 
@@ -289,6 +341,9 @@ Report these in your methods section if they affect your results.
   type: serpentinite, komatiite, picrite, boninite, basalt and nephelinite.
   Each received the expected name.
 - **F-M-W zero replacement.** Reproduces the idealised example in chapter 8.
+- **Variation diagrams (0.14.0).** For a test basalt, anhydrous SiO2 and
+  FeOt equal the hand calculation. A point on the Mg# 90 line has
+  Mg# = 90.0. Fo90 olivine lies on the olivine line and has Mg# = 90.0.
 
 ## 11. References
 
@@ -330,6 +385,11 @@ basis tab.
   Cambridge University Press, Cambridge. ISBN 978-0-521-66215-4
 - Maniar P.D., Piccoli P.M. (1989) Tectonic discrimination of granitoids.
   Geological Society of America Bulletin 101, 635–643.
+- Aitchison J., Egozcue J.J. (2005) Compositional data analysis: where are
+  we and where should we be heading? Mathematical Geology 37, 829–850.
+  (as cited in Rollinson and Pease 2021)
+- Harker A. (1909) The Natural History of Igneous Rocks. Methuen, London.
+  (as cited in Rollinson and Pease 2021)
 - Mikuni K., Ishikawa A., Sato R. (2025) Geochemical Journal 59(6),
   299–314. (XRF module; full reference in the user manual, chapter 14)
 - Niu Y. (2004) Bulk-rock major and trace element compositions of abyssal
@@ -343,6 +403,8 @@ basis tab.
   Geochemistry of abyssal peridotites (Mid-Atlantic Ridge, 15°20'N, ODP
   Leg 209): implications for fluid/rock interaction in slow spreading
   environments. Chemical Geology 234, 179–210.
+- Rollinson H., Pease V. (2021) Using Geochemical Data: To Understand
+  Geological Processes, 2nd edition. Cambridge University Press, Cambridge.
 - Shand S.J. (1943) Eruptive Rocks. Their Genesis, Composition,
   Classification, and Their Relation to Ore-Deposits. John Wiley and Sons,
   New York.
