@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use GeoChem App, please cite it as below, together with GCDkit and the original reference of every diagram you used."
 title: "GeoChem App: a free web application for whole-rock geochemistry"
-version: 0.15.1
-date-released: 2026-10-21
+version: 0.15.2
+date-released: 2026-10-22
 license: GPL-3.0-or-later
 url: "https://geo-app-hidayah.streamlit.app"
 repository-code: "https://github.com/bahrulhidayah-dev/geo-app"

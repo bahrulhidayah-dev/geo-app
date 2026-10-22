@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.15.1"
+APP_VERSION = "0.15.2"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -124,7 +124,7 @@ for _k, _v in SETTINGS_DEFAULT.items():
     settings.setdefault(_k, _v)
 appearance = st.session_state.setdefault("appearance", dict(plotting.APPEARANCE_DEFAULT))
 plotting.set_appearance(appearance)
-st.session_state.setdefault("lang", "id")
+st.session_state.setdefault("lang", "en")   # English when the app is first opened
 
 # ================= Theme =================
 THEME_CHOICES = ["System", "Light", "Dark"]

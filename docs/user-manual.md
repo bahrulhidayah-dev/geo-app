@@ -197,7 +197,8 @@ with one row per sample (see chapter 18 for the options).
 
 - **Top bar:** the app name, **Documentation** (this manual),
   **References** (all scientific sources), **About** (version, license,
-  how to cite), the **language** menu and the **theme** menu
+  how to cite), the **language** menu (English when the app is first
+  opened; also Indonesian and Japanese) and the **theme** menu
   (system, light or dark).
 - **Left panel:** the data file, the work folder in use (if any), the pages
   (Overview: Dashboard, Data, Project; Plots; Tools) and the

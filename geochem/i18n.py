@@ -5,7 +5,7 @@
 
 import streamlit as st
 
-LANGUAGES = {"id": "Bahasa Indonesia", "en": "English", "ja": "日本語"}
+LANGUAGES = {"en": "English", "id": "Bahasa Indonesia", "ja": "日本語"}
 
 # English: (Indonesian, Japanese)
 TR = {

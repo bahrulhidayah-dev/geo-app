@@ -2,11 +2,17 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.15.2 - 2026-10-22
+
+- The app opens in English (was Indonesian). English is first in the
+  language menu.
+
 ## 0.15.1 - 2026-10-21
 
 - New page **What's new** (changelog): latest version on top, earlier
   versions folded. Opened from the link "What's new · version" at the bottom
   of the left panel, above the developer credit, and from the About page.
+  Only version numbers are shown; release dates stay in this file.
 
 ## 0.15.0 - 2026-10-21
 
