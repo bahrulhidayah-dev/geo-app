@@ -139,6 +139,13 @@ GENERAL = [
      "figures and presentations that are friendly to colorblind people. "
      "jfly.uni-koeln.de/color (colour-blind safe palette)"),
     ("XRF module", xrfqc.CITATION + " (CC BY 4.0)"),
+    ("Example datasets", "U.S. Geological Survey. Certificates of analysis of the "
+     "geochemical reference materials AGV-2, BCR-2, BHVO-2, BIR-1, G-2, GSP-2, RGM-1 "
+     "and STM-1. USGS, Denver, Colorado."),
+    ("Example datasets", "Mikuni K., Ishikawa A., Sato R. (2025), Table 1 (CC BY 4.0): "
+     "major elements, Cr and Ni of the GSJ, IAG and SARM reference rocks, compiled from "
+     "Imai et al. (1995, 1999), Terashima et al. (1998) and the IAG and SARM "
+     "certificates."),
 ]
 
 LIBRARIES = [

@@ -84,11 +84,31 @@ To stop the app, close the black window (or press `Ctrl+C` in the terminal).
 ### Your first diagram in three steps
 
 1. Click **Data file (CSV or Excel)** in the left panel and choose your file,
-   or click **Try the example dataset** on the start page.
+   or open one of the **example datasets** (cards on the start page, or the
+   **Example datasets** menu under the file box).
 2. The **Dashboard** shows TAS, AFM, a spider diagram and a sample table.
 3. Open **Diagrams** in the left panel and click any diagram in the list.
 
 ![Dashboard with the example data](img/dashboard.png)
+
+### Example datasets
+
+| Set | Samples | Data | Try |
+|---|---|---|---|
+| Quick tour: mixed rock suite | 9, synthetic | majors + traces | every page |
+| Volcanic rocks: basalt to rhyolite | 14 real rocks | majors; traces for USGS rocks | TAS, AFM, K2O–SiO2, Harker |
+| Granitoids | 5 real rocks | majors; traces for GSP-2 and G-2 | Shand, Frost et al., Pearce et al. (1984) |
+| Plutonic rocks: gabbro to syenite | 9 real rocks | majors; traces for USGS rocks | plutonic classification |
+| Basalts from different tectonic settings | 5 real rocks | majors; traces for 3 USGS basalts | spider and discrimination diagrams |
+| Ultramafic rocks and serpentinite | 5 real rocks | majors, Cr, Ni, LOI | MgO variation diagrams, Paulick |
+| All reference rocks | 27 real rocks | as above | everything |
+| Messy lab file | 30, synthetic | Excel file with typical problems | the Data page |
+
+The real rocks are international reference materials (USGS, GSJ and
+others). Each row names its source in the **Reference** column; empty cells
+mean the source gives no value. Sources: Scientific methods, section 10.1.
+Plutonic rocks also get a TAS name: TAS is meant for volcanic rocks, so
+use the plutonic diagrams for them; this is a useful exercise.
 
 ## 3. Preparing your data
 

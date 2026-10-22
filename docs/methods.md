@@ -373,6 +373,44 @@ Report these in your methods section if they affect your results.
   FeOt equal the hand calculation. A point on the Mg# 90 line has
   Mg# = 90.0. Fo90 olivine lies on the olivine line and has Mg# = 90.0.
 
+- **Example datasets (0.16.0).** Each set was loaded and every page and
+  all 27 diagrams were drawn without error. TAS names of the reference
+  rocks agree with their rock types; for example BIR-1 and BHVO-2 →
+  basalt, RGM-1 and the JR rhyolites → rhyolite, OKUM → komatiite, JP-1,
+  JP-2 and UB-N → "TAS not applicable (ultramafic rock)". Plutonic rocks
+  get volcanic TAS names, as expected; use the plutonic diagrams for them.
+
+### 10.1 Sources of the example datasets
+
+The start page and the *Example datasets* menu offer eight sets. Two are
+synthetic and are labelled *Synthetic* in the app: the quick tour
+(`geochem/example_data.csv`) and the messy lab file
+(`examples/geochem_test_30.xlsx`). The other six are **real rocks**:
+international geochemical reference materials, taken from
+`geochem/examples/reference_rocks.csv`.
+
+- **USGS rocks** (BHVO-2, BCR-2, BIR-1, AGV-2, RGM-1, GSP-2, G-2, STM-1):
+  certified or recommended values and information values from the USGS
+  certificates of analysis, unchanged. MnO = Mn × 1.2912 where a
+  certificate gives Mn in µg/g [App convention, oxide conversion]. The
+  certificates give no LOI.
+- **GSJ and other rocks** (JB-1a, JB-2, JB-3, JA-1, JA-2, JA-3, JR-1, JR-2,
+  JR-3, JG-1a, JG-2, JG-3, JGb-1, JGb-2, JH-1, JP-1, JP-2, UB-N, OKUM): major
+  elements, Cr and Ni from Mikuni et al. (2025, Table 1), who compiled them
+  from Imai et al. (1995, 1999), Terashima et al. (1998) and the IAG and
+  SARM certificates (as cited in Mikuni et al. 2025). LOI is the value
+  measured by Mikuni et al. (2025) on their own powders; a negative LOI is a
+  gain on ignition (oxidation of Fe²⁺).
+- Empty cells mean that the source gives no value. No value was
+  estimated or filled in.
+- Rock types are those of the sources. *Group* (the colour in plots) is a
+  simplified rock type, the broad class (volcanic, plutonic, ultramafic)
+  or, for the basalt set, the tectonic setting: mid-ocean-ridge type
+  (BIR-1, Iceland), ocean island (BHVO-2, Hawaii), continental flood basalt
+  (BCR-2, Columbia River) and island arc (JB-2, Izu-Oshima; JB-3, Fuji).
+  [App convention]
+- Every row names its source in the *Reference* column.
+
 ## 11. References
 
 Sources of the methods in this document. The original reference of every
@@ -419,7 +457,8 @@ basis tab.
 - Harker A. (1909) The Natural History of Igneous Rocks. Methuen, London.
   (as cited in Rollinson and Pease 2021)
 - Mikuni K., Ishikawa A., Sato R. (2025) Geochemical Journal 59(6),
-  299–314. (XRF module; full reference in the user manual, chapter 14)
+  299–314. doi:10.2343/geochemj.GJ25017 (XRF module and the GSJ example
+  rocks; full reference in the user manual, chapter 14)
 - Niu Y. (2004) Bulk-rock major and trace element compositions of abyssal
   peridotites: implications for mantle melting, melt extraction and
   post-melting processes beneath mid-ocean ridges. Journal of Petrology 45,
@@ -436,6 +475,11 @@ basis tab.
 - Shand S.J. (1943) Eruptive Rocks. Their Genesis, Composition,
   Classification, and Their Relation to Ore-Deposits. John Wiley and Sons,
   New York.
+- U.S. Geological Survey. Certificates of analysis of the geochemical
+  reference materials AGV-2 (andesite), BCR-2 (basalt), BHVO-2 (basalt),
+  BIR-1 (Icelandic basalt), G-2 (granite), GSP-2 (granodiorite), RGM-1
+  (rhyolite) and STM-1 (syenite). USGS, Denver, Colorado. (example
+  datasets)
 - Snow J.E., Dick H.J.B. (1995) Pervasive magnesium loss by marine
   weathering of peridotite. Geochimica et Cosmochimica Acta 59, 4219–4235.
 - Verma S.P., Rodríguez-Ríos R., González-Ramírez R. (2010) Statistical

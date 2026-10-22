@@ -18,8 +18,8 @@ import importlib
 import json
 
 import geochem
-from geochem import (calc, catalog, data, docs, norms, plotting, project, screening,
-                     symbols, variation, xrfcal, xrfqc)
+from geochem import (calc, catalog, data, docs, examples, norms, plotting, project,
+                     screening, symbols, variation, xrfcal, xrfqc)
 from geochem import i18n
 from geochem.i18n import LANGUAGES, t
 
@@ -28,7 +28,7 @@ from geochem.i18n import LANGUAGES, t
 # reruns app.py but keeps the old geochem modules in memory. Reload every
 # module whose file changed, in dependency order, so all code is current.
 def _reload_changed_modules():
-    order = [calc, data, norms, screening, variation, symbols, i18n, plotting, catalog,
+    order = [calc, data, examples, norms, screening, variation, symbols, i18n, plotting, catalog,
              xrfqc, xrfcal, docs, project]
     stamps = getattr(geochem, "_file_stamps", {})
     changed = False
@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.15.2"
+APP_VERSION = "0.16.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -304,6 +304,23 @@ THEME_ICON = {"System": ":material/brightness_auto:", "Light": ":material/light_
 
 uploaded = st.sidebar.file_uploader(t("Data file (CSV or Excel)"),
                                     type=["csv", "xlsx"], key="uploader")
+
+
+def load_example(key):
+    """Button callback: load an example set and colour it by its Group column."""
+    st.session_state["dataset"] = examples.load(key)
+    st.session_state["group_col"] = "Suite" if key == "messy" else "Group"
+    st.session_state.pop("group_keep", None)
+
+
+with st.sidebar.popover(t("Example datasets"), icon=":material/dataset:",
+                        width="stretch"):
+    st.caption(t("Real reference rocks and synthetic teaching data. Loading one replaces "
+                 "the data shown."))
+    for _k in examples.available():
+        _e = examples.EXAMPLES[_k]
+        st.button(t(_e["title"]), key=f"ex_side_{_k}", icon=_e["icon"], type="tertiary",
+                  on_click=load_example, args=(_k,), width="stretch")
 if not HOSTED and work_folder():
     st.sidebar.caption(f":material/folder: {t('Work folder')}: {Path(work_folder()).name}")
 if HOSTED:
@@ -458,9 +475,22 @@ def empty_state():
 <h2>{t("Plot your rock data in a few clicks")}</h2>
 <p>{t("Load a CSV or Excel file in the left panel. Put one sample per row and the column names in the first row, for example Sample, SiO2, MgO, La, Ce. Values like &lt;0.01, n.d. or bdl are handled for you.")}</p>
 </div>""", unsafe_allow_html=True)
-    if st.button(t("Try the example dataset"), type="primary"):
-        st.session_state["dataset"] = (EXAMPLE_FILE.name, EXAMPLE_FILE.read_bytes())
-        st.rerun()
+    st.markdown(f"**{t('Or start with an example dataset')}**")
+    keys = examples.available()
+    for i in range(0, len(keys), 3):
+        cols = st.columns(3, gap="small")
+        for col, k in zip(cols, keys[i:i + 3]):
+            e = examples.EXAMPLES[k]
+            with col, st.container(border=True, height="stretch"):
+                tags = "".join(f'<span class="gc-tag">{t(x)}</span>' for x in e["tags"])
+                n = examples.size(k)
+                st.markdown(f"**{t(e['title'])}**" + (f" · {n}" if n else ""))
+                st.markdown(tags, unsafe_allow_html=True)
+                st.caption(t(e["text"]))
+                st.button(t("Open"), key=f"ex_card_{k}", icon=e["icon"],
+                          type="primary" if k == "quick" else "secondary",
+                          on_click=load_example, args=(k,))
+    st.caption(t(examples.REF_NOTE))
 
 
 def catalog_coords(d, df):
@@ -530,11 +560,22 @@ def card_head(title, sub, key, target=None, did=None):
 
 
 # ================= Pages =================
+def example_note():
+    """Short description and source of a loaded example set."""
+    k = examples.key_of(ctx["name"]) if ctx is not None else None
+    if not k:
+        return
+    e = examples.EXAMPLES[k]
+    st.info(f"**{t('Example dataset')}: {t(e['title'])}.** {t(e['text'])}  \n"
+            + t(e.get("note") or examples.REF_NOTE), icon=e["icon"])
+
+
 def page_dashboard():
     header(t("Dashboard"))
     if ctx is None:
         empty_state()
         return
+    example_note()
     df = view()
     kw = opts(df)
     small = (5.4, 4.1)

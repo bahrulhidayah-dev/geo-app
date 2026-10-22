@@ -2,6 +2,21 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.16.0 - 2026-10-22
+
+- **Example datasets**: eight sets to explore the app, as cards on the
+  start page and in a new **Example datasets** menu in the left panel:
+  quick tour (synthetic), volcanic rocks, granitoids, plutonic rocks,
+  basalts from different tectonic settings, ultramafic rocks and
+  serpentinite, all reference rocks, and a messy lab file (synthetic).
+- The real sets are 27 international reference rocks: USGS certificates
+  (majors and traces) and Mikuni et al. (2025) Table 1 (GSJ and other rocks;
+  majors, Cr, Ni, LOI). New file `geochem/examples/reference_rocks.csv`.
+- A loaded example shows its description and sources on the Dashboard and
+  is coloured by its Group column.
+- Scientific methods: section 10.1 (sources of the example data). Manual:
+  chapter 2. References page: new category Example datasets.
+
 ## 0.15.2 - 2026-10-22
 
 - The app opens in English (was Indonesian). English is first in the
