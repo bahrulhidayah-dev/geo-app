@@ -159,9 +159,11 @@ Give iron in any of these forms; the app converts as needed:
 - Fe2O3t (total iron as Fe2O3; typical XRF),
 - FeOt (total iron as FeO).
 
-FeOt = FeO + 0.8998 × Fe2O3. When a calculation needs FeO and Fe2O3
-separately (CIPW norm, Verma et al. 2006) and only total iron is given, the
-ratio Fe³⁺/Fe(total) from **Settings** is used (default 0.15).
+FeOt = FeO + 0.8998 × Fe2O3. A file may mix the forms (some samples with
+FeO and Fe2O3, others with total iron only); iron is always counted once
+per sample. When a calculation needs FeO and Fe2O3 separately (CIPW norm,
+Verma et al. 2006) and only total iron is given, iron is split with the
+method chosen in **Settings** (chapter 13).
 
 ### Values below detection limit and other text
 
@@ -535,11 +537,29 @@ Change how every diagram and graph looks, on screen and in exported files:
 - **Recalculate major oxides to 100 % volatile-free before TAS**
   (recommended by Le Bas et al. 1986). It also applies to other diagrams
   marked *anhydrous* in their scientific basis.
-- **Fe³⁺/Fe(total)** used when only total iron is measured
-  (CIPW norm and Verma et al. 2006). Default 0.15. IUGS asks you to justify
-  how total iron is split (Le Maitre et al. 2002). The value is **not valid
-  for serpentinised rocks**: serpentinization oxidises Fe²⁺ to Fe³⁺, so
-  measure FeO by titration for these samples.
+- **Iron split when only total iron is measured** (CIPW norm and Verma et
+  al. 2006). IUGS asks you to justify how total iron is split (Le Maitre et
+  al. 2002). Choose one:
+  - *Fixed Fe³⁺/Fe(total) ratio* (default 0.15): the same ratio for every
+    sample.
+  - *Le Maitre (1976), volcanic rocks* or *plutonic rocks*: the ratio
+    depends on SiO2 and Na2O + K2O. Recommended by Le Bas et al. (1986)
+    when only total iron is given.
+  - *Middlemost (1989)*: a standard Fe2O3/FeO ratio for each TAS field
+    (basalt 0.2, andesite 0.35, rhyolite 0.5 ...). For volcanic rocks.
+    Samples outside the TAS fields get the fixed ratio, which you can set
+    below the choice.
+
+  **Also replace measured FeO and Fe2O3** (off by default) gives every
+  sample the ratio of the chosen method, also when FeO and Fe2O3 were
+  measured. Middlemost (1989) recommends this for classifications that use
+  the norm, because altered rocks have too much Fe2O3.
+
+  No method is **valid for serpentinised rocks**: serpentinization
+  oxidises Fe²⁺ to Fe³⁺, so measure FeO by titration for these samples.
+  The note under the CIPW norm table names the method used; report it in
+  your methods section. Scientific methods, section 3, gives the formulas
+  and a test against 80,000 measured analyses.
 - **Ultramafic samples: anhydrous MgO at or above** (default 30 wt%). This
   threshold is used for the ultramafic warnings, the MgO deficit and the XRF
   ultramafic check. Samples whose Rock type or Group names an ultramafic

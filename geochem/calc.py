@@ -20,36 +20,46 @@ MAJORS_ANHYDROUS = ["SiO2", "TiO2", "Al2O3", "Fe2O3", "FeO", "Fe2O3t", "FeOt",
 
 
 def feot(df):
-    """Total iron as FeO (wt%).
-    Uses FeOt if given; else FeO + 0.8998 * Fe2O3; else 0.8998 * Fe2O3t."""
+    """Total iron as FeO (wt%), per sample: FeOt if given; else
+    FeO + 0.8998 * Fe2O3; else 0.8998 * Fe2O3t. Files may mix forms
+    (some rows with FeO and Fe2O3, others with total iron only)."""
+    total = pd.Series(np.nan, index=df.index, dtype=float)
     if "FeOt" in df:
-        return df["FeOt"]
-    total = pd.Series(np.nan, index=df.index)
-    if "FeO" in df or "Fe2O3" in df:
-        feo = df["FeO"] if "FeO" in df else 0.0
-        fe2o3 = df["Fe2O3"] if "Fe2O3" in df else 0.0
-        total = pd.Series(feo, index=df.index).fillna(0) + \
-            FEO_PER_FE2O3 * pd.Series(fe2o3, index=df.index).fillna(0)
-        both_missing = pd.Series(True, index=df.index)
-        for c in ("FeO", "Fe2O3"):
-            if c in df:
-                both_missing &= df[c].isna()
-        total[both_missing] = np.nan
+        total = df["FeOt"].astype(float).copy()
+    sep = [c for c in ("FeO", "Fe2O3") if c in df]
+    if sep:
+        feo = df["FeO"] if "FeO" in df else pd.Series(0.0, index=df.index)
+        fe2o3 = df["Fe2O3"] if "Fe2O3" in df else pd.Series(0.0, index=df.index)
+        calc_t = feo.fillna(0) + FEO_PER_FE2O3 * fe2o3.fillna(0)
+        calc_t[df[sep].isna().all(axis=1)] = np.nan
+        total = total.fillna(calc_t)
     if "Fe2O3t" in df:
         total = total.fillna(FEO_PER_FE2O3 * df["Fe2O3t"])
     return total
 
 
+def _iron_once(df):
+    """Iron (wt%) counted once per sample for oxide totals: FeO + Fe2O3 where
+    either was measured, otherwise Fe2O3t, otherwise FeOt."""
+    iron = pd.Series(np.nan, index=df.index, dtype=float)
+    sep = [c for c in ("FeO", "Fe2O3") if c in df]
+    if sep:
+        iron = df[sep].sum(axis=1, min_count=1)
+    for c in ("Fe2O3t", "FeOt"):
+        if c in df:
+            iron = iron.fillna(df[c])
+    return iron
+
+
 def anhydrous(df):
     """Major oxides recalculated to 100 wt% on a volatile-free basis.
-    Only oxides present in the file are used. Iron forms are not double-counted:
-    Fe2O3t or FeOt are used only when FeO/Fe2O3 are absent."""
+    Only oxides present in the file are used. Iron is counted once per sample
+    (see _iron_once), so FeO/Fe2O3 and FeOt/Fe2O3t are never added together,
+    also when a file mixes the two forms. Every iron column present is
+    scaled with the same total."""
     cols = [c for c in MAJORS_ANHYDROUS if c in df]
-    if any(c in df for c in ("FeO", "Fe2O3")):
-        cols = [c for c in cols if c not in ("Fe2O3t", "FeOt")]
-    elif "Fe2O3t" in df and "FeOt" in df:
-        cols = [c for c in cols if c != "FeOt"]
-    total = df[cols].sum(axis=1, min_count=1)
+    other = [c for c in cols if c not in ("FeO", "Fe2O3", "Fe2O3t", "FeOt")]
+    total = df[other].sum(axis=1, min_count=1).add(_iron_once(df), fill_value=0)
     out = df[cols].div(total, axis=0) * 100
     return out, total
 

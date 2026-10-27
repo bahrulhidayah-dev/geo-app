@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from .calc import FEO_PER_FE2O3
+from . import iron as _iron
 
 # Molar masses of the oxides used by the norm (g/mol)
 MW = {"SiO2": 60.0843, "TiO2": 79.8658, "Al2O3": 101.9613, "Fe2O3": 159.6882,
@@ -246,30 +247,18 @@ def _finish(y):
     return np.append(w, w[parts].sum())
 
 
-def iron_for_norm(df, fe3_ratio=0.15):
-    """FeO and Fe2O3 (wt%) for the norm. Measured FeO and Fe2O3 are used as
-    they are. When only total iron is known it is split with
-    Fe2O3/(FeOt as Fe2O3) = fe3_ratio (molar Fe3+/Fetot), and a note is returned."""
-    feo = df["FeO"] if "FeO" in df else pd.Series(np.nan, index=df.index)
-    fe2o3 = df["Fe2O3"] if "Fe2O3" in df else pd.Series(np.nan, index=df.index)
-    measured = feo.notna() & fe2o3.notna()
-    if "FeOt" in df:
-        tot = df["FeOt"]
-    elif "Fe2O3t" in df:
-        tot = df["Fe2O3t"] * FEO_PER_FE2O3
-    else:
-        tot = feo.fillna(0) + FEO_PER_FE2O3 * fe2o3.fillna(0)
-        tot[feo.isna() & fe2o3.isna()] = np.nan
-    split = ~measured & tot.notna()
-    feo = feo.where(measured, tot * (1 - fe3_ratio))
-    fe2o3 = fe2o3.where(measured, tot * fe3_ratio / FEO_PER_FE2O3)
-    return feo, fe2o3, int(split.sum())
+def iron_for_norm(df, iron=0.15):
+    """FeO and Fe2O3 (wt%) for the norm, and the number of samples whose iron
+    was split. `iron` is a Fe3+/Fe(total) ratio or a choice from
+    iron.spec(settings) (fixed ratio, Le Maitre 1976 or Middlemost 1989)."""
+    feo, fe2o3, info = _iron.split(df, iron)
+    return feo, fe2o3, info["n_split"]
 
 
-def cipw(df, fe3_ratio=0.15, normsum=False):
+def cipw(df, iron=0.15, normsum=False):
     """CIPW norm (wt%) for every sample. Returns (table, number of samples
     whose iron had to be split into FeO and Fe2O3)."""
-    feo, fe2o3, n_split = iron_for_norm(df, fe3_ratio)
+    feo, fe2o3, n_split = iron_for_norm(df, iron)
     data = pd.DataFrame(index=df.index)
     for ox in OXIDES:
         if ox == "FeO":

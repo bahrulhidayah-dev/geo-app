@@ -87,6 +87,16 @@ GENERAL = [
     ("CIPW norm", "Hutchison C.S. (1975) The norm, its variations, their calculation and "
      "relationships. Schweizerische Mineralogische und Petrographische Mitteilungen 55, "
      "243-256."),
+    ("Iron split", "Le Maitre R.W. (1976) Some problems of the projection of chemical "
+     "data into mineralogical classifications. Contributions to Mineralogy and Petrology "
+     "56, 181-189. (FeO/(FeO + Fe2O3) from SiO2 and Na2O + K2O, volcanic and plutonic "
+     "rocks)"),
+    ("Iron split", "Middlemost E.A.K. (1989) Iron oxidation ratios, norms and the "
+     "classification of volcanic rocks. Chemical Geology 77, 19-26. (standard "
+     "Fe2O3/FeO ratios by TAS field)"),
+    ("Iron split", "Gard M., Hasterok D., Halpin J.A. (2019) Global whole-rock "
+     "geochemical database compilation. Earth System Science Data 11, 1553-1566. "
+     "doi:10.5194/essd-11-1553-2019 (CC BY 4.0; used to test the iron split)"),
     ("Screening and naming", "Le Bas M.J., Le Maitre R.W., Streckeisen A., Zanettin B. "
      "(1986) A chemical classification of volcanic rocks based on the total alkali-silica "
      "diagram. Journal of Petrology 27, 745-750. (freshness limits H2O+ < 2 wt%, "

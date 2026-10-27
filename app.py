@@ -18,7 +18,7 @@ import importlib
 import json
 
 import geochem
-from geochem import (calc, catalog, data, docs, examples, norms, plotting, project,
+from geochem import (calc, catalog, data, docs, examples, iron, norms, plotting, project,
                      screening, symbols, variation, xrfcal, xrfqc)
 from geochem import i18n
 from geochem.i18n import LANGUAGES, t
@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.16.1"
+APP_VERSION = "0.17.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -117,7 +117,7 @@ if _pending is not None:
 
 SETTINGS_DEFAULT = {"tas_recalc": True, "export_style": "publication",
                     "dpi": 300, "legend": "auto", "palette": "Default",
-                    "use_file_styles": True, "fe3_ratio": 0.15,
+                    "use_file_styles": True, "fe3_ratio": 0.15, "fe_method": "fixed", "fe_all": False,
                     "xrf_qc": False, "um_mgo": 30.0, "qc_tol": 5.0}
 settings = st.session_state.setdefault("settings", dict(SETTINGS_DEFAULT))
 for _k, _v in SETTINGS_DEFAULT.items():
@@ -526,7 +526,7 @@ def classification_table(d, df):
             if d["id"] == "TAS":
                 # IUGS order (Le Maitre et al. 2002): high-Mg rocks and
                 # nephelinites first, then the TAS field.
-                name, hm = screening.tas_names(df, names, settings["fe3_ratio"],
+                name, hm = screening.tas_names(df, names, iron.spec(settings),
                                                settings["um_mgo"])
                 cols[t("IUGS name")] = name
                 cols[t("TAS field")] = names
@@ -889,7 +889,7 @@ def page_data():
             if (um_mask & iron_not_measured(df)).any():
                 st.warning(t("FeO was not measured for {n} ultramafic samples. "
                              "Serpentinization oxidises Fe2+ to Fe3+ (Deschamps et al. "
-                             "2013), so the fixed Fe3+/Fe(total) of Settings is not "
+                             "2013), so no iron split of Settings is "
                              "reliable for them: the CIPW norm and Verma et al. (2006) "
                              "results are approximate. Ask the lab for FeO by "
                              "titration.").format(n=int((um_mask & iron_not_measured(df)).sum())),
@@ -946,13 +946,13 @@ def page_data():
             missing_note(["SiO2", "Al2O3", "..."])
         else:
             recast = st.toggle(t("Recast the norm to 100 %"), value=False)
-            table, n_split = norms.cipw(df, settings["fe3_ratio"], normsum=recast)
+            table, n_split = norms.cipw(df, iron.spec(settings), normsum=recast)
             res = pd.concat([df.iloc[:, [0]], norms.compact(table).round(2)], axis=1)
             st.dataframe(res, hide_index=True)
             if n_split:
-                st.caption(t("Iron was split into FeO and Fe2O3 for {n} samples with "
-                             "Fe3+/Fe(total) = {r} (change in Settings).")
-                           .format(n=n_split, r=settings["fe3_ratio"]))
+                st.caption(t("Iron was split into FeO and Fe2O3 for {n} samples. "
+                             "Method: {m} (change in Settings).")
+                           .format(n=n_split, m=iron_method_text()))
                 n_um_fe = int((screening.ultramafic_mask(df, settings["um_mgo"])
                                & iron_not_measured(df)).sum())
                 if n_um_fe:
@@ -1615,6 +1615,54 @@ def page_project():
                          hide_index=True, height=min(38 + 35 * len(ex[:50]), 300))
 
 
+def iron_method_text():
+    """Short text of the iron-split choice, for notes under results."""
+    m = settings.get("fe_method", "fixed")
+    txt = t(iron.METHOD_LABELS[m])
+    if m == "fixed":
+        txt += f" = {settings['fe3_ratio']:g}"
+    if settings.get("fe_all"):
+        txt += "; " + t("measured FeO and Fe2O3 also replaced")
+    return txt
+
+
+def iron_settings():
+    """Settings: how FeO and Fe2O3 are obtained when only total iron is known."""
+    opts_ = list(iron.METHODS)
+    m = st.selectbox(
+        t("Iron split when only total iron is measured (CIPW norm, Verma 2006)"),
+        opts_, format_func=lambda v: t(iron.METHOD_LABELS[v]),
+        index=opts_.index(settings.get("fe_method", "fixed")),
+        help=t("Le Bas et al. (1986) recommend the method of Le Maitre (1976) when only "
+               "total iron is given. Le Maitre et al. (2002): if only total iron was "
+               "measured, the user must justify how it is split. No method is valid "
+               "for serpentinised rocks."))
+    settings["fe_method"] = m
+    if m == "fixed":
+        settings["fe3_ratio"] = st.slider(
+            t("Fe3+/Fe(total), atomic"), 0.0, 0.5, float(settings["fe3_ratio"]), 0.01,
+            help=t("The same ratio for every sample [App convention]."))
+    elif m in ("lemaitre_volcanic", "lemaitre_plutonic"):
+        eq = ("Ox = 0.93 − 0.0042 SiO2 − 0.022 (Na2O + K2O)" if m == "lemaitre_volcanic"
+              else "Ox = 0.88 − 0.0016 SiO2 − 0.027 (Na2O + K2O)")
+        st.caption(t("{eq}, with Ox = FeO/(FeO + Fe2O3) by weight (Le Maitre 1976). "
+                     "SiO2 and Na2O + K2O are taken on an anhydrous basis.").format(eq=eq))
+    else:
+        st.caption(t("Standard Fe2O3/FeO ratios by TAS field (Middlemost 1989, Table I): "
+                     "picrobasalt 0.15, basalt 0.2, basaltic andesite 0.3, andesite 0.35, "
+                     "dacite 0.4, rhyolite 0.5, tephrite/basanite 0.2–0.3, foidite "
+                     "0.1–0.4 (by Na2O + K2O). For volcanic rocks."))
+        settings["fe3_ratio"] = st.slider(
+            t("Fe3+/Fe(total) for samples outside the TAS fields"), 0.0, 0.5,
+            float(settings["fe3_ratio"]), 0.01)
+    settings["fe_all"] = st.toggle(
+        t("Also replace measured FeO and Fe2O3 (standardise all samples)"),
+        value=bool(settings.get("fe_all", False)),
+        help=t("Off: measured FeO and Fe2O3 are used as they are (Le Bas et al. 1986). "
+               "On: every sample gets the ratio of the chosen method, as Middlemost "
+               "(1989) recommends for classifications that use the norm."))
+
+
 def page_settings():
     header(t("Settings"))
     with st.container(border=True):
@@ -1622,11 +1670,7 @@ def page_settings():
         settings["tas_recalc"] = st.toggle(
             t("Recalculate major oxides to 100 % volatile-free before TAS"),
             value=settings["tas_recalc"], help=t("Recommended by Le Bas et al. (1986)."))
-        settings["fe3_ratio"] = st.slider(
-            t("Fe3+/Fe(total) used when only total iron is measured (CIPW norm, Verma 2006)"),
-            0.0, 0.5, float(settings["fe3_ratio"]), 0.01,
-            help=t("Le Maitre et al. (2002): if only total iron was measured, the user "
-                   "must justify how it is split. Not valid for serpentinised rocks."))
+        iron_settings()
         settings["um_mgo"] = st.slider(
             t("Ultramafic samples: anhydrous MgO at or above (wt%)"), 15.0, 45.0,
             float(settings["um_mgo"]), 1.0, key="um_mgo_general",

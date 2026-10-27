@@ -2,6 +2,29 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.17.0 - 2026-10-27
+
+- **Iron split methods** (Settings → Iron split when only total iron is
+  measured), used by the CIPW norm, the nephelinite test before TAS and
+  Verma et al. (2006):
+  - fixed Fe3+/Fe(total) ratio (as before, default 0.15);
+  - Le Maitre (1976), volcanic or plutonic equation (recommended by Le Bas
+    et al. 1986);
+  - Middlemost (1989), standard Fe2O3/FeO ratio for each TAS field.
+- New switch **Also replace measured FeO and Fe2O3** to standardise every
+  sample (Middlemost 1989).
+- The note under the CIPW norm table names the method used.
+- New module `geochem/iron.py`.
+- **Fix:** in files that mix iron forms (some rows with FeO and Fe2O3,
+  others with total iron only), the total iron of the second group was left
+  out of the anhydrous sum, which raised their anhydrous SiO2 and could
+  change their TAS field. Iron is now counted once per sample. Files with
+  one iron form give the same results as before.
+- Scientific methods: section 3 rewritten (formulas, conventions, sources);
+  section 10: hand checks and a test against 80,000 analyses with measured
+  FeO and Fe2O3 (Gard et al. 2019). References page: new category Iron
+  split.
+
 ## 0.16.1 - 2026-10-27
 
 - **Legend no longer hides samples.** New default legend position

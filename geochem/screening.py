@@ -70,7 +70,7 @@ def high_mg_names(df):
     return out
 
 
-def nephelinite_names(df, fe3_ratio, tas_field):
+def nephelinite_names(df, iron, tas_field):
     """Nephelinite and melanephelinite fall in TAS fields F and U1 and must be
     separated with the CIPW norm (Le Bas 1989, in Le Maitre et al. 2002 p. 36):
     ne > 20 % -> nephelinite; ne < 20 % with ab present but < 5 % ->
@@ -86,7 +86,7 @@ def nephelinite_names(df, fe3_ratio, tas_field):
         return out
     sub = df[test]
     try:
-        n, _ = norms.cipw(sub, fe3_ratio)
+        n, _ = norms.cipw(sub, iron)
     except (KeyError, calc.MissingData, ValueError):
         return out
     ne, ab = n["Ne"].reindex(sub.index), n["Ab"].reindex(sub.index)
@@ -146,7 +146,7 @@ def freshness(df, high_mg=None):
     return out
 
 
-def tas_names(df, tas_field, fe3_ratio=0.15, mgo_min=30.0):
+def tas_names(df, tas_field, iron=0.15, mgo_min=30.0):
     """IUGS rock name for volcanic rocks, following the order of Le Maitre et
     al. (2002): ultramafic rock type -> not applicable; high-Mg rocks;
     nephelinites; otherwise the TAS field. Returns (name, high_mg).
@@ -155,7 +155,7 @@ def tas_names(df, tas_field, fe3_ratio=0.15, mgo_min=30.0):
     meets the komatiite rule. When such a sample has no Rock type, the name
     gets a reminder; with Rock type = serpentinite (etc.) it is not named."""
     hm = high_mg_names(df)
-    neph = nephelinite_names(df, fe3_ratio, tas_field)
+    neph = nephelinite_names(df, iron, tas_field)
     name = tas_field.astype(object).copy()
     name[neph != ""] = neph[neph != ""]
     name[hm != ""] = hm[hm != ""]

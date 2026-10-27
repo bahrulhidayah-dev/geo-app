@@ -53,7 +53,7 @@ was taken from the work that cites it.
 
 | Quantity | Formula | Origin |
 |---|---|---|
-| FeOt (total iron as FeO) | FeOt if given; else FeO + 0.8998 × Fe2O3; else 0.8998 × Fe2O3t | stoichiometry: 2 FeO / Fe2O3 = 143.69 / 159.69 |
+| FeOt (total iron as FeO) | per sample: FeOt if given; else FeO + 0.8998 × Fe2O3; else 0.8998 × Fe2O3t | stoichiometry: 2 FeO / Fe2O3 = 143.69 / 159.69 |
 | Fe2O3t (for F-M-W) | 1.111 × FeOt | [Janoušek et al. 2006] |
 | Anhydrous (volatile-free) oxides | oxide / (sum of SiO2, TiO2, Al2O3, iron, MnO, MgO, CaO, Na2O, K2O, P2O5) × 100 | Le Bas et al. 1986 [Source] |
 | Mg# | 100 × Mg / (Mg + Fe²⁺), molar, with all iron as Fe²⁺ | common definition |
@@ -67,8 +67,12 @@ Notes:
   peridotites, Cr2O3 + NiO is often 0.4–0.7 wt%. This makes anhydrous
   values about 0.5 % (relative) higher than when these oxides are included.
   [App convention]
-- When the file has FeO and Fe2O3, FeOt and Fe2O3t are not added again, so
-  iron is never counted twice.
+- Iron is counted **once per sample** in the anhydrous sum: FeO + Fe2O3
+  where either was measured, otherwise Fe2O3t, otherwise FeOt. This also
+  holds when a file mixes the two forms (some rows with FeO and Fe2O3,
+  others with total iron only). Before version 0.17.0 the total iron of
+  such rows was left out of the sum, which raised their anhydrous SiO2.
+  Files with one iron form give the same results as before.
 - Oxide ratios (for example MgO/SiO2) do not change with the anhydrous
   recalculation.
 
@@ -78,19 +82,49 @@ Notes:
   implementation of Janoušek et al. (2006). [Janoušek et al. 2006] H2O+ and
   CO2 are used when the file has them (CO2 goes to calcite).
 - **Iron split.** The norm and the Verma et al. (2006) diagrams need FeO and
-  Fe2O3 separately.
-  - Measured FeO and Fe2O3 are always used as they are.
-  - If only total iron is known, it is split with the Fe³⁺/Fe(total) ratio
-    *r* from Settings: FeO = FeOt × (1 − r) and Fe2O3 = FeOt × r / 0.8998.
-    The default r = 0.15 is an [App convention].
+  Fe2O3 separately. Code: `geochem/iron.py`.
+  - Measured FeO and Fe2O3 are used as they are (Le Bas et al. 1986:
+    "taken as that stated by the analyst"), unless **Also replace measured
+    FeO and Fe2O3** is switched on in Settings.
+  - If only total iron T (as FeO) is known, every method gives the weight
+    ratio R = Fe2O3/FeO. Then FeO = T / (1 + 0.8998 R) and Fe2O3 = R × FeO,
+    so FeO + 0.8998 Fe2O3 = T exactly.
+- **Methods (Settings).**
+  - *Fixed ratio* (default): Fe³⁺/Fe(total) = *r* (atomic) for every
+    sample: FeO = T × (1 − r), Fe2O3 = T × r / 0.8998. Default r = 0.15.
+    [App convention]
+  - *Le Maitre (1976), volcanic*: Ox = 0.93 − 0.0042 SiO2 − 0.022 (Na2O +
+    K2O), regression on 12,962 volcanic rocks. *Plutonic*: Ox = 0.88 −
+    0.0016 SiO2 − 0.027 (Na2O + K2O), 9,604 plutonic rocks. Ox =
+    FeO/(FeO + Fe2O3) by weight, so R = (1 − Ox)/Ox. [Source] Le Bas et
+    al. (1986) recommend this method when only total iron is given.
+    - SiO2 and Na2O + K2O are taken on an anhydrous basis, as for TAS; the
+      paper does not state the basis. [App convention]
+    - Ox is kept between 0.05 and 1. [App convention]
+  - *Middlemost (1989)*: standard Fe2O3/FeO for each TAS field of Le Bas
+    et al. (1986) (Table I): picrobasalt 0.15; basalt 0.20; basaltic
+    andesite 0.30; andesite 0.35; dacite 0.40; rhyolite 0.50; trachybasalt
+    0.30; basaltic trachyandesite 0.35; trachyandesite 0.40;
+    trachyte/trachydacite 0.50; phonotephrite 0.35; tephriphonolite 0.40;
+    phonolite 0.50; tephrite/basanite 0.20 if Na2O + K2O < 6 %, else 0.30
+    (section 4); foidite 0.4 if Na2O + K2O > 10 %, 0.3 for 7–10 %, 0.2 for
+    3–7 %, 0.1 below 3 %. [Source]
+    - The TAS field is found on an anhydrous basis with total iron.
+      Na2O + K2O exactly 6 % counts as ≥ 6 %. [App convention]
+    - Samples outside every TAS field get the fixed ratio of Settings, and
+      the app counts them. [App convention]
+    - Middlemost (1989) derived these ratios for **volcanic** rocks. His
+      values are lower than the Le Maitre (1976) means because he aimed at
+      fresh rocks: the Le Maitre data include many oxidised rocks.
 - **What the sources say.**
   - Le Bas et al. (1986): use the FeO/Fe2O3 ratio stated by the analyst; if
     none is stated, calculate a standard ratio with the method of
     Le Maitre (1976).
   - Le Maitre et al. (2002, p. 34): if only total iron was measured, "it is
     up to the user to justify the method used for partitioning the iron".
-  - The Le Maitre (1976) method is **not implemented yet**: its formula has
-    not been checked against the original paper.
+  - Middlemost (1989): for classifications that use the norm, standardise
+    the ratio of **all** analyses, because raw ratios of altered rocks give
+    spurious norms (switch *Also replace measured FeO and Fe2O3*).
 - **Serpentinised rocks.** Serpentinization oxidises Fe²⁺ in olivine and
   pyroxene to Fe³⁺ in serpentine and magnetite. The bulk-rock
   100·Fe2O3/(Fe2O3 + FeO) therefore rises with the degree of
@@ -340,7 +374,10 @@ Report these in your methods section if they affect your results.
 
 | Convention | Value | Where to change it |
 |---|---|---|
-| Fe³⁺/Fe(total) when only total iron is measured | 0.15 | Settings |
+| Iron split when only total iron is measured | fixed Fe³⁺/Fe(total) = 0.15 (alternatives: Le Maitre 1976, Middlemost 1989) | Settings |
+| Measured FeO and Fe2O3 | kept (can be standardised) | Settings |
+| Le Maitre (1976) inputs | anhydrous SiO2 and Na2O + K2O; Ox kept in 0.05–1 | — |
+| Middlemost (1989) outside TAS fields | fixed ratio of Settings | Settings |
 | Recalculate to 100 % volatile-free before TAS | on | Settings |
 | Ultramafic threshold (anhydrous MgO) | 30 wt% | Settings |
 | Ultramafic rock-type words | listed in 4.1 | `geochem/screening.py` |
@@ -379,6 +416,35 @@ Report these in your methods section if they affect your results.
   basalt, RGM-1 and the JR rhyolites → rhyolite, OKUM → komatiite, JP-1,
   JP-2 and UB-N → "TAS not applicable (ultramafic rock)". Plutonic rocks
   get volcanic TAS names, as expected; use the plutonic diagrams for them.
+
+- **Iron split (0.17.0).**
+  - Hand check: for a basalt with anhydrous SiO2 = 49 and Na2O + K2O = 3,
+    Le Maitre (1976, volcanic) gives Ox = 0.658 and Fe2O3/FeO = 0.519; the
+    app gives 0.519. Synthetic points in each TAS field receive the
+    Middlemost (1989) ratio of Table I, including the alkali rules for
+    tephrite/basanite and foidite.
+  - Mass balance: FeO + 0.8998 Fe2O3 equals the total iron for every
+    sample (largest difference below 10⁻¹² wt%).
+  - Comparison with measured FeO and Fe2O3 in the global database of Gard
+    et al. (2019) (40,000 volcanic and 40,000 plutonic rocks with both
+    values, totals 95–102 %, duplicates removed). Measured Fe³⁺/Fe(total):
+    median 0.31 (volcanic) and 0.33 (plutonic). Median error of the
+    predicted Fe³⁺/Fe(total):
+
+    | Method | Volcanic: bias | Volcanic: abs. error | Fresh volcanic (LOI < 1 %): abs. error | Plutonic: abs. error |
+    |---|---|---|---|---|
+    | Fixed 0.15 | −0.17 | 0.17 | 0.15 | 0.18 |
+    | Le Maitre (1976), volcanic | +0.07 | 0.13 | 0.15 | 0.15 |
+    | Le Maitre (1976), plutonic | +0.00 | 0.11 | 0.11 | 0.11 |
+    | Middlemost (1989) | −0.11 | 0.12 | 0.10 | — |
+
+    No method predicts the ratio of a single sample well: measured ratios
+    scatter widely (interquartile range 0.20–0.47), mostly through
+    alteration. Report the method used, and measure FeO where the result
+    depends on it.
+  - The CIPW norm, the IUGS names (nephelinite test), Frost and Frost
+    (2008), Agrawal et al. (2008) and Verma et al. (2006) were run with each
+    method on the example sets without error.
 
 ### 10.1 Sources of the example datasets
 
@@ -444,7 +510,7 @@ basis tab.
   and Petrology 46, 1–22. doi:10.1007/BF01160698
 - Le Maitre R.W. (1976) Some problems of the projection of chemical data
   into mineralogical classifications. Contributions to Mineralogy and
-  Petrology 56, 181–189. (as cited in Le Bas et al. 1986; not yet used)
+  Petrology 56, 181–189. (iron split, section 3)
 - Le Maitre R.W. (ed.) (2002) Igneous Rocks: A Classification and Glossary
   of Terms. Recommendations of the International Union of Geological
   Sciences Subcommission on the Systematics of Igneous Rocks, 2nd edition.
@@ -454,8 +520,14 @@ basis tab.
 - Aitchison J., Egozcue J.J. (2005) Compositional data analysis: where are
   we and where should we be heading? Mathematical Geology 37, 829–850.
   (as cited in Rollinson and Pease 2021)
+- Gard M., Hasterok D., Halpin J.A. (2019) Global whole-rock geochemical
+  database compilation. Earth System Science Data 11, 1553–1566.
+  doi:10.5194/essd-11-1553-2019 (test data for the iron split, version
+  1.1.0 on Zenodo)
 - Harker A. (1909) The Natural History of Igneous Rocks. Methuen, London.
   (as cited in Rollinson and Pease 2021)
+- Middlemost E.A.K. (1989) Iron oxidation ratios, norms and the
+  classification of volcanic rocks. Chemical Geology 77, 19–26.
 - Mikuni K., Ishikawa A., Sato R. (2025) Geochemical Journal 59(6),
   299–314. doi:10.2343/geochemj.GJ25017 (XRF module and the GSJ example
   rocks; full reference in the user manual, chapter 14)

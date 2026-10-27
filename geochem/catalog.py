@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from . import calc, norms
+from . import calc, iron, norms
 from .calc import milli, mol, need
 
 GEOM_DIR = Path(__file__).parent / "diagrams" / "gcdkit"
@@ -70,11 +70,11 @@ def r2(df):
 def _norm_cache(df, settings):
     # key from the data themselves (not id(df), which Python may reuse)
     key = ("cipw", int(pd.util.hash_pandas_object(df, index=True).sum()),
-           tuple(df.columns), settings.get("fe3_ratio", 0.15))
+           tuple(df.columns), iron.spec(settings))
     cache = settings.setdefault("_cache", {})
     if key not in cache:
         cache.clear()
-        cache[key] = norms.cipw(df, settings.get("fe3_ratio", 0.15))[0]
+        cache[key] = norms.cipw(df, iron.spec(settings))[0]
     return cache[key]
 
 
@@ -90,7 +90,7 @@ def ai_frost(df):
 
 
 def _with_split_iron(df, settings):
-    feo, fe2o3, _ = norms.iron_for_norm(df, settings.get("fe3_ratio", 0.15))
+    feo, fe2o3, _ = norms.iron_for_norm(df, iron.spec(settings))
     out = df.copy()
     out["FeO"], out["Fe2O3"] = feo, fe2o3
     return out
@@ -472,8 +472,8 @@ DIAGRAMS = [
                    "ultrabasic volcanic rocks based on log-ratio transformation of "
                    "major-element data. Journal of Earth System Science 115, 485-528.",
          notes="Log ratios to SiO2 of anhydrous major elements with FeO and Fe2O3. "
-               "When only total iron is measured it is split with the Fe3+/Fetot "
-               "ratio set in Settings. Only samples with SiO2 < 52 wt% are plotted. "
+               "When only total iron is measured it is split with the method chosen "
+               "in Settings (fixed ratio, Le Maitre 1976 or Middlemost 1989). Only samples with SiO2 < 52 wt% are plotted. "
                "Not suitable for serpentinised rocks: serpentinization oxidises "
                "Fe2+ to Fe3+ (Deschamps et al. 2013; Paulick et al. 2006).",
          ultramafic_warning="Serpentinization raises Fe3+/Fe(total). Unless FeO "
