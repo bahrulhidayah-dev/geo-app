@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.17.1"
+APP_VERSION = "0.18.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -741,6 +741,10 @@ def page_diagrams():
                 st.markdown(d["notes"])
             st.markdown(f"**{t('Reference')}:** {d['reference']}\n\n"
                         f"**{t('Boundaries')}:** {d['source']} (GPL).")
+            if st.button(t("Open in the glossary"), key=f"gloss_{d['id']}",
+                         icon=":material/menu_book:", on_click=open_glossary,
+                         args=(d["title"],)):
+                st.switch_page(PAGES["docs"])
 
 
 def column_setup_tab():
@@ -980,7 +984,8 @@ def page_spider():
     saved = st.session_state.get("spider_norm", {})
     cur = saved.get(group, NORM_DEFAULT[group])
     nid = c2.selectbox(t("Normalised to"), ids, index=ids.index(cur) if cur in ids else 0,
-                       format_func=lambda k: NORMS[k]["title"], key=f"spider_norm_{group}")
+                       format_func=lambda k: NORMS[k]["title"], key=f"spider_norm_{group}",
+                       help=tip("normalisation"))
     saved[group] = nid
     st.session_state["spider_norm"] = saved
     ref = NORMS[nid]
@@ -1060,7 +1065,7 @@ def page_variation():
         x = st.radio(t("X axis"), list(VAR_X_LABELS), format_func=lambda v: t(VAR_X_LABELS[v]),
                      key=remember("x", "SiO2"))
         basis = st.radio(t("Major oxides"), list(VAR_BASIS), format_func=lambda v: t(VAR_BASIS[v]),
-                         key=remember("basis", "anhydrous"))
+                         key=remember("basis", "anhydrous"), help=tip("anhydrous"))
         ncol = st.select_slider(t("Panels per row"), [2, 3, 4], key=remember("ncol", 3))
         traces = [el for el in data.TRACE if calc.element_ppm(df, el) is not None
                   and el not in ("K", "Ti", "P")]
@@ -1636,7 +1641,7 @@ def iron_settings():
         help=t("Le Bas et al. (1986) recommend the method of Le Maitre (1976) when only "
                "total iron is given. Le Maitre et al. (2002): if only total iron was "
                "measured, the user must justify how it is split. No method is valid "
-               "for serpentinised rocks."))
+               "for serpentinised rocks.") + " " + tip("iron split"))
     settings["fe_method"] = m
     if m == "fixed":
         settings["fe3_ratio"] = st.slider(
@@ -1669,13 +1674,15 @@ def page_settings():
         st.markdown(f"**{t('Calculations')}**")
         settings["tas_recalc"] = st.toggle(
             t("Recalculate major oxides to 100 % volatile-free before TAS"),
-            value=settings["tas_recalc"], help=t("Recommended by Le Bas et al. (1986)."))
+            value=settings["tas_recalc"],
+            help=t("Recommended by Le Bas et al. (1986).") + " " + tip("anhydrous"))
         iron_settings()
         settings["um_mgo"] = st.slider(
             t("Ultramafic samples: anhydrous MgO at or above (wt%)"), 15.0, 45.0,
             float(settings["um_mgo"]), 1.0, key="um_mgo_general",
             help=t("Used for the ultramafic warnings and the MgO deficit. Samples whose "
-                   "Rock type is serpentinite, peridotite, dunite ... count too."))
+                   "Rock type is serpentinite, peridotite, dunite ... count too.")
+            + " " + tip("ultramafic"))
     with st.container(border=True):
         st.markdown(f"**{t('Optional modules')}**")
         st.caption(t("Turn on only what fits your samples. A module adds its own page "
@@ -1976,6 +1983,36 @@ def page_xrfqc():
                          "ultramafic_check.csv")
 
 
+def tip(key):
+    """Short glossary definition for a help tooltip."""
+    return t(docs.TIPS[key]) + " " + t("More in Documentation → Glossary.")
+
+
+def glossary_search_view():
+    """Search box of the glossary. Shows the matching entries and returns True
+    when a search is active."""
+    q = st.text_input(t("Search the glossary"), key="glossary_q",
+                      placeholder=t("Word, diagram or author, e.g. LOI, TAS, Pearce"),
+                      label_visibility="collapsed")
+    if not q.strip():
+        return False
+    hits = docs.glossary_search(q)
+    st.caption(t("{n} entries found.").format(n=len(hits)))
+    for chapter, term, text in hits:
+        with st.container(border=True):
+            st.markdown(f"#### {term}")
+            st.caption(chapter)
+            st.markdown(text)
+    return True
+
+
+def open_glossary(query):
+    """Button callback: open the glossary filtered to one entry."""
+    st.session_state["doc_name"] = "Glossary"
+    st.session_state.pop("doc_pick", None)       # the menu is rebuilt on Glossary
+    st.session_state["glossary_q"] = query
+
+
 def page_docs():
     header(t("Documentation"), t("User manual and technical documents, written in "
                                   "English so that every user reads the same text."))
@@ -1986,6 +2023,8 @@ def page_docs():
     doc = doc or names[0]
     st.session_state["doc_name"] = doc
     path = docs.DOCUMENTS[doc]
+    if doc == "Glossary" and glossary_search_view():
+        return
     chs = docs.chapters(docs.manual_text(path))
     titles = [c[0] for c in chs]
     ckey = "doc_chapter_" + path.stem

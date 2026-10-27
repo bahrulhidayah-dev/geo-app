@@ -217,7 +217,8 @@ with one row per sample (see chapter 18 for the options).
 
 ![Top bar and left panel](img/topbar.png)
 
-- **Top bar:** the app name, **Documentation** (this manual),
+- **Top bar:** the app name, **Documentation** (this manual, the
+  **Glossary**, Scientific methods and the technical documents),
   **References** (all scientific sources), **About** (version, license,
   how to cite), the **language** menu (English when the app is first
   opened; also Indonesian and Japanese) and the **theme** menu
@@ -345,7 +346,11 @@ ultramafic samples (F-M-W, Verma et al. 2006).
 ### How TAS names are given
 
 Every rule, formula and default of the app, with its source, is in the
-document **Scientific methods** (Documentation page).
+document **Scientific methods** (Documentation page). Plain explanations of
+the words and of every diagram are in the **Glossary** (Documentation page;
+type a word in its search box). On the Diagrams page, **Open in the
+glossary** in the *Scientific basis* tab opens the entry of that diagram.
+The **?** next to some settings gives a short definition.
 
 The IUGS rules (Le Maitre et al. 2002, p. 34) are applied in this order. All
 values are wt%, recalculated to 100 % without volatiles:

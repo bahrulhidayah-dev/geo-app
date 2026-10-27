@@ -12,8 +12,10 @@ from . import catalog, xrfqc
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 MANUAL = DOCS / "user-manual.md"
+GLOSSARY = DOCS / "glossary.md"
 # Documents shown on the Documentation page (title: file)
 DOCUMENTS = {"User manual": MANUAL,
+             "Glossary": GLOSSARY,
              "Scientific methods": DOCS / "methods.md",
              "Architecture and workflows": DOCS / "architecture.md",
              "Portable and online versions": DOCS / "deployment.md"}
@@ -52,6 +54,43 @@ def chapters(md=None):
         title, _, body = p.partition("\n")
         out.append((title.strip(), body.strip()))
     return out
+
+
+def glossary_entries(md=None):
+    """[(chapter, term, text)]: the level-3 entries of the glossary."""
+    out = []
+    for chapter, body in chapters(md or manual_text(GLOSSARY)):
+        for part in re.split(r"^### ", body, flags=re.M)[1:]:
+            term, _, text = part.partition("\n")
+            out.append((chapter, term.strip(), text.strip()))
+    return out
+
+
+def glossary_search(query, md=None):
+    """Entries whose term contains the query first, then entries whose text
+    contains it. Case is ignored."""
+    q = query.strip().lower()
+    if not q:
+        return []
+    entries = glossary_entries(md)
+    first = [e for e in entries if q in e[1].lower()]
+    rest = [e for e in entries if e not in first and q in e[2].lower()]
+    return first + rest
+
+
+# Short definitions for the "?" help of key settings (English is the key;
+# translations are in i18n.py). The full entries are in docs/glossary.md.
+TIPS = {
+    "anhydrous": "Anhydrous: major oxides recalculated to 100 wt% without LOI, "
+                 "H2O and CO2, so that altered and fresh rocks can be compared.",
+    "ultramafic": "Ultramafic: a rock of more than 90 % mafic minerals (olivine, "
+                  "pyroxene), such as peridotite and dunite.",
+    "iron split": "Iron split: dividing total iron into FeO and Fe2O3 with an "
+                  "assumed oxidation ratio, when only total iron was measured.",
+    "normalisation": "Normalisation: each element divided by its value in a "
+                     "reference such as chondrite or primitive mantle; values "
+                     "above 1 mean enrichment.",
+}
 
 
 def _img_tag(path, alt):

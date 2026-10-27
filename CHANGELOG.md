@@ -2,6 +2,20 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.18.0 - 2026-10-27
+
+- **Glossary** (version 1), a new document on the Documentation page for
+  beginners: 65 entries in plain English on data and chemistry terms,
+  petrology terms, plot types and every one of the 27 catalogue diagrams
+  (what it shows, when to use it and when not, original reference).
+- Search box on the Glossary: type a word, diagram or author to see every
+  matching entry.
+- **Open in the glossary** button in the *Scientific basis* tab of every
+  diagram.
+- Short definitions in the **?** help of key settings (anhydrous basis,
+  ultramafic threshold, iron split, spider normalisation), in English,
+  Indonesian and Japanese.
+
 ## 0.17.1 - 2026-10-27
 
 - **New default iron split: Le Maitre (1976), volcanic equation**, as
