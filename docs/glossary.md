@@ -338,8 +338,9 @@ rocks.
 ### MORB, OIB, IAB and other setting codes
 
 **What it is.** Short names for tectonic settings of basalts. MORB:
-mid-ocean ridge basalt (N-MORB normal, E-MORB enriched). OIB: ocean island
-basalt. IAB: island arc basalt. IAT: island arc tholeiite. CAB:
+mid-ocean ridge basalt (N-MORB normal, E-MORB enriched, G-MORB
+garnet-influenced). OIB: ocean island basalt. IAB: island arc basalt. IAT:
+island arc tholeiite. CAB:
 calc-alkaline basalt. WPB: within-plate basalt. CRB: continental rift
 basalt.
 
@@ -427,8 +428,9 @@ boundaries are the lines between fields. A sample that falls in a field
 receives its name.
 
 **In the app.** Boundaries are taken from the templates of Janoušek et
-al. (2006). The Results tab lists the field of every sample; points on a
-boundary count as inside.
+al. (2006). The Results tab lists the field of every sample, with a bar
+chart of the number of samples in each field; points on a boundary count
+as inside.
 
 **Source.** Janoušek et al. (2006).
 
@@ -637,10 +639,39 @@ array).
 0.12 ppm; Sun and McDonough 1989). Separates types of ophiolitic basalts
 (MORB, back-arc, arc, within-plate).
 
-**Use for.** Post-Archean ophiolitic basalts. A second Saccani (2015)
-diagram, Ce–Dy–Yb, is planned.
+**Use for.** Post-Archean ophiolitic basalts. Two pairs of rock types
+overlap here and are separated in a second step: G-MORB and N-MORB with
+(Ce/Yb)N – (Dy/Yb)N, and boninite and IAT with DyN – YbN.
 
 **Source.** Saccani (2015).
+
+### (Ce/Yb)N - (Dy/Yb)N, G-MORB vs N-MORB (Saccani 2015)
+
+**What it shows.** Chondrite-normalised (Dy/Yb)N against (Ce/Yb)N. A
+straight line separates G-MORB (garnet-influenced MORB, higher (Dy/Yb)N)
+from normal N-MORB. Garnet keeps the heavy REE (Yb) in the mantle, so
+melts of a garnet-bearing source are richer in the middle and light REE
+relative to Yb.
+
+**Use for.** Ophiolitic basalts that fall in the N-MORB field of the NbN –
+ThN diagram. G-MORB are typical of ocean–continent transition zones. The
+line was drawn by eye; read the result as a guide.
+
+**Source.** Saccani (2015), Fig. 8; chondrite values of Sun and McDonough
+(1989).
+
+### DyN - YbN, boninite vs IAT (Saccani 2015)
+
+**What it shows.** Chondrite-normalised YbN against DyN. Boninites (low Dy
+and Yb, from strongly depleted mantle or high degrees of melting) plot left
+of the line; island-arc tholeiites (IAT) plot right of it.
+
+**Use for.** Ophiolitic basalts that fall in the IAT field of the NbN – ThN
+diagram. A boninite name also needs the IUGS high-Mg rules (TAS Results
+tab).
+
+**Source.** Saccani (2015), Fig. 9; chondrite values of Sun and McDonough
+(1989).
 
 ### Ti - V (Shervais 1982)
 

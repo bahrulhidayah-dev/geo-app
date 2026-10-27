@@ -1,0 +1,117 @@
+{
+ "id": "SaccaniCeDyYb",
+ "source": "Saccani (2015), Fig. 8: separation line from the coordinates in the text (section 5.2); drawn for GeoChem App, no GCDkit template",
+ "panels": [
+  {
+   "xlim": [
+    0.0,
+    2.5
+   ],
+   "ylim": [
+    0.5,
+    2.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "(Ce/Yb)N",
+   "ylab": "(Dy/Yb)N",
+   "title": "G-MORB vs N-MORB (Saccani 2015)",
+   "ternary": false,
+   "name": "(Ce/Yb)N - (Dy/Yb)N (Saccani 2015)",
+   "lines": [
+    {
+     "x": [
+      0.4,
+      2.0
+     ],
+     "y": [
+      1.5,
+      0.9
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    },
+    {
+     "x": [
+      0.0,
+      0.4
+     ],
+     "y": [
+      1.65,
+      1.5
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "minor"
+    },
+    {
+     "x": [
+      2.0,
+      2.5
+     ],
+     "y": [
+      0.9,
+      0.7124999999999999
+     ],
+     "lwd": 1.0,
+     "dash": true,
+     "role": "minor"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 1.85,
+     "y": 1.75,
+     "text": "G-MORB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 0.55,
+     "y": 0.75,
+     "text": "N-MORB",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [
+    {
+     "name": "G-MORB",
+     "x": [
+      0.0,
+      2.5,
+      2.5,
+      0.0
+     ],
+     "y": [
+      1.65,
+      0.7124999999999999,
+      2.0,
+      2.0
+     ]
+    },
+    {
+     "name": "N-MORB",
+     "x": [
+      0.0,
+      2.5,
+      2.5,
+      0.0
+     ],
+     "y": [
+      0.5,
+      0.5,
+      0.7124999999999999,
+      1.65
+     ]
+    }
+   ]
+  }
+ ]
+}

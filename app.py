@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.18.0"
+APP_VERSION = "0.19.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -513,6 +513,22 @@ def catalog_figure(d, df, style=None, only=None, panel_size=(4.6, 3.9), kw=None)
                                  panel_size=panel_size, **kw)
 
 
+def field_counts(d, ct):
+    """Table and bar chart of the number of samples in each field."""
+    col = ct.columns[0]
+    if ct.shape[1] > 1 and d["id"] != "TAS":
+        col = st.selectbox(t("Count samples in"), list(ct.columns), key=f"fc_{d['id']}")
+    left, right = st.columns([2, 3], gap="large")
+    with left:
+        st.dataframe(ct[col].value_counts().rename_axis(t("Field"))
+                     .reset_index(name=t("Samples")), hide_index=True)
+    with right:
+        title = col if col != t("IUGS name") else d["title"]
+        show(plotting.plot_field_counts(ct[col], title=title, style=SCREEN), max_width="560px")
+        downloads(lambda s_: plotting.plot_field_counts(ct[col], title=title, style=s_),
+                  f"{d['id']}_field_counts")
+
+
 def classification_table(d, df):
     """Field name per sample for every panel that has fields."""
     coords, _ = catalog_coords(d, df)
@@ -718,9 +734,7 @@ def page_diagrams():
                              "read the position of each sample on the plot."))
             else:
                 res = pd.concat([df.iloc[:, [0]], ct], axis=1)
-                if ct.shape[1] == 1 or d["id"] == "TAS":
-                    st.dataframe(ct.iloc[:, 0].value_counts().rename_axis(t("Field"))
-                                 .reset_index(name=t("Samples")), hide_index=True)
+                field_counts(d, ct)
                 st.dataframe(res, hide_index=True, height=260)
                 csv_download(t("Download results (CSV)"), lambda: res,
                              f"{d['id']}_results.csv")

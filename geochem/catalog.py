@@ -386,6 +386,45 @@ DIAGRAMS = [
                    "of post-Archean ophiolitic basalts and their tectonic significance "
                    "using Th-Nb and Ce-Dy-Yb systematics. Geoscience Frontiers 6, 481-501.",
          notes="N-MORB values of Sun and McDonough (1989): Nb 2.33, Th 0.12 ppm."),
+    # Saccani (2015) second-step diagrams. Chondrite values of Sun and McDonough
+    # (1989): Ce 0.612, Dy 0.254, Yb 0.170 ppm (as listed in Rollinson and Pease
+    # 2021, Table 4.7, column 1).
+    dict(id="SaccaniCeDyYb", title="(Ce/Yb)N - (Dy/Yb)N, G-MORB vs N-MORB (Saccani 2015)",
+         category="Basalts and ophiolites", scope="Ophiolitic basalts in the N-MORB field",
+         year=2015,
+         panels=[B(lambda d, s: (need(d, "Ce") / 0.612) / (need(d, "Yb") / 0.170),
+                   lambda d, s: (need(d, "Dy") / 0.254) / (need(d, "Yb") / 0.170),
+                   "(Ce/Yb)N (chondrite normalized)", "(Dy/Yb)N (chondrite normalized)")],
+         reference="Saccani E. (2015) A new method of discriminating different types "
+                   "of post-Archean ophiolitic basalts and their tectonic significance "
+                   "using Th-Nb and Ce-Dy-Yb systematics. Geoscience Frontiers 6, 481-501.",
+         notes="Second step after the NbN - ThN diagram (Saccani 2015): G-MORB "
+               "(garnet-influenced MORB, typical of ocean-continent transition zones) "
+               "and N-MORB plot together on Th-Nb, but G-MORB have higher MREE/HREE "
+               "and LREE/HREE because garnet stayed in their mantle source. Use it "
+               "for samples in the N-MORB field of the Th-Nb diagram. Separation line "
+               "from (0.4, 1.5) to (2, 0.9) (section 5.2): 96 % of G-MORB and 99 % of "
+               "N-MORB correctly classified in the paper; the dotted ends extend the "
+               "line to the frame [App convention]. Chondrite values of Sun and "
+               "McDonough (1989): Ce 0.612, Dy 0.254, Yb 0.170 ppm. The line was drawn "
+               "by eye (Saccani 2015, section 7)."),
+    dict(id="SaccaniDyYb", title="DyN - YbN, boninite vs IAT (Saccani 2015)",
+         category="Basalts and ophiolites", scope="Ophiolitic basalts in the IAT field",
+         year=2015,
+         panels=[B(lambda d, s: need(d, "Dy") / 0.254, lambda d, s: need(d, "Yb") / 0.170,
+                   "DyN (chondrite normalized)", "YbN (chondrite normalized)")],
+         reference="Saccani E. (2015) A new method of discriminating different types "
+                   "of post-Archean ophiolitic basalts and their tectonic significance "
+                   "using Th-Nb and Ce-Dy-Yb systematics. Geoscience Frontiers 6, 481-501.",
+         notes="Second step after the NbN - ThN diagram (Saccani 2015): island-arc "
+               "tholeiites (IAT) and boninites plot together on Th-Nb. Boninites come "
+               "from more depleted mantle or higher degrees of melting and have lower "
+               "Dy and Yb. Use it for samples in the IAT field of the Th-Nb diagram. "
+               "Separation line from (7, 25) to (9.5, 0) (section 5.3): 100 % of "
+               "boninites and 99 % of IAT correctly classified in the paper. Chondrite "
+               "values of Sun and McDonough (1989): Dy 0.254, Yb 0.170 ppm. The line was "
+               "drawn by eye (Saccani 2015, section 7). For a full boninite name, also "
+               "check the IUGS high-Mg rules (TAS Results tab)."),
     dict(id="Shervais", title="Ti - V (Shervais 1982)", category="Basalts and ophiolites",
          scope="Basalts", year=1982,
          panels=[B(lambda d, s: need(d, "Ti") / 1000, lambda d, s: need(d, "V"),

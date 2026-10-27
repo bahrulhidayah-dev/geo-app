@@ -495,6 +495,49 @@ def plot_catalog(diagram, coords_list, sty, labels=None, style="dark",
     return _finish(fig)
 
 
+# ---------------- sample counts per field ----------------
+NOT_PLACED = ("Unclassified", "No data")
+
+
+def _not_placed(name):
+    """Samples without a field: unclassified, no data, or a rule says the
+    diagram does not apply (for example 'TAS not applicable')."""
+    return name in NOT_PLACED or "not applicable" in name.lower()
+
+
+def plot_field_counts(names, title=None, style="dark", size=None):
+    """Horizontal bar chart: number of samples in each field of a diagram.
+    names: field name per sample (from classify_panel or the IUGS names).
+    Fields are sorted by count; 'Unclassified' and 'No data' come last, in grey."""
+    s = STYLES[style]
+    counts = pd.Series(names).dropna().astype(str).value_counts()
+    placed = counts[[not _not_placed(k) for k in counts.index]]
+    other = counts[[_not_placed(k) for k in counts.index]]
+    counts = pd.concat([placed, other])
+    n = max(len(counts), 1)
+    fig, ax, s = _new_axes(style, size or (5.6, 0.9 + 0.32 * n))
+    y = np.arange(len(counts))[::-1]           # largest at the top
+    colours = [s["muted"] if _not_placed(k) else s["field"] for k in counts.index]
+    ax.barh(y, counts.to_numpy(), color=colours, height=0.65, zorder=2)
+    ax.set_yticks(y)
+    ax.set_yticklabels(counts.index)
+    total = int(counts.sum())
+    for yi, v in zip(y, counts.to_numpy()):
+        ax.text(v, yi, f"  {v} ({100 * v / total:.0f} %)", va="center", ha="left",
+                color=s["fg"], fontsize=_APP["font_tick"], family=_APP["font_family"])
+    ax.set_xlim(0, (counts.max() if len(counts) else 1) * 1.3)
+    ax.set_ylim(-0.6, len(counts) - 0.4)
+    _style_axes(ax, s, "Number of samples", None)
+    ax.xaxis.get_major_locator().set_params(integer=True)
+    ax.grid(axis="x", color=s["grid"], lw=0.6, zorder=0)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    if title:
+        ax.set_title(f"{title} (n = {total})", color=s["fg"], fontsize=_APP["font_axis"],
+                     loc="left", family=_APP["font_family"])
+    return _finish(fig)
+
+
 # ---------------- variation diagrams (Harker, MgO) ----------------
 def _var_label(name, basis):
     """Axis label: oxides in wt% (anhydrous when recalculated), elements in ppm."""

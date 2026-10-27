@@ -2,6 +2,27 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.19.0 - 2026-10-27
+
+- **Two new diagrams for ophiolitic basalts (Saccani 2015)**, the second
+  step after NbN - ThN, for rock types that overlap there:
+  - (Ce/Yb)N - (Dy/Yb)N: G-MORB (garnet-influenced) vs N-MORB;
+  - DyN - YbN: boninite vs island-arc tholeiite (IAT).
+  Separation lines from the coordinates in the paper (sections 5.2 and
+  5.3); chondrite values of Sun and McDonough (1989). The catalogue now has
+  29 diagrams.
+- Glossary entries, Scientific methods (section 5 and a hand check in
+  section 10), user manual diagram list.
+
+## 0.18.1 - 2026-10-27
+
+- **Bar chart of sample counts per field** in the Results tab of every
+  diagram with named fields: number and percentage of samples, sorted by
+  count; samples without a field (unclassified, no data, "TAS not
+  applicable") in grey at the bottom. PNG, SVG and PDF downloads. For plates
+  with several panels, *Count samples in* chooses the panel. Idea from
+  GeoPyTool (Yu et al. 2018).
+
 ## 0.18.0 - 2026-10-27
 
 - **Glossary** (version 1), a new document on the Documentation page for

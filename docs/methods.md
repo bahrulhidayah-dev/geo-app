@@ -239,6 +239,25 @@ Special cases:
      instead, which loses the sample.
   3. The eight oxides are closed to 100 %.
   4. M, F and W are calculated with the coefficients of the paper's Table 4.
+- **Saccani (2015) second-step diagrams.** [Source] Two diagrams for
+  ophiolitic basalts that overlap on the NbN–ThN diagram. Neither has a
+  template of Janoušek et al. (2006); the separation lines are drawn from
+  the coordinates given in the paper.
+  - (Ce/Yb)N–(Dy/Yb)N, G-MORB vs N-MORB (Fig. 8; section 5.2): line from
+    (0.4, 1.5) to (2, 0.9), i.e. (Dy/Yb)N = 1.65 − 0.375 (Ce/Yb)N. Use for
+    samples in the N-MORB field of NbN–ThN.
+  - DyN–YbN, boninite vs IAT (Fig. 9; section 5.3): line from (7, 25) to
+    (9.5, 0). Use for samples in the IAT field of NbN–ThN.
+  - Chondrite values of Sun and McDonough (1989): Ce 0.612, Dy 0.254,
+    Yb 0.170 ppm (as listed in Rollinson and Pease 2021, Table 4.7). The
+    paper names the source but not the numbers.
+  - The paper draws the G-MORB/N-MORB line only between its two end
+    points. The app extends it to the frame (dotted) so that every sample
+    inside the axis limits gets a field. Samples outside the axis limits of
+    the paper (0–2.5 and 0.5–2; 0–25 and 0–25) are *Unclassified*.
+    [App convention]
+  - The lines were drawn by eye (Saccani 2015, section 7); the paper reports
+    96–100 % correct classification of its training samples.
 - **Ternary plots.** Each apex is factor × (sum of its columns). The three
   values are closed to 100 %. Plot coordinates: x = c + b/2, y = b·√3/2,
   with apex a left, b top, c right (as in Janoušek et al. 2006). Samples with a missing
@@ -389,6 +408,7 @@ Report these in your methods section if they affect your results.
 | Column without a unit | wt% (oxides), ppm (elements) | Column setup |
 | Oxides left out of the anhydrous sum | LOI, H2O+, CO2, Cr2O3, NiO | — |
 | Boundary points in classification | counted as inside | — |
+| Field counts chart (Results tab) | sorted by count; unclassified, no data and "not applicable" samples in grey at the bottom; percentages of all samples shown | — |
 | Variation diagrams: basis | anhydrous | Variation diagrams page |
 | Variation diagrams: trace elements | as measured; Ni and Cr by default on MgO diagrams | Variation diagrams page |
 | Variation diagrams: iso-Mg# and olivine lines | Auto (only with ultramafic samples) | Variation diagrams page |
@@ -412,6 +432,13 @@ Report these in your methods section if they affect your results.
 - **Variation diagrams (0.14.0).** For a test basalt, anhydrous SiO2 and
   FeOt equal the hand calculation. A point on the Mg# 90 line has
   Mg# = 90.0. Fo90 olivine lies on the olivine line and has Mg# = 90.0.
+
+- **Saccani (2015) diagrams (0.19.0).** The N-MORB composition of Sun and
+  McDonough (1989) (Ce 7.5, Dy 4.55, Yb 3.05 ppm) gives (Ce/Yb)N = 0.683 and
+  (Dy/Yb)N = 0.998 by hand; the app gives the same values and the field
+  N-MORB (the line lies at 1.394 for this (Ce/Yb)N). A synthetic boninite
+  (Dy 0.9, Yb 0.6 ppm) falls in the boninite field and an IAT (Dy 3.4, Yb 2.3
+  ppm) in the IAT field. The plotted lines match Figs. 8 and 9 of the paper.
 
 - **Example datasets (0.16.0).** Each set was loaded and every page and
   all 27 diagrams were drawn without error. TAS names of the reference
@@ -531,6 +558,10 @@ basis tab.
   (as cited in Rollinson and Pease 2021)
 - Middlemost E.A.K. (1989) Iron oxidation ratios, norms and the
   classification of volcanic rocks. Chemical Geology 77, 19–26.
+- Saccani E. (2015) A new method of discriminating different types of
+  post-Archean ophiolitic basalts and their tectonic significance using
+  Th-Nb and Ce-Dy-Yb systematics. Geoscience Frontiers 6, 481–501.
+  doi:10.1016/j.gsf.2014.03.006
 - Mikuni K., Ishikawa A., Sato R. (2025) Geochemical Journal 59(6),
   299–314. doi:10.2343/geochemj.GJ25017 (XRF module and the GSJ example
   rocks; full reference in the user manual, chapter 14)

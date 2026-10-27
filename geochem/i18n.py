@@ -169,6 +169,7 @@ TR = {
     'Plus': ('Plus', 'プラス'),
     'Cross': ('Silang', 'バツ'),
     'Top right': ('Kanan atas', '右上'),
+    'Count samples in': ('Hitung sampel pada', '試料数を数える列'),
     'Glossary': ('Glosarium', '用語集'),
     'Search the glossary': ('Cari di glosarium', '用語集を検索'),
     'Word, diagram or author, e.g. LOI, TAS, Pearce': ('Kata, diagram, atau penulis, mis. LOI, TAS, Pearce', '用語・図・著者（例：LOI、TAS、Pearce）'),

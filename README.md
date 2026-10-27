@@ -19,14 +19,15 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
   commas, units rows and empty rows are handled and reported.
 - Column names such as `SiO2 (wt%)`, `Fe2O3T` or `La_ppm` are recognised.
 - Dashboard with TAS, AFM and spider diagrams plus a sample map and table.
-- Diagram catalogue (27 diagrams: stage 1 and 2) with boundaries taken unchanged from
+- Diagram catalogue (29 diagrams) with boundaries taken unchanged from
   Janoušek et al. (2006) templates: TAS (IUGS), Middlemost plutonic TAS, Pearce 1996
   Nb/Y-Zr/Ti, Jensen, AFM, Peccerillo and Taylor, Miyashiro, Hastie Co-Th,
   Shand, Frost and Frost 2008, Pearce et al. 1984, Whalen et al. 1987,
   Martin 1986, Pearce 2008 (Th/Yb, TiO2/Yb), Saccani 2015, Shervais,
   Pearce and Cann, Meschede, Wood, Paulick et al. 2006; stage 2: R1-R2
   volcanic and plutonic (De la Roche et al. 1980), Batchelor and Bowden 1985,
-  Agrawal et al. 2008, Verma et al. 2006, Ohta and Arai 2007 (F-M-W).
+  Agrawal et al. 2008, Verma et al. 2006, Ohta and Arai 2007 (F-M-W); Saccani 2015
+  (Ce/Yb-Dy/Yb and Dy-Yb), drawn from the coordinates in the paper.
 - CIPW norm (Hutchison 1974, 1975; ported from Janoušek et al. 2006) with download.
 - Top bar with Documentation (full user manual with screenshots),
   References, About, and the language (Indonesian, English, Japanese) and

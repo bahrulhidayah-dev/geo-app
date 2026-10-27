@@ -17,8 +17,8 @@ programming is needed.
 
 - Reads your data from a CSV or Excel file and cleans it for you
   (values below detection limit, decimal commas, units rows).
-- Plots **27 classification and discrimination diagrams** (boundaries after
-  Janoušek et al. 2006), grouped into six categories, and names the field of every sample.
+- Plots **29 classification and discrimination diagrams** (boundaries after
+  Janoušek et al. 2006 or, where no template exists, the original paper), grouped into six categories, and names the field of every sample.
 - Draws REE and multi-element **spider diagrams**, free **XY plots** and
   **ternary plots**, and
   **group statistics**.
@@ -294,7 +294,11 @@ discrimination diagrams.
 - Icons in the list: ✔ your data fill every panel; ⚠ some panels lack
   data; ⦸ needed columns are missing (the page tells you which).
 - **Results** tab: the field (rock name or setting) of every sample, with a
-  count per field and a CSV download.
+  count per field, a **bar chart of the counts** (number and percentage of
+  samples; samples without a field in grey at the bottom; PNG, SVG and PDF
+  download) and a CSV download. For a plate with several panels, choose the
+  panel in **Count samples in**. Diagrams whose templates have boundary
+  lines but no named fields have no Results table or chart.
 - **Scientific basis** tab: the axis formulas, the basis (for example
   anhydrous values), notes on correct use and the original reference.
 
@@ -323,6 +327,8 @@ implementation.
 | Granitoids | R1 - R2 tectonic setting (Batchelor and Bowden 1985) | Granitoids |
 | Basalts and ophiolites | Nb/Yb - Th/Yb and Nb/Yb - TiO2/Yb (Pearce 2008) | Basalts, ophiolites |
 | Basalts and ophiolites | NbN - ThN (Saccani 2015) | Ophiolitic basalts |
+| Basalts and ophiolites | (Ce/Yb)N - (Dy/Yb)N, G-MORB vs N-MORB (Saccani 2015) | Ophiolitic basalts in the N-MORB field of NbN - ThN |
+| Basalts and ophiolites | DyN - YbN, boninite vs IAT (Saccani 2015) | Ophiolitic basalts in the IAT field of NbN - ThN |
 | Basalts and ophiolites | Ti - V (Shervais 1982) | Basalts |
 | Basalts and ophiolites | Pearce and Cann (1973), three panels | Basalts |
 | Basalts and ophiolites | Zr/4 - 2Nb - Y (Meschede 1986) | Basalts |

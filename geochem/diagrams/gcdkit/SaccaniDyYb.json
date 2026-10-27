@@ -1,0 +1,91 @@
+{
+ "id": "SaccaniDyYb",
+ "source": "Saccani (2015), Fig. 9: separation line from the coordinates in the text (section 5.3); drawn for GeoChem App, no GCDkit template",
+ "panels": [
+  {
+   "xlim": [
+    0.0,
+    25.0
+   ],
+   "ylim": [
+    0.0,
+    25.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "DyN",
+   "ylab": "YbN",
+   "title": "Boninite vs IAT (Saccani 2015)",
+   "ternary": false,
+   "name": "DyN - YbN (Saccani 2015)",
+   "lines": [
+    {
+     "x": [
+      7.0,
+      9.5
+     ],
+     "y": [
+      25.0,
+      0.0
+     ],
+     "lwd": 1.0,
+     "dash": false,
+     "role": "line"
+    }
+   ],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 3.5,
+     "y": 22.0,
+     "text": "Boninite",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    },
+    {
+     "x": 14.0,
+     "y": 22.0,
+     "text": "IAT",
+     "rot": 0.0,
+     "size": 1.0,
+     "adj": 0.5,
+     "role": "line"
+    }
+   ],
+   "fields": [
+    {
+     "name": "Boninite",
+     "x": [
+      0.0,
+      9.5,
+      7.0,
+      0.0
+     ],
+     "y": [
+      0.0,
+      0.0,
+      25.0,
+      25.0
+     ]
+    },
+    {
+     "name": "IAT",
+     "x": [
+      9.5,
+      25.0,
+      25.0,
+      7.0
+     ],
+     "y": [
+      0.0,
+      0.0,
+      25.0,
+      25.0
+     ]
+    }
+   ]
+  }
+ ]
+}
