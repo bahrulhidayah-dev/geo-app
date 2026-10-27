@@ -200,6 +200,23 @@ def deschamps_anh(df):
     return out
 
 
+def measured_iron(df):
+    """FeO and Fe2O3 (wt%, anhydrous) of samples where BOTH were measured.
+    Values from the iron split are never used here: the diagram would only
+    show the ratio chosen in Settings. Other samples are left out (NaN)."""
+    feo, fe2o3 = need(df, "FeO"), need(df, "Fe2O3")
+    both = feo.notna() & fe2o3.notna()
+    a, _ = calc.anhydrous(df)
+    return pd.DataFrame({"FeO": a["FeO"].where(both), "Fe2O3": a["Fe2O3"].where(both)},
+                        index=df.index)
+
+
+def fe3_ratio_measured(df):
+    """Fe3+/Fe(total), atomic, from measured FeO and Fe2O3."""
+    m = measured_iron(df)
+    return calc.FEO_PER_FE2O3 * m["Fe2O3"] / (m["FeO"] + calc.FEO_PER_FE2O3 * m["Fe2O3"])
+
+
 DIAGRAMS = [
     # ----------------------------- classification -----------------------------
     dict(id="TAS", title="TAS (Le Bas et al. 1986)", category="Classification",
@@ -580,6 +597,30 @@ DIAGRAMS = [
                "Mineral points are ideal Mg end-members [App convention]; the paper "
                "plots natural lizardite and antigorite compositions, which are not "
                "copied here."),
+    dict(id="PaulickRedox", title="Fe redox in serpentinites (Paulick et al. 2006)",
+         category="Ultramafic rocks", scope="Serpentinites with measured FeO", year=2006,
+         panels=[B(lambda d, s: measured_iron(d)["FeO"], lambda d, s: measured_iron(d)["Fe2O3"],
+                   "FeO measured (wt%, anhydrous)", "Fe2O3 (wt%, anhydrous)"),
+                 B(lambda d, s: need(d, "LOI").where(measured_iron(d)["FeO"].notna()),
+                   lambda d, s: measured_iron(d)["Fe2O3"], "LOI (wt%)", "Fe2O3 (wt%, anhydrous)"),
+                 B(lambda d, s: need(d, "LOI").where(measured_iron(d)["FeO"].notna()),
+                   lambda d, s: fe3_ratio_measured(d), "LOI (wt%)", "Fe3+/Fe(total), atomic")],
+         reference="Paulick H., Bach W., Godard M., De Hoog J.C.M., Suhr G., Harvey J. (2006) "
+                   "Geochemistry of abyssal peridotites (Mid-Atlantic Ridge, 15 20'N, ODP "
+                   "Leg 209): implications for fluid/rock interaction in slow spreading "
+                   "environments. Chemical Geology 234, 179-210.",
+         notes="Figs. 6D and 11A of Paulick et al. (2006). Serpentinization oxidises "
+               "Fe2+ in olivine and pyroxene to Fe3+ in magnetite and serpentine: "
+               "samples move along a line of equal total iron (dashed; FeOt = FeO + "
+               "0.8998 Fe2O3) towards the magnetite ratio Fe2O3/FeO = 2.22 (solid). "
+               "In the paper, completely serpentinised samples reach the magnetite "
+               "ratio, and Fe2O3 rises with H2O. Only samples with BOTH FeO "
+               "(titration) and Fe2O3 measured are plotted; split iron is never used. "
+               "FeO and Fe2O3 are recalculated to 100 % anhydrous as in the paper. "
+               "Paulick et al. plotted H2O (LOI corrected for CO2, S and NO3); the app "
+               "uses LOI. Fe3+/Fe(total) = 0.8998 Fe2O3 / (FeO + 0.8998 Fe2O3); "
+               "magnetite has 2/3. The lines of equal total iron (4-10 wt%) are an App "
+               "convention; the paper draws one line for its own samples."),
     dict(id="OhtaArai", title="F - M - W weathering (Ohta and Arai 2007)",
          category="Weathering and alteration", scope="Igneous rocks, weathered",
          year=2007,

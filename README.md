@@ -19,7 +19,7 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
   commas, units rows and empty rows are handled and reported.
 - Column names such as `SiO2 (wt%)`, `Fe2O3T` or `La_ppm` are recognised.
 - Dashboard with TAS, AFM and spider diagrams plus a sample map and table.
-- Diagram catalogue (31 diagrams) with boundaries taken unchanged from
+- Diagram catalogue (32 diagrams) with boundaries taken unchanged from
   Janoušek et al. (2006) templates: TAS (IUGS), Middlemost plutonic TAS, Pearce 1996
   Nb/Y-Zr/Ti, Jensen, AFM, Peccerillo and Taylor, Miyashiro, Hastie Co-Th,
   Shand, Frost and Frost 2008, Pearce et al. 1984, Whalen et al. 1987,
@@ -28,7 +28,8 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
   volcanic and plutonic (De la Roche et al. 1980), Batchelor and Bowden 1985,
   Agrawal et al. 2008, Verma et al. 2006, Ohta and Arai 2007 (F-M-W); Saccani 2015
   (Ce/Yb-Dy/Yb and Dy-Yb), drawn from the coordinates in the paper; Deschamps et al.
-  2013 (LOI x 10 - SiO2 - sum of oxides; LOI vs SiO2 and MgO) for serpentinites.
+  2013 (LOI x 10 - SiO2 - sum of oxides; LOI vs SiO2 and MgO) and Paulick et al. 2006
+  (Fe redox: Fe2O3 - FeO, Fe2O3 and Fe3+/Fe(total) vs LOI) for serpentinites.
 - CIPW norm (Hutchison 1974, 1975; ported from Janoušek et al. 2006) with download.
 - Top bar with Documentation (full user manual with screenshots),
   References, About, and the language (Indonesian, English, Japanese) and

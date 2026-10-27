@@ -275,6 +275,21 @@ Special cases:
     (42.71, 57.29, 0) and enstatite (59.85, 40.15, 0) wt%. The paper's Fig.
     4d plots natural lizardite and antigorite compositions, which are not
     given in the text and are not copied. [App convention]
+- **Fe redox in serpentinites (Paulick et al. 2006).** [Source: Figs. 6D,
+  11A]
+  - Only samples with FeO **and** Fe2O3 measured are plotted. Values from
+    the iron split (section 3) are never used, because they would only
+    reproduce the chosen ratio. A file without both columns gives "Missing
+    data". [App convention]
+  - FeO and Fe2O3 are recalculated to 100 % anhydrous (section 2), as in the
+    paper's Fig. 6.
+  - Magnetite line: Fe2O3/FeO = 159.69 / 71.84 = 2.2227 by weight
+    (stoichiometry of Fe3O4 = FeO·Fe2O3); Fe³⁺/Fe(total) = 2/3.
+  - Lines of equal total iron: FeO + 0.8998 Fe2O3 = 4, 6, 8 and 10 wt%. The
+    paper draws one such line for its own samples. [App convention]
+  - Fe³⁺/Fe(total) (atomic) = 0.8998 Fe2O3 / (FeO + 0.8998 Fe2O3).
+  - The x axis is LOI. Paulick et al. plotted H2O, which they measured or
+    calculated from LOI, CO2, S and NO3. [App convention]
 - **Ternary plots.** Each apex is factor × (sum of its columns). The three
   values are closed to 100 %. Plot coordinates: x = c + b/2, y = b·√3/2,
   with apex a left, b top, c right (as in Janoušek et al. 2006). Samples with a missing
@@ -449,6 +464,18 @@ Report these in your methods section if they affect your results.
 - **Variation diagrams (0.14.0).** For a test basalt, anhydrous SiO2 and
   FeOt equal the hand calculation. A point on the Mg# 90 line has
   Mg# = 90.0. Fo90 olivine lies on the olivine line and has Mg# = 90.0.
+
+- **Fe redox diagram (0.21.0).** Tested with 134 serpentinites of the
+  global database of Gard et al. (2019) that have FeO, Fe2O3 and LOI
+  (duplicates removed). For the first sample (FeO 0.28, Fe2O3 8.10 wt%)
+  the hand calculation gives Fe³⁺/Fe(total) = 0.963; the app gives the
+  same, and the anhydrous FeO and Fe2O3 agree to 0.001 wt%. A file with
+  total iron only gives "Missing data", so split iron is never plotted.
+  Observations, not rules: the median Fe³⁺/Fe(total) is 0.71 (IQR
+  0.52–0.77), and 77 of the 134 samples lie above the magnetite ratio, so
+  Fe³⁺ is also held in other minerals (for example serpentine). Fe2O3 and
+  LOI are not correlated in this mixed global set (r = −0.15), unlike the
+  single drill hole of Paulick et al. (2006, Fig. 11A; R² = 0.68).
 
 - **Deschamps et al. (2013) diagrams (0.20.0).** For UB-N (values of the
   example data: SiO2 39.43, MgO 35.21, Fe2O3t 8.34, LOI 10.44 wt%, Cr 2300

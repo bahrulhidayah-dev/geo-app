@@ -2,6 +2,17 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.21.0 - 2026-10-27
+
+- **Fe redox in serpentinites (Paulick et al. 2006)**, a new diagram in
+  Ultramafic rocks with three panels: Fe2O3 vs measured FeO (magnetite
+  ratio line and lines of equal total iron), Fe2O3 vs LOI and
+  Fe3+/Fe(total) vs LOI (magnetite = 2/3). Only samples with FeO and Fe2O3
+  both measured are plotted; split iron is never used. 32 diagrams.
+- Tested with 134 serpentinites of the global database (Gard et al. 2019).
+- Glossary entry; Scientific methods (section 5 and section 10); user
+  manual diagram list.
+
 ## 0.20.0 - 2026-10-27
 
 - **Stage B starts: two LOI diagrams for serpentinites (Deschamps et al.

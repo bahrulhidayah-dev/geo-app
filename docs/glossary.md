@@ -763,6 +763,20 @@ LOI).
 
 **Source.** Deschamps et al. (2013), Figs. 4d and 4f.
 
+### Fe redox in serpentinites (Paulick et al. 2006)
+
+**What it shows.** Three panels: Fe2O3 against measured FeO, Fe2O3 against
+LOI, and Fe³⁺/Fe(total) against LOI. During serpentinization, Fe²⁺ from
+olivine and pyroxene is oxidised to Fe³⁺ in magnetite and serpentine (this
+reaction makes hydrogen, H2). Samples move along lines of equal total iron
+towards the magnetite ratio (Fe2O3/FeO = 2.22; Fe³⁺/Fe(total) = 2/3).
+
+**Use for.** Serpentinites with FeO measured by titration **and** Fe2O3.
+Samples with total iron only are not plotted: a split ratio would only
+show the setting chosen in Settings.
+
+**Source.** Paulick et al. (2006), Figs. 6D and 11A.
+
 ### Al2O3/SiO2 - MgO/SiO2 (Paulick et al. 2006)
 
 **What it shows.** MgO/SiO2 against Al2O3/SiO2 with the terrestrial array
