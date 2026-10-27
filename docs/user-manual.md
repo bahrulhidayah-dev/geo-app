@@ -17,7 +17,7 @@ programming is needed.
 
 - Reads your data from a CSV or Excel file and cleans it for you
   (values below detection limit, decimal commas, units rows).
-- Plots **33 classification and discrimination diagrams** (boundaries after
+- Plots **34 classification and discrimination diagrams** (boundaries after
   Janoušek et al. 2006 or, where no template exists, the original paper), grouped into six categories, and names the field of every sample.
 - Draws REE and multi-element **spider diagrams**, free **XY plots** and
   **ternary plots**, and
@@ -339,6 +339,7 @@ implementation.
 | Ultramafic rocks | LOI - SiO2 and LOI - MgO (Deschamps et al. 2013) | Serpentinites (needs LOI) |
 | Ultramafic rocks | Fe redox in serpentinites (Paulick et al. 2006) | Serpentinites with FeO **and** Fe2O3 measured |
 | Ultramafic rocks | Trace elements vs Yb in serpentinites (Deschamps et al. 2013) | Serpentinites, peridotites (11 panels: Ti, La/Yb and fluid-mobile elements) |
+| Ultramafic rocks | V - MgO melting curves (Lee et al. 2003) | Mantle peridotites, serpentinites (needs V) |
 | Weathering and alteration | F - M - W (Ohta and Arai 2007) | Weathered igneous rocks |
 
 The **References** page in the top bar lists the full reference of every

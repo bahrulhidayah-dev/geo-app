@@ -643,6 +643,23 @@ DIAGRAMS = [
                "(McDonough and Sun 1995, Table 5), DM = depleted mantle (Salters and "
                "Stracke 2004, Table 6). The paper's fields (hand-drawn around its "
                "data) are not copied. Panels without data show 'Missing data'."),
+    dict(id="LeeVMgO", title="V - MgO melting curves (Lee et al. 2003)",
+         category="Ultramafic rocks", scope="Mantle peridotites, serpentinites", year=2003,
+         panels=[B(lambda d, s: calc.anhydrous(d)[0]["MgO"] if "MgO" in d else need(d, "MgO"),
+                   lambda d, s: need(d, "V"), "MgO (wt%, anhydrous)", "V (ppm)")],
+         reference="Lee C.-T.A., Brandon A.D., Norman M. (2003) Vanadium in peridotites as "
+                   "a proxy for paleo-fO2 during partial melting: prospects, limitations, "
+                   "and implications. Geochimica et Cosmochimica Acta 67, 3045-3064.",
+         notes="V is more incompatible at high oxygen fugacity, so a residue melted at "
+               "high fO2 loses V faster. Curves: fractional melting of spinel peridotite "
+               "at 1.5 GPa and fixed fO2 from FMQ-3 to FMQ+2 (thick: FMQ), starting from "
+               "87 ppm V; dashed verticals: 10, 20, 30 and 40 % melt extracted. "
+               "Calculated by the app (tools/lee2003_vmgo.py) from the paper's eqs. 1-3 "
+               "and Table 1. Oceanic mantle peridotites fall mostly between FMQ-3 and "
+               "FMQ (Lee et al. 2003). Deschamps et al. (2013, Fig. 7e) use this plot for "
+               "serpentinites; V and MgO are assumed immobile during serpentinization, "
+               "but MgO loss by seafloor weathering moves samples to the left. Not for "
+               "rocks with refertilization or cumulates."),
     dict(id="OhtaArai", title="F - M - W weathering (Ohta and Arai 2007)",
          category="Weathering and alteration", scope="Igneous rocks, weathered",
          year=2007,

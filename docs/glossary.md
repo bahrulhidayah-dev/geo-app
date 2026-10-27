@@ -793,6 +793,34 @@ DM depleted mantle.
 **Source.** Deschamps et al. (2013), Figs. 7a, 7d and 11; McDonough and
 Sun (1995); Salters and Stracke (2004).
 
+### V - MgO melting curves (Lee et al. 2003)
+
+**What it shows.** V (ppm) against anhydrous MgO with curves for the
+melting residue of spinel peridotite at different oxygen fugacities (FMQ−3
+to FMQ+2; FMQ is the fayalite–magnetite–quartz buffer). V leaves the
+residue faster when melting is more oxidising, so the position of a
+sample between the curves estimates the fO2 at which its protolith
+melted.
+
+**Use for.** Mantle peridotites and serpentinites (V and MgO are taken as
+immobile during serpentinization). Seafloor weathering removes MgO and
+moves samples to the left. Not for refertilised rocks or cumulates.
+
+**Source.** Lee et al. (2003); used for serpentinites by Deschamps et al.
+(2013), Fig. 7e.
+
+### Oxygen fugacity (fO2) and buffers
+
+**What it is.** A measure of how oxidising a rock or melt is (log units of
+the partial pressure of oxygen). It is given relative to a mineral buffer,
+for example FMQ (fayalite–magnetite–quartz) or NNO (nickel–nickel oxide):
+FMQ+1 is one log unit more oxidising than FMQ.
+
+**In the app.** The V–MgO diagram (Lee et al. 2003). Serpentinization
+and its H2 production are controlled by redox reactions of iron.
+
+**Source.** Frost (1991) as cited in Lee et al. (2003).
+
 ### Al2O3/SiO2 - MgO/SiO2 (Paulick et al. 2006)
 
 **What it shows.** MgO/SiO2 against Al2O3/SiO2 with the terrestrial array
@@ -872,6 +900,8 @@ compositions.
 - Jensen L.S. (1976) Ontario Geological Survey Miscellaneous Paper 66.
 - Le Bas M.J., Le Maitre R.W., Streckeisen A., Zanettin B. (1986) Journal
   of Petrology 27, 745–750.
+- Lee C.-T.A., Brandon A.D., Norman M. (2003) Geochimica et Cosmochimica
+  Acta 67, 3045–3064.
 - Le Maitre R.W. (1976) Contributions to Mineralogy and Petrology 56,
   181–189.
 - Le Maitre R.W. (ed.) (2002) Igneous Rocks: A Classification and Glossary

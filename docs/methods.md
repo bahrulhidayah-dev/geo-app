@@ -300,6 +300,23 @@ Special cases:
   Cs 0.00132, Sr 9.80, Ba 1.20, U 0.0047, Pb 0.0232, As 0.0074, Sb 0.0026
   ppm). The paper's fields were drawn by hand around its data and are not
   copied. [App convention]
+- **V–MgO melting curves (Lee et al. 2003).** [Source: eqs. 1–3, Table 1,
+  Fig. 4A] Calculated by `tools/lee2003_vmgo.py` and stored as diagram
+  geometry.
+  - Fractional melting at 1.5 GPa by small equilibrium increments (eq. 1):
+    Cs(j+1) = D Cs(j) / (D (1 − ΔF) + ΔF), with ΔF the fraction of the
+    remaining residue melted in each 0.1 % step of F. Starting V = 87 ppm.
+  - Residue MgO and modes (opx, cpx, olivine, spinel) interpolated
+    linearly in F between the rows of Table 1 (1.5 GPa, pMELTS), up to
+    F = 46.6 % (MgO 48.0 wt%). [App convention: linear interpolation]
+  - Partition coefficients (eq. 2, Canil 2002): D = a / (10^(b ΔNNO + c) +
+    1) for cpx (8, 0.31, 1.22), olivine (0.9, 0.31, 1.53) and spinel (18.5,
+    0.37, 0.62); D(opx) = 0.116 exp(−0.215 ΔNNO).
+  - ΔNNO from ΔFMQ with the buffer equations of Frost (1991) (eq. 3) at
+    P = 15,000 bar and T = 1350 °C: ΔNNO = ΔFMQ − 0.136. The paper does not
+    give the temperature used; between 1250 and 1450 °C the offset changes
+    by less than 0.03 log units. [App convention]
+  - Samples: V (ppm) as measured against anhydrous MgO (section 2).
 - **Ternary plots.** Each apex is factor × (sum of its columns). The three
   values are closed to 100 %. Plot coordinates: x = c + b/2, y = b·√3/2,
   with apex a left, b top, c right (as in Janoušek et al. 2006). Samples with a missing
@@ -475,6 +492,20 @@ Report these in your methods section if they affect your results.
   FeOt equal the hand calculation. A point on the Mg# 90 line has
   Mg# = 90.0. Fo90 olivine lies on the olivine line and has Mg# = 90.0.
 
+- **V–MgO melting curves (0.23.0).**
+  - The partition coefficients at ΔFMQ = 0 (olivine 0.028, cpx 0.50,
+    spinel 3.9, opx 0.12) agree with Lee et al. (2003, Fig. 3).
+  - The FMQ curve reproduces their Fig. 4A within about 2 ppm (for example
+    14 ppm V at 44.6 wt% MgO; read from the figure: about 14.5).
+  - The more reduced curves are higher than in the figure: FMQ−3 by up to
+    about 10 ppm at MgO > 44 wt%. The paper's curves come from finer pMELTS
+    steps than the 10 rows of Table 1; read fO2 estimates from the reduced
+    curves as approximate (± 0.5 log unit).
+  - 80 % of 335 harzburgites, lherzolites and dunites of the global
+    database (Gard et al. 2019; MgO 37.5–48 wt%) plot between the FMQ−3 and
+    FMQ curves, as Lee et al. (2003) report for oceanic mantle; 64 % of 292
+    serpentinites do, and 30 % plot below FMQ (MgO loss or V loss).
+
 - **Trace elements vs Yb (0.22.0).** Tested with 289 serpentinites of the
   global database with Yb (16–273 per element; values at or below zero,
   i.e. below detection, set to missing). La/Yb of the first sample: hand
@@ -607,6 +638,9 @@ basis tab.
 - Le Bas M.J., Le Maitre R.W., Woolley A.R. (1992) The construction of the
   Total Alkali-Silica chemical classification of volcanic rocks. Mineralogy
   and Petrology 46, 1–22. doi:10.1007/BF01160698
+- Lee C.-T.A., Brandon A.D., Norman M. (2003) Vanadium in peridotites as a
+  proxy for paleo-fO2 during partial melting: prospects, limitations, and
+  implications. Geochimica et Cosmochimica Acta 67, 3045–3064.
 - Le Maitre R.W. (1976) Some problems of the projection of chemical data
   into mineralogical classifications. Contributions to Mineralogy and
   Petrology 56, 181–189. (iron split, section 3)

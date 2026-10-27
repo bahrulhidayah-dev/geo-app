@@ -2,6 +2,18 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.23.0 - 2026-10-27
+
+- **V - MgO melting curves (Lee et al. 2003)**, a new diagram in
+  Ultramafic rocks: residue curves for fractional melting of spinel
+  peridotite at 1.5 GPa from FMQ-3 to FMQ+2, with 10 % melting steps.
+  The curves are calculated from the paper's equations and Table 1 by the
+  new developer script `tools/lee2003_vmgo.py`. 34 diagrams.
+- Glossary: the diagram and "Oxygen fugacity (fO2) and buffers".
+- Scientific methods: the calculation, the conventions (temperature for
+  FMQ to NNO, interpolation of Table 1) and the comparison with Fig. 4A,
+  including the larger difference of the reduced curves.
+
 ## 0.22.0 - 2026-10-27
 
 - **Trace elements vs Yb in serpentinites (Deschamps et al. 2013)**, a
