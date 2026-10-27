@@ -2,6 +2,19 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.16.1 - 2026-10-27
+
+- **Legend no longer hides samples.** New default legend position
+  *Automatic (avoids the data)*: eight places inside the plot are tried and
+  the one that covers the fewest samples, field names and boundary lines is
+  kept. If every place covers samples, the legend goes below the plot.
+- New legend position **Below the plot** (in columns, under the x axis);
+  keys of numbered labels follow below it.
+- New option **Background behind the legend** (on by default): a box in the
+  plot colour for a legend inside the plot.
+- Sample labels and the legend share one obstacle check in the plotting
+  engine.
+
 ## 0.16.0 - 2026-10-22
 
 - **Example datasets**: eight sets to explore the app, as cards on the

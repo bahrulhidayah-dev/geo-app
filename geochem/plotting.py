@@ -40,6 +40,7 @@ APPEARANCE_DEFAULT = {
     "font_tick": 8.0,              # tick labels
     "font_field": 1.0,             # multiplier for field names in diagrams
     "font_legend": 8.0,
+    "legend_box": True,            # background box behind a legend inside the plot
     "font_point": 7.0,             # sample labels
     "field_labels": "template",    # template | horizontal | numbered | hidden
     "point_labels": "auto",        # auto (placed to avoid overlap) | fixed | numbered
@@ -144,28 +145,56 @@ def _draw_points(ax, x, y, sty, s, labels=None):
         ax._geo_labels = pending
 
 
-def _legend(ax, s, title=None, where="upper right"):
+# Legend positions. "auto" tries the positions in LEGEND_AUTO_ORDER after the
+# layout is fixed and keeps the one that covers the fewest data points, field
+# names and boundary lines; if every position covers data, the legend goes
+# below the plot. "below" always puts it under the plot, in columns.
+LEGEND_AUTO_ORDER = ("upper right", "upper left", "lower right", "lower left",
+                     "upper center", "lower center", "center right", "center left")
+
+
+def _legend(ax, s, title=None, where="auto"):
     handles, labels = ax.get_legend_handles_labels()
-    if len(labels) > 1 and where != "hidden":
-        fs = _APP["font_legend"]
-        if where == "outside":
-            leg = ax.legend(fontsize=fs, title=title, title_fontsize=fs,
-                            frameon=False, loc="upper left",
-                            bbox_to_anchor=(1.01, 1.0))
-        else:
-            leg = ax.legend(fontsize=fs, title=title, title_fontsize=fs,
-                            frameon=False, loc=where)
-        for t in leg.get_texts():
-            t.set_color(s["fg"])
-            t.set_family(_APP["font_family"])
-        if leg.get_title():
-            leg.get_title().set_color(s["muted"])
+    if len(labels) <= 1 or where == "hidden":
+        return
+    fs = _APP["font_legend"]
+    kw = dict(fontsize=fs, title=title, title_fontsize=fs)
+    inside = where not in ("outside", "below")
+    if inside and _APP["legend_box"]:
+        kw.update(frameon=True, fancybox=False, framealpha=0.85, borderpad=0.5)
+    else:
+        kw.update(frameon=False)
+    if where == "outside":
+        leg = ax.legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), **kw)
+    elif where == "below":
+        leg = ax.legend(loc="upper center", ncol=min(len(labels), 4),
+                        columnspacing=1.2, **kw)
+    elif where == "auto":
+        leg = ax.legend(loc=LEGEND_AUTO_ORDER[0], **kw)
+    else:
+        leg = ax.legend(loc=where, **kw)
+    ax._geo_legend_mode = where     # finished by _place_legend() in _finish()
+    ax._geo_legend_kw = kw
+    if kw.get("frameon"):
+        fr = leg.get_frame()
+        fr.set_facecolor(s["bg"])
+        fr.set_edgecolor(s["line"])
+        fr.set_linewidth(0.6)
+    _colour_legend(leg, s)
+
+
+def _colour_legend(leg, s):
+    for t in leg.get_texts():
+        t.set_color(s["fg"])
+        t.set_family(_APP["font_family"])
+    if leg.get_title():
+        leg.get_title().set_color(s["muted"])
 
 
 # ---------------- free XY plot ----------------
 def plot_binary(df, x_col, y_col, sty, labels=None, log_x=False, log_y=False,
                 style="dark", size=(6.2, 4.8), legend_title=None,
-                legend="upper right"):
+                legend="auto"):
     fig, ax, s = _new_axes(style, size)
     _draw_points(ax, df[x_col], df[y_col], sty, s, labels)
     if log_x:
@@ -187,7 +216,7 @@ def _tern_xy(a, b, c):
 
 
 def plot_ternary(abc, apices, sty, labels=None, grid=True, style="dark",
-                 size=(5.8, 5.2), legend_title=None, legend="upper right"):
+                 size=(5.8, 5.2), legend_title=None, legend="auto"):
     """Free ternary plot. abc: columns a, b, c in % (rows sum to 100),
     as returned by calc.ternary_closure. apices: three axis labels."""
     s = STYLES[style]
@@ -234,7 +263,7 @@ def plot_ternary(abc, apices, sty, labels=None, grid=True, style="dark",
 
 # ---------------- spider ----------------
 def plot_spider(norm_df, reference, sty, style="dark", size=(6.2, 4.6),
-                legend_title=None, legend="upper right"):
+                legend_title=None, legend="auto"):
     fig, ax, s = _new_axes(style, size)
     els = list(norm_df.columns)
     x = np.arange(len(els))
@@ -399,7 +428,7 @@ def _draw_geometry(ax, geom, s, ternary, xlim, log_x, log_y):
 
 
 def plot_catalog(diagram, coords_list, sty, labels=None, style="dark",
-                 legend_title=None, legend="upper right", panel_size=(4.6, 3.9),
+                 legend_title=None, legend="auto", panel_size=(4.6, 3.9),
                  only=None):
     """Draw a catalogue diagram (one panel or a plate of panels).
     coords_list: one DataFrame (or None if data are missing) per panel."""
@@ -476,7 +505,7 @@ def _var_label(name, basis):
 
 
 def plot_variation(table, x, panels, sty, labels=None, style="dark", basis="anhydrous",
-                   legend_title=None, legend="upper right", panel_size=(3.4, 2.8),
+                   legend_title=None, legend="auto", panel_size=(3.4, 2.8),
                    mg_lines=False, olivine=False, ncol=3):
     """Plate of variation diagrams: x (SiO2 or MgO) against every panel column.
     mg_lines / olivine: reference lines on the FeOt panel when x is MgO
@@ -564,6 +593,94 @@ def _overlap(box, arr):
     return float((w * h).sum())
 
 
+def _point_boxes(ax):
+    """Screen boxes (x0, y0, x1, y1) of all data points of a panel."""
+    px_pt = ax.figure.dpi / 72.0
+    pts = []
+    for coll in ax.collections:
+        offs = coll.get_offsets()
+        if not len(offs):
+            continue
+        xy = coll.get_offset_transform().transform(offs)
+        sizes = coll.get_sizes()
+        r = np.sqrt(sizes if len(sizes) else [36.0]) / 2 * px_pt
+        r = np.broadcast_to(r if len(r) == len(xy) else r[:1], (len(xy),))
+        pts.append(np.column_stack([xy[:, 0] - r, xy[:, 1] - r, xy[:, 0] + r, xy[:, 1] + r]))
+    pts = np.vstack(pts) if pts else np.empty((0, 4))
+    return pts[np.isfinite(pts).all(axis=1)]
+
+
+def _text_boxes(ax, renderer):
+    """Screen boxes of the visible texts in a panel (field names ...)."""
+    texts = []
+    for t in ax.texts:
+        if t.get_visible() and t.get_text().strip():
+            b = t.get_window_extent(renderer)
+            texts.append((b.x0, b.y0, b.x1, b.y1))
+    return np.array(texts) if texts else np.empty((0, 4))
+
+
+def _line_points(ax, step=3.0):
+    """Points every `step` pixels along the lines of a panel
+    (diagram boundaries, spider patterns, reference lines)."""
+    out = []
+    for ln in ax.lines:
+        if not ln.get_visible():
+            continue
+        xy = ln.get_transform().transform(ln.get_xydata())
+        xy = xy[np.isfinite(xy).all(axis=1)]
+        for a, b in zip(xy[:-1], xy[1:]):
+            n = int(min(max(np.hypot(*(b - a)) / step, 1), 2000))
+            t = np.linspace(0, 1, n + 1)[:, None]
+            out.append(a + (b - a) * t)
+    return np.vstack(out) if out else np.empty((0, 2))
+
+
+def _place_legend(ax, s, renderer):
+    """Finish the legend of a panel: choose the automatic position, or move
+    the legend below the plot. Returns the bottom of a legend placed below
+    the plot (figure fraction), or None."""
+    mode = getattr(ax, "_geo_legend_mode", None)
+    leg = ax.get_legend()
+    if leg is None or mode not in ("auto", "below"):
+        return None
+    if mode == "auto":
+        frame = ax.get_window_extent(renderer)
+        pts, texts, lines = _point_boxes(ax), _text_boxes(ax, renderer), _line_points(ax)
+        best = None
+        for k, loc in enumerate(LEGEND_AUTO_ORDER):
+            leg.set_loc(loc)
+            b = leg.get_window_extent(renderer)
+            box = (b.x0, b.y0, b.x1, b.y1)
+            on_points = _overlap(box, pts)
+            hits = 0
+            if len(lines):
+                hits = int(((lines[:, 0] > b.x0) & (lines[:, 0] < b.x1)
+                            & (lines[:, 1] > b.y0) & (lines[:, 1] < b.y1)).sum())
+            score = (10 * on_points + 2 * _overlap(box, texts) + 9 * hits
+                     + 0.01 * k * b.width * b.height)
+            if best is None or score < best[0]:
+                best = (score, loc, on_points)
+        leg.set_loc(best[1])
+        if best[2] <= 0 or not len(pts):
+            return None
+        # every position inside the plot covers data: move it below the plot
+        handles, labels = ax.get_legend_handles_labels()
+        kw = dict(getattr(ax, "_geo_legend_kw", {}))
+        kw.update(frameon=False, ncol=min(len(labels), 4), columnspacing=1.2)
+        leg.remove()
+        leg = ax.legend(loc="upper center", **kw)
+        _colour_legend(leg, s)
+    fig = ax.figure
+    bottom = min(a.get_tightbbox(renderer).y0 for a in fig.axes
+                 if a.get_visible())
+    y = bottom / fig.bbox.height - 0.01
+    leg.set_bbox_to_anchor((0.5, y), transform=fig.transFigure)
+    leg.set_loc("upper center")
+    b = leg.get_window_extent(renderer)
+    return b.y0 / fig.bbox.height
+
+
 def _place_labels(ax, s, renderer):
     pending = getattr(ax, "_geo_labels", [])
     if not pending:
@@ -583,28 +700,12 @@ def _place_labels(ax, s, renderer):
         return
     frame = ax.get_window_extent(renderer)
     # obstacles: data points, field names and other texts, legend
-    pts = []
-    for coll in ax.collections:
-        offs = coll.get_offsets()
-        if not len(offs):
-            continue
-        xy = coll.get_offset_transform().transform(offs)
-        sizes = coll.get_sizes()
-        r = np.sqrt(sizes if len(sizes) else [36.0]) / 2 * px_pt
-        r = np.broadcast_to(r if len(r) == len(xy) else r[:1], (len(xy),))
-        pts.append(np.column_stack([xy[:, 0] - r, xy[:, 1] - r, xy[:, 0] + r, xy[:, 1] + r]))
-    pts = np.vstack(pts) if pts else np.empty((0, 4))
-    pts = pts[np.isfinite(pts).all(axis=1)]
-    texts = []
-    for t in ax.texts:
-        if t.get_visible() and t.get_text().strip():
-            b = t.get_window_extent(renderer)
-            texts.append((b.x0, b.y0, b.x1, b.y1))
+    pts = _point_boxes(ax)
+    texts = _text_boxes(ax, renderer)
     leg = ax.get_legend()
     if leg is not None:
         b = leg.get_window_extent(renderer)
-        texts.append((b.x0, b.y0, b.x1, b.y1))
-    texts = np.array(texts) if texts else np.empty((0, 4))
+        texts = np.vstack([texts, [(b.x0, b.y0, b.x1, b.y1)]])
     placed = []
     for x, y, i, size in pending:
         num, name = fig._geo_numbers[i]
@@ -661,7 +762,7 @@ def _wrap_items(items, width_chars):
     return lines
 
 
-def _add_keys(fig, s):
+def _add_keys(fig, s, top=-0.01):
     """Keys for numbered field names and numbered sample labels, below the plot."""
     blocks = []
     for name, key in fig._geo_field_keys:
@@ -676,7 +777,7 @@ def _add_keys(fig, s):
     fs = _APP["font_legend"] * 0.95
     width = fig.get_figwidth() * 72 / (fs * 0.55)
     renderer = fig.canvas.get_renderer()
-    y = -0.01
+    y = top
     for block in blocks:
         lines = _wrap_items(block[1:], max(30, int(width) - len(block[0]) - 2))
         txt = block[0] + " " + ("\n" + " " * (len(block[0]) + 1)).join(lines)
@@ -690,10 +791,16 @@ def _finish(fig):
     fig.tight_layout()
     renderer = fig.canvas.get_renderer()
     s = getattr(fig, "_geo_style", None) or STYLES["dark"]
+    top = -0.01
+    for ax in fig.axes:
+        if ax.get_visible():
+            y = _place_legend(ax, s, renderer)
+            if y is not None:
+                top = min(top, y - 0.015)
     for ax in fig.axes:
         if ax.get_visible():
             _place_labels(ax, s, renderer)
-    _add_keys(fig, s)
+    _add_keys(fig, s, top)
     return fig
 
 

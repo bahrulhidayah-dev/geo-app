@@ -488,8 +488,14 @@ Download the table as CSV.
 3. **Colour set** applies a palette to all groups: *Default*,
    *Colour-blind safe* (Okabe-Ito) or *Greyscale* (for black-and-white
    printing).
-4. **Legend position**: top right, top left, bottom right, bottom left,
-   outside the plot or hidden.
+4. **Legend position**: *Automatic (avoids the data)* (default), below the
+   plot, top right, top left, bottom right, bottom left, outside the plot
+   (right) or hidden. *Automatic* tries eight places inside the plot and
+   keeps the one that covers the fewest samples, field names and boundary
+   lines; if every place covers samples, the legend goes below the plot.
+   **Background behind the legend** (on by default) puts a box in the plot
+   colour behind a legend inside the plot, so it stays readable over
+   boundary lines.
 5. **Save this symbol set (CSV)** and **Load a saved symbol set** let you use
    the same styles again in another session.
 

@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.16.0"
+APP_VERSION = "0.16.1"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -116,7 +116,7 @@ if _pending is not None:
     st.session_state["_project_loaded"] = _meta.get("saved", "")
 
 SETTINGS_DEFAULT = {"tas_recalc": True, "export_style": "publication",
-                    "dpi": 300, "legend": "upper right", "palette": "Default",
+                    "dpi": 300, "legend": "auto", "palette": "Default",
                     "use_file_styles": True, "fe3_ratio": 0.15,
                     "xrf_qc": False, "um_mgo": 30.0, "qc_tol": 5.0}
 settings = st.session_state.setdefault("settings", dict(SETTINGS_DEFAULT))
@@ -1277,9 +1277,10 @@ def page_stats():
                  index=True)
 
 
-LEGEND_PLACES = ["upper right", "upper left", "lower right", "lower left",
-                 "outside", "hidden"]
-LEGEND_LABELS = {"upper right": "Top right", "upper left": "Top left",
+LEGEND_PLACES = ["auto", "below", "upper right", "upper left", "lower right",
+                 "lower left", "outside", "hidden"]
+LEGEND_LABELS = {"auto": "Automatic (avoids the data)", "below": "Below the plot",
+                 "upper right": "Top right", "upper left": "Top left",
                  "lower right": "Bottom right", "lower left": "Bottom left",
                  "outside": "Outside the plot (right)", "hidden": "Hidden"}
 
@@ -1358,7 +1359,16 @@ def page_symbols():
         settings["legend"] = o1.selectbox(
             t("Legend position"), LEGEND_PLACES,
             format_func=lambda v: t(LEGEND_LABELS[v]),
-            index=LEGEND_PLACES.index(settings["legend"]))
+            index=LEGEND_PLACES.index(settings["legend"]),
+            help=t("Automatic: the legend goes to the corner or edge that covers the "
+                   "fewest samples, field names and boundary lines. If every place "
+                   "covers samples, it goes below the plot."))
+        appearance["legend_box"] = o1.checkbox(
+            t("Background behind the legend"), appearance.get("legend_box", True),
+            disabled=settings["legend"] in ("below", "outside", "hidden"),
+            help=t("A box in the plot colour keeps the legend readable over lines. "
+                   "Only for a legend inside the plot."))
+        plotting.set_appearance(appearance)
         fc = {k: v for k, v in symbols.file_columns(ctx["std"]).items() if v}
         if fc:
             settings["use_file_styles"] = o2.toggle(
