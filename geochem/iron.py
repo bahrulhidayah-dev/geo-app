@@ -21,6 +21,11 @@ from .calc import FEO_PER_FE2O3, tas_xy
 
 METHODS = ("fixed", "lemaitre_volcanic", "lemaitre_plutonic", "middlemost")
 
+# Default (since 0.17.1): Le Bas et al. (1986, p. 748) recommend the method of
+# Le Maitre (1976) when only total iron is given; their scheme is for volcanic
+# rocks, so the volcanic equation is the default.
+DEFAULT_METHOD = "lemaitre_volcanic"
+
 METHOD_LABELS = {
     "fixed": "Fixed Fe3+/Fe(total) ratio",
     "lemaitre_volcanic": "Le Maitre (1976), volcanic rocks",
@@ -48,9 +53,9 @@ MIDDLEMOST = {
 def spec(settings):
     """The iron-split choice from the settings, as a hashable tuple
     (method, fixed ratio, also replace measured values)."""
-    m = settings.get("fe_method", "fixed")
+    m = settings.get("fe_method", DEFAULT_METHOD)
     if m not in METHODS:
-        m = "fixed"
+        m = DEFAULT_METHOD
     return (m, float(settings.get("fe3_ratio", 0.15)),
             bool(settings.get("fe_all", False)))
 

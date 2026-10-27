@@ -90,14 +90,17 @@ Notes:
     ratio R = Fe2O3/FeO. Then FeO = T / (1 + 0.8998 R) and Fe2O3 = R × FeO,
     so FeO + 0.8998 Fe2O3 = T exactly.
 - **Methods (Settings).**
-  - *Fixed ratio* (default): Fe³⁺/Fe(total) = *r* (atomic) for every
-    sample: FeO = T × (1 − r), Fe2O3 = T × r / 0.8998. Default r = 0.15.
-    [App convention]
-  - *Le Maitre (1976), volcanic*: Ox = 0.93 − 0.0042 SiO2 − 0.022 (Na2O +
+  - *Fixed ratio*: Fe³⁺/Fe(total) = *r* (atomic) for every sample:
+    FeO = T × (1 − r), Fe2O3 = T × r / 0.8998. Default r = 0.15.
+    [App convention] This was the default before version 0.17.1.
+  - *Le Maitre (1976), volcanic* (**default** since 0.17.1): Ox = 0.93 − 0.0042 SiO2 − 0.022 (Na2O +
     K2O), regression on 12,962 volcanic rocks. *Plutonic*: Ox = 0.88 −
     0.0016 SiO2 − 0.027 (Na2O + K2O), 9,604 plutonic rocks. Ox =
     FeO/(FeO + Fe2O3) by weight, so R = (1 − Ox)/Ox. [Source] Le Bas et
-    al. (1986) recommend this method when only total iron is given.
+    al. (1986) recommend this method when only total iron is given. Their
+    classification is for volcanic rocks, so the volcanic equation is the
+    default; choose the plutonic equation for plutonic rocks.
+    [App convention]
     - SiO2 and Na2O + K2O are taken on an anhydrous basis, as for TAS; the
       paper does not state the basis. [App convention]
     - Ox is kept between 0.05 and 1. [App convention]
@@ -374,7 +377,7 @@ Report these in your methods section if they affect your results.
 
 | Convention | Value | Where to change it |
 |---|---|---|
-| Iron split when only total iron is measured | fixed Fe³⁺/Fe(total) = 0.15 (alternatives: Le Maitre 1976, Middlemost 1989) | Settings |
+| Iron split when only total iron is measured | Le Maitre (1976), volcanic equation, as recommended by Le Bas et al. (1986) (alternatives: plutonic equation, Middlemost 1989, fixed ratio 0.15) | Settings |
 | Measured FeO and Fe2O3 | kept (can be standardised) | Settings |
 | Le Maitre (1976) inputs | anhydrous SiO2 and Na2O + K2O; Ox kept in 0.05–1 | — |
 | Middlemost (1989) outside TAS fields | fixed ratio of Settings | Settings |

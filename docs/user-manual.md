@@ -540,11 +540,12 @@ Change how every diagram and graph looks, on screen and in exported files:
 - **Iron split when only total iron is measured** (CIPW norm and Verma et
   al. 2006). IUGS asks you to justify how total iron is split (Le Maitre et
   al. 2002). Choose one:
-  - *Fixed Fe³⁺/Fe(total) ratio* (default 0.15): the same ratio for every
-    sample.
-  - *Le Maitre (1976), volcanic rocks* or *plutonic rocks*: the ratio
-    depends on SiO2 and Na2O + K2O. Recommended by Le Bas et al. (1986)
-    when only total iron is given.
+  - *Le Maitre (1976), volcanic rocks* (**default**) or *plutonic rocks*:
+    the ratio depends on SiO2 and Na2O + K2O. Recommended by Le Bas et al.
+    (1986) when only total iron is given. Choose *plutonic rocks* for
+    granitoids, gabbros and other plutonic samples.
+  - *Fixed Fe³⁺/Fe(total) ratio* (0.15 unless you change it): the same
+    ratio for every sample. This was the default before version 0.17.1.
   - *Middlemost (1989)*: a standard Fe2O3/FeO ratio for each TAS field
     (basalt 0.2, andesite 0.35, rhyolite 0.5 ...). For volcanic rocks.
     Samples outside the TAS fields get the fixed ratio, which you can set

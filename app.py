@@ -44,7 +44,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.17.0"
+APP_VERSION = "0.17.1"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -117,7 +117,7 @@ if _pending is not None:
 
 SETTINGS_DEFAULT = {"tas_recalc": True, "export_style": "publication",
                     "dpi": 300, "legend": "auto", "palette": "Default",
-                    "use_file_styles": True, "fe3_ratio": 0.15, "fe_method": "fixed", "fe_all": False,
+                    "use_file_styles": True, "fe3_ratio": 0.15, "fe_method": iron.DEFAULT_METHOD, "fe_all": False,
                     "xrf_qc": False, "um_mgo": 30.0, "qc_tol": 5.0}
 settings = st.session_state.setdefault("settings", dict(SETTINGS_DEFAULT))
 for _k, _v in SETTINGS_DEFAULT.items():
@@ -1617,7 +1617,7 @@ def page_project():
 
 def iron_method_text():
     """Short text of the iron-split choice, for notes under results."""
-    m = settings.get("fe_method", "fixed")
+    m = settings.get("fe_method", iron.DEFAULT_METHOD)
     txt = t(iron.METHOD_LABELS[m])
     if m == "fixed":
         txt += f" = {settings['fe3_ratio']:g}"
@@ -1632,7 +1632,7 @@ def iron_settings():
     m = st.selectbox(
         t("Iron split when only total iron is measured (CIPW norm, Verma 2006)"),
         opts_, format_func=lambda v: t(iron.METHOD_LABELS[v]),
-        index=opts_.index(settings.get("fe_method", "fixed")),
+        index=opts_.index(settings.get("fe_method", iron.DEFAULT_METHOD)),
         help=t("Le Bas et al. (1986) recommend the method of Le Maitre (1976) when only "
                "total iron is given. Le Maitre et al. (2002): if only total iron was "
                "measured, the user must justify how it is split. No method is valid "

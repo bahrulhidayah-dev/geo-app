@@ -2,6 +2,17 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.17.1 - 2026-10-27
+
+- **New default iron split: Le Maitre (1976), volcanic equation**, as
+  recommended by Le Bas et al. (1986) when only total iron is given (was:
+  fixed Fe3+/Fe(total) = 0.15). Choose the plutonic equation for plutonic
+  rocks.
+- This changes the CIPW norm, the nephelinite test and Verma et al. (2006)
+  for samples with total iron only, also in projects saved before this
+  version. Choose *Fixed Fe3+/Fe(total) ratio* in Settings to get the
+  earlier results. Measured FeO and Fe2O3 are still used as they are.
+
 ## 0.17.0 - 2026-10-27
 
 - **Iron split methods** (Settings → Iron split when only total iron is
