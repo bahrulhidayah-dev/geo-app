@@ -541,6 +541,104 @@ def plot_field_counts(names, title=None, style="dark", size=None):
     return _finish(fig)
 
 
+# ---------------- mass change (isocon, immobility test) ----------------
+GAIN_COLOUR, LOSS_COLOUR = "#3A9D6A", "#C8553D"
+
+
+def plot_isocon(c_o, c_a, slope, immobile, title=None, style="dark", size=(6.0, 5.4)):
+    """Isocon diagram (Grant 1986, 2005): altered against original composition,
+    each species scaled for display (oxides first, then trace elements; the
+    scale does not change the slope). The isocon is C^A = slope x C^O.
+    Immobile species in the field colour, gained above the line, lost below."""
+    from .masschange import display_scale, ratios
+    fig, ax, s = _new_axes(style, size)
+    r = ratios(c_o, c_a)
+    k = display_scale(c_o[r.index])
+    x = pd.Series(c_o, dtype=float)[k.index] * k
+    y = pd.Series(c_a, dtype=float)[k.index] * k
+    # axis range from the original side, so a few strongly gained species
+    # (for example CO2 or K2O) do not squeeze all others near the origin;
+    # they are drawn at the top edge with an arrow and their C^A/C^O
+    top = float(max(x.max(), (y[y <= 1.6 * x.max()]).max() if (y <= 1.6 * x.max()).any() else 0)
+                * 1.12) if len(x) else 1.0
+    off = y > top * 0.98
+    ax.plot([0, top], [0, slope * top], color=s["fg"], lw=1.2, zorder=2)
+    ax.text(top * 0.97, slope * top * 0.97, f"isocon, slope {slope:.3f}", ha="right",
+            va="bottom", rotation=0, color=s["muted"], fontsize=_APP["font_tick"],
+            family=_APP["font_family"])
+    for sp in k.index:
+        if sp in immobile:
+            c = s["field"]
+        else:
+            c = GAIN_COLOUR if r[sp] / slope > 1 else LOSS_COLOUR
+        if off[sp]:
+            ax.scatter([x[sp]], [top * 0.975], s=46, marker="^", color=c, edgecolor=s["edge"],
+                       linewidth=0.5, zorder=4, clip_on=False)
+            n_off = int(off[:sp].sum()) - 1              # alternate the label position
+            ax.annotate(f"{sp} ×{r[sp]:.1f}", (x[sp], top * 0.975),
+                        xytext=(6, -11 - 10 * (n_off % 2)),
+                        textcoords="offset points", fontsize=_APP["font_point"], color=s["fg"],
+                        family=_APP["font_family"],
+                        path_effects=[patheffects.withStroke(linewidth=2.2, foreground=s["bg"])])
+            continue
+        ax.scatter([x[sp]], [y[sp]], s=36, color=c, edgecolor=s["edge"], linewidth=0.5, zorder=4)
+        ax.annotate(sp, (x[sp], y[sp]), xytext=(4, 3), textcoords="offset points",
+                    fontsize=_APP["font_point"], color=s["fg"], family=_APP["font_family"],
+                    path_effects=[patheffects.withStroke(linewidth=2.2, foreground=s["bg"])])
+    ax.set_xlim(0, top)
+    ax.set_ylim(0, top)
+    ax.set_aspect("equal")
+    _style_axes(ax, s, "Original composition C°, scaled", "Altered composition Cᴬ, scaled")
+    if off.any():
+        ax.text(0.01, 0.995, "▲ off scale: ×CA/CO", transform=ax.transAxes, ha="left", va="top",
+                color=s["muted"], fontsize=_APP["font_tick"] * 0.9, family=_APP["font_family"])
+    if title:
+        ax.set_title(title, color=s["fg"], fontsize=_APP["font_axis"], loc="left",
+                     family=_APP["font_family"])
+    handles = [ax.scatter([], [], s=36, color=c, edgecolor=s["edge"], linewidth=0.5, label=l)
+               for c, l in ((s["field"], "Immobile (isocon)"), (GAIN_COLOUR, "Gained"),
+                            (LOSS_COLOUR, "Lost"))]
+    leg = ax.legend(handles=handles, loc="lower right", fontsize=_APP["font_legend"],
+                    frameon=True, fancybox=False, framealpha=0.85)
+    leg.get_frame().set_facecolor(s["bg"])
+    leg.get_frame().set_edgecolor(s["line"])
+    _colour_legend(leg, s)
+    return _finish(fig)
+
+
+def plot_immobility(df, reference, species, stats, style="dark", panel_size=(2.6, 2.3)):
+    """Immobility test (MacLean and Barrett 1993): each species against the
+    reference, with the least-squares line through the origin and r."""
+    s = STYLES[style]
+    species = [sp for sp in species if sp in stats.index][:16]
+    n = max(len(species), 1)
+    ncol = min(4, n)
+    nrow = int(np.ceil(n / ncol))
+    fig = _figure((panel_size[0] * ncol, panel_size[1] * nrow))
+    fig.patch.set_facecolor(s["bg"])
+    fig._geo_style = s
+    axes = np.atleast_1d(fig.subplots(nrow, ncol)).ravel()
+    for ax in axes[len(species):]:
+        ax.set_visible(False)
+    x = df[reference].astype(float)
+    for ax, sp in zip(axes, species):
+        y = df[sp].astype(float)
+        ok = x.notna() & y.notna()
+        rr = stats.loc[sp, "r"]
+        col = s["field"] if pd.notna(rr) and rr >= 0.9 else s["muted"]
+        ax.scatter(x[ok], y[ok], s=14, color=col, edgecolor=s["edge"], linewidth=0.3, zorder=3)
+        xm = float(x[ok].max()) * 1.1 if ok.any() else 1.0
+        sl = stats.loc[sp, "Slope through origin"]
+        if pd.notna(sl):
+            ax.plot([0, xm], [0, sl * xm], color=s["fg"], lw=0.8, zorder=2)
+        ax.set_xlim(0, xm)
+        ax.set_ylim(0, None)
+        _style_axes(ax, s, reference, sp)
+        ax.set_title(f"r = {rr:.2f}" if pd.notna(rr) else "r = –", color=s["fg"],
+                     fontsize=_APP["font_tick"], loc="left", family=_APP["font_family"])
+    return _finish(fig)
+
+
 # ---------------- variation diagrams (Harker, MgO) ----------------
 def _var_label(name, basis):
     """Axis label: oxides in wt% (anhydrous when recalculated), elements in ppm."""

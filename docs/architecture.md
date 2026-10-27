@@ -56,6 +56,7 @@ every click and rebuilds the page; values that must survive are kept in
 | `data.py` | Read CSV/Excel (with a chosen header row); clean text values; recognise column names (`SiO2 (wt%)` to `SiO2`); detect and convert units (wt%, ppm, ppb); apply the user's column setup; report changes |
 | `calc.py` | FeOt, Mg#, anhydrous recalculation, molar values, millications, element from oxide, normalisation |
 | `norms.py` | CIPW norm (Hutchison 1974, 1975; ported from Janoušek et al. 2006), iron split by Fe³⁺/Fe(total) |
+| `masschange.py` | Mass change: isocon slope, gains and losses (Grant 1986, 2005), enrichment factors and immobility test (MacLean and Barrett 1993); used by Tools → Mass change |
 | `variation.py` | Variation diagrams: Harker (SiO2) and MgO plates, anhydrous or as measured; iso-Mg# and olivine lines |
 | `examples.py` | Example datasets: list, descriptions and loading; real reference rocks from `examples/reference_rocks.csv` (USGS certificates; Mikuni et al. 2025) and two synthetic sets |
 | `screening.py` | Checks before naming: IUGS high-Mg rules and nephelinites before TAS, freshness for TAS, ultramafic samples, MgO deficit against the terrestrial array |

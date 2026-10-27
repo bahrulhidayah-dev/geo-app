@@ -335,6 +335,42 @@ rocks.
 
 **Source.** Rollinson and Pease (2021); Pearce (1996).
 
+### Mass change and isocon analysis
+
+**What it is.** During alteration a rock gains some components (for
+example water in serpentinization) and loses others (for example CaO).
+Concentrations alone can mislead: adding water dilutes every other
+component. Isocon analysis compares the altered composition Cᴬ with the
+original C°. Immobile species fall on a straight line through the origin,
+the isocon; its slope gives the overall mass change, and every species
+above the line was gained, below it lost.
+
+**In the app.** Tools → Mass change (isocon diagram, gains and losses,
+mass change of all samples).
+
+**Source.** Grant (1986, 2005); MacLean and Barrett (1993).
+
+### Immobility test
+
+**What it is.** A check that a species really stayed in place: in samples
+of one precursor unit, two immobile species plot on a straight line
+through the origin with a high correlation (r ≈ 0.90–0.99), because mass
+gain or loss only dilutes or concentrates both.
+
+**In the app.** Tools → Mass change → Immobility test.
+
+**Source.** MacLean and Barrett (1993).
+
+### Protolith
+
+**What it is.** The original rock before alteration or metamorphism, for
+example the peridotite from which a serpentinite formed. It usually no
+longer exists, so the least-altered samples are used instead.
+
+**In the app.** The original composition C° on the Mass change page.
+
+**Source.** Grant (2005).
+
 ### MORB, OIB, IAB and other setting codes
 
 **What it is.** Short names for tectonic settings of basalts. MORB:
@@ -888,6 +924,7 @@ compositions.
 - Deschamps F., Godard M., Guillot S., Hattori K. (2013) Lithos 178,
   96–127.
 - Frost B.R., Frost C.D. (2008) Journal of Petrology 49, 1955–1969.
+- Grant J.A. (2005) Physics and Chemistry of the Earth 30, 997–1004.
 - Hastie A.R., Kerr A.C., Pearce J.A., Mitchell S.F. (2007) Journal of
   Petrology 48, 2341–2357.
 - Hutchison C.S. (1974) Laboratory Handbook of Petrographic Techniques.
@@ -906,6 +943,8 @@ compositions.
   181–189.
 - Le Maitre R.W. (ed.) (2002) Igneous Rocks: A Classification and Glossary
   of Terms, 2nd edition. Cambridge University Press.
+- MacLean W.H., Barrett T.J. (1993) Journal of Geochemical Exploration 48,
+  109–133.
 - Maniar P.D., Piccoli P.M. (1989) Geological Society of America Bulletin
   101, 635–643.
 - Martin H. (1986) Geology 14, 753–756.

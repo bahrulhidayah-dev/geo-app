@@ -449,6 +449,38 @@ the data contain ultramafic samples:
 | Nb/Y – Zr/Ti (Pearce 1996) | Success rates of the original Winchester and Floyd (1977) diagram: 17–76 % depending on rock type. | Verma et al. 2010 |
 | Co – Th (Hastie et al. 2007) | Minimum misclassification 25–93 % in 7 of 14 tests; mainly useful for the series name of arc rocks. | Verma et al. 2010 |
 
+## 8a. Mass change (isocon analysis)
+
+Page *Tools → Mass change*; code in `geochem/masschange.py`.
+
+- **Isocon** (Grant 1986, 2005). [Source] Cᴬ = (M°/Mᴬ) C° for immobile
+  species. The slope s = M°/Mᴬ is the mean of Cᴬᵢ/C°ᵢ over the immobile
+  species chosen by the user (Grant 2005, Table 1). This mean does not
+  depend on units or display scaling. A least-squares slope through the
+  origin is also available in the code for comparison; it depends on the
+  units (Grant 2005).
+- **Gains and losses.** ΔCᵢ/C°ᵢ = (Mᴬ/M°)(Cᴬᵢ/C°ᵢ) − 1 = (Cᴬᵢ/C°ᵢ)/s − 1,
+  and ΔCᵢ = C°ᵢ × ΔCᵢ/C°ᵢ, in the unit of each species, per 100 g of
+  original rock. Overall mass change ΔM/M° = 1/s − 1.
+- **Same as MacLean and Barrett (1993).** Their enrichment factor EF =
+  C°imm/Cᴬimm = 1/s; reconstructed composition RC = EF × Cᴬ; mass change of
+  each component dX = RC − C°.
+- **Immobility test** (MacLean and Barrett 1993). [Source] Within one
+  precursor unit, each species against a reference species: Pearson r,
+  least-squares slope through the origin, and the intercept of an ordinary
+  regression as % of the mean. r ≥ 0.90 is marked "behaves immobile"; the
+  paper reports r ≈ 0.90–0.99 for immobile pairs.
+- **Display.** Species are scaled for the isocon diagram as in Grant (2005,
+  Table 1, panel C): oxides first, then trace elements, each sorted by C°
+  and given evenly spaced plotting values. Species with Cᴬ above 1.6 times
+  the largest scaled C° are drawn at the top edge with their Cᴬ/C°.
+  [App convention]
+- **Warning.** When the immobile species chosen differ in Cᴬ/C° by more
+  than 10 % (coefficient of variation), the page warns that some of them
+  were probably mobile. [App convention]
+- C° may be a single sample or the mean of a group, as Grant (2005)
+  recommends averaging several least-altered samples.
+
 ## 9. All app conventions in one place
 
 Report these in your methods section if they affect your results.
@@ -505,6 +537,21 @@ Report these in your methods section if they affect your results.
     database (Gard et al. 2019; MgO 37.5–48 wt%) plot between the FMQ−3 and
     FMQ curves, as Lee et al. (2003) report for oceanic mantle; 64 % of 292
     serpentinites do, and 30 % plot below FMQ (MgO loss or V loss).
+
+- **Mass change (0.24.0).**
+  - Grant (2005, Table 1; data of Mori et al. 2003): with SiO2, TiO2,
+    Al2O3 and Cu as immobile species the app gives slope 0.9987 (paper
+    0.999); the least-squares slope with Cu in ppm is 0.978 (paper 0.978).
+    All ΔC values agree with the paper's column 6 within its rounding:
+    0.011 wt% or less for oxides, 0.6 ppm or less for trace elements (for
+    example K2O +2.63 wt%, CO2 +7.68 wt%, Ba +60 ppm).
+  - Synthetic serpentinization with a known answer: a harzburgite to
+    which 15 g H2O (as LOI) were added and 0.6 g CaO removed per 100 g.
+    With SiO2, MgO and FeOt immobile (as Paulick et al. 2006) the app
+    returns ΔLOI = +15.0, ΔCaO = −0.6 and mass change +14.4 %.
+  - Immobility test on a synthetic suite (one precursor diluted by 0–30 %):
+    TiO2, Zr and Yb against Al2O3 give r = 0.94–0.97; randomised CaO and
+    Na2O give r ≈ 0.
 
 - **Trace elements vs Yb (0.22.0).** Tested with 289 serpentinites of the
   global database with Yb (16–273 per element; values at or below zero,
@@ -657,6 +704,12 @@ basis tab.
   database compilation. Earth System Science Data 11, 1553–1566.
   doi:10.5194/essd-11-1553-2019 (test data for the iron split, version
   1.1.0 on Zenodo)
+- Grant J.A. (1986) The isocon diagram — a simple solution to Gresens'
+  equation for metasomatic alteration. Economic Geology 81, 1976–1982. (as
+  cited in Grant 2005)
+- Grant J.A. (2005) Isocon analysis: a brief review of the method and
+  applications. Physics and Chemistry of the Earth 30, 997–1004.
+  doi:10.1016/j.pce.2004.11.003
 - Harker A. (1909) The Natural History of Igneous Rocks. Methuen, London.
   (as cited in Rollinson and Pease 2021)
 - Middlemost E.A.K. (1989) Iron oxidation ratios, norms and the
@@ -667,6 +720,8 @@ basis tab.
   post-Archean ophiolitic basalts and their tectonic significance using
   Th-Nb and Ce-Dy-Yb systematics. Geoscience Frontiers 6, 481–501.
   doi:10.1016/j.gsf.2014.03.006
+- MacLean W.H., Barrett T.J. (1993) Lithogeochemical techniques using
+  immobile elements. Journal of Geochemical Exploration 48, 109–133.
 - Mikuni K., Ishikawa A., Sato R. (2025) Geochemical Journal 59(6),
   299–314. doi:10.2343/geochemj.GJ25017 (XRF module and the GSJ example
   rocks; full reference in the user manual, chapter 14)

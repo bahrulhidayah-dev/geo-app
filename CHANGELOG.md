@@ -2,6 +2,23 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.24.0 - 2026-10-27
+
+- **New page Tools → Mass change**: which components were gained or lost
+  during alteration and how much the mass changed.
+  - Isocon tab (Grant 1986, 2005): choose the least-altered composition
+    (a sample or the mean of a group), the altered composition and the
+    immobile species; isocon slope, overall mass change, isocon diagram
+    and a table of gains and losses (CSV). Warning when the immobile
+    species do not cluster.
+  - All samples tab: mass change of every sample (CSV).
+  - Immobility test tab (MacLean and Barrett 1993): every species against
+    a reference, r and line through the origin.
+- New module `geochem/masschange.py`; tested against Grant (2005, Table 1)
+  and a synthetic serpentinization with a known answer.
+- Glossary (mass change and isocon, immobility test, protolith), Scientific
+  methods (section 8a and tests), user manual (section 10.1), References.
+
 ## 0.23.0 - 2026-10-27
 
 - **V - MgO melting curves (Lee et al. 2003)**, a new diagram in

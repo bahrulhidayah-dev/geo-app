@@ -162,6 +162,16 @@ GENERAL = [
     ("Serpentinites and peridotites", "Deschamps F., Godard M., Guillot S., Hattori K. "
      "(2013) Geochemistry of subduction zone serpentinites: a review. Lithos 178, 96-127. "
      "doi:10.1016/j.lithos.2013.05.019 (Fe oxidation and Ca loss during serpentinization)"),
+    ("Mass change", "Grant J.A. (2005) Isocon analysis: a brief review of the method and "
+     "applications. Physics and Chemistry of the Earth 30, 997-1004. "
+     "doi:10.1016/j.pce.2004.11.003 (isocon slope, gains and losses; test data of Mori "
+     "et al. 2003)"),
+    ("Mass change", "Grant J.A. (1986) The isocon diagram - a simple solution to Gresens' "
+     "equation for metasomatic alteration. Economic Geology 81, 1976-1982. (as cited in "
+     "Grant 2005)"),
+    ("Mass change", "MacLean W.H., Barrett T.J. (1993) Lithogeochemical techniques using "
+     "immobile elements. Journal of Geochemical Exploration 48, 109-133. (immobility test, "
+     "enrichment factors)"),
     ("Serpentinites and peridotites", "Salters V.J.M., Stracke A. (2004) Composition of "
      "the depleted mantle. Geochemistry, Geophysics, Geosystems 5, Q05B07. "
      "doi:10.1029/2003GC000597 (depleted-mantle reference points)"),

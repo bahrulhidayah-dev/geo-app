@@ -33,6 +33,8 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
   elements vs Yb (Deschamps et al. 2013) with primitive and depleted mantle points;
   V - MgO melting curves calculated after Lee et al. (2003).
 - CIPW norm (Hutchison 1974, 1975; ported from Janoušek et al. 2006) with download.
+- Mass change: isocon analysis (Grant 1986, 2005), gains and losses, immobility test
+  (MacLean and Barrett 1993); for example for serpentinization.
 - Top bar with Documentation (full user manual with screenshots),
   References, About, and the language (Indonesian, English, Japanese) and
   theme (light, dark or system) menus; the session is kept when the page

@@ -495,6 +495,41 @@ Summary statistics (count, mean, standard deviation, minimum, quartiles,
 maximum) for the chosen columns, for all samples or for each group.
 Download the table as CSV.
 
+### 10.1 Mass change (Tools → Mass change)
+
+Which components were gained or lost during alteration (for example
+serpentinization, weathering, hydrothermal alteration), and how much the
+mass of the rock changed. The page follows the isocon method of Grant
+(1986, 2005); the results are the same as with the enrichment factors of
+MacLean and Barrett (1993).
+
+1. **Least-altered (original) composition C°.** Choose the freshest sample
+   or, better, the mean of a group of least-altered samples (groups come
+   from *Group samples by* in the left panel).
+2. **Immobile species.** Choose components that did not move in this
+   process (default: Al2O3, TiO2 and Zr when present). For
+   serpentinization, Paulick et al. (2006) used SiO2, MgO and FeOt.
+3. **Isocon tab.** Choose the altered composition Cᴬ. The app shows:
+   - the isocon slope (the mean Cᴬ/C° of the immobile species) and the
+     overall mass change (for example +14 % when water was added);
+   - the isocon diagram: immobile species on the line, gained species
+     above, lost species below. Species are scaled only for display; the
+     scale does not change any result. Strongly gained species are shown
+     at the top edge with their Cᴬ/C°;
+   - a table of gains and losses (ΔC per 100 g of original rock, in wt% or
+     ppm), sorted by Cᴬ/C° as in Grant (2005), with CSV download;
+   - a warning when the chosen immobile species do not cluster (their
+     Cᴬ/C° differ by more than 10 %).
+4. **All samples tab.** The same calculation for every shown sample
+   against C°, as one table (CSV).
+5. **Immobility test tab.** Show only the samples of one precursor unit
+   (hide other groups in the left panel) and choose a reference species.
+   Immobile species form a straight line through the origin; r ≥ 0.90 is
+   marked "behaves immobile" (MacLean and Barrett 1993).
+
+Choosing the protolith and the immobile species is a geological decision:
+the app does the arithmetic, but cannot tell which rock was the original.
+
 ## 11. Symbols and colours
 
 ![Symbols and colours](img/symbols.png)

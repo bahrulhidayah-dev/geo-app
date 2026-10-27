@@ -18,7 +18,8 @@ import importlib
 import json
 
 import geochem
-from geochem import (calc, catalog, data, docs, examples, iron, norms, plotting, project,
+from geochem import (calc, catalog, data, docs, examples, iron, masschange, norms, plotting,
+                     project,
                      screening, symbols, variation, xrfcal, xrfqc)
 from geochem import i18n
 from geochem.i18n import LANGUAGES, t
@@ -44,7 +45,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.23.0"
+APP_VERSION = "0.24.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -1296,6 +1297,134 @@ def page_stats():
                  index=True)
 
 
+# ---------------- mass change (isocon, immobility test) ----------------
+def mc_species(df):
+    """Numeric columns that are oxides, volatiles or elements (not coordinates,
+    ages or calculated indices)."""
+    out = []
+    for c in df.select_dtypes(include="number").columns:
+        name = str(c)
+        if masschange.is_oxide(name) or re.fullmatch(r"[A-Z][a-z]?", name):
+            out.append(c)
+    return out
+
+
+def mc_sources(df, species):
+    """Compositions that can be chosen: every sample, and the mean of every group."""
+    names = df.iloc[:, 0].astype(str)
+    src = {}
+    g = st.session_state.get("group_col", NONE)
+    if g != NONE and g in df:
+        for grp, part in df.groupby(df[g].astype(str)):
+            src[t("Mean of group: {g} (n = {n})").format(g=grp, n=len(part))] = \
+                part[species].mean()
+    for i, n in names.items():
+        src[t("Sample: {s}").format(s=n)] = df.loc[i, species]
+    return src
+
+
+def page_masschange():
+    header(t("Mass change"),
+           t("Isocon analysis (Grant 1986, 2005) and immobility test (MacLean and "
+             "Barrett 1993): which components were gained or lost during alteration, "
+             "for example serpentinization, and how much mass changed."))
+    if ctx is None:
+        empty_state()
+        return
+    df = view()
+    species = mc_species(df)
+    if len(species) < 3:
+        missing_note(["SiO2", "Al2O3", "TiO2", "..."])
+        return
+    src = mc_sources(df, species)
+    keys = list(src)
+    c1, c2 = st.columns(2)
+    pre = c1.selectbox(t("Least-altered (original) composition C°"), keys, key="mc_pre",
+                       help=t("The protolith no longer exists: choose the freshest sample, "
+                              "or better the mean of a group of least-altered samples "
+                              "(Grant 2005)."))
+    default_imm = [x for x in ("Al2O3", "TiO2", "Zr") if x in species]
+    immobile = c2.multiselect(t("Immobile species (define the isocon)"), species,
+                              default=default_imm, key="mc_imm",
+                              help=t("Choose species that are immobile in this process and "
+                                     "cluster in C^A/C^O. Check them in the Immobility test "
+                                     "tab. For serpentinization Paulick et al. (2006) used "
+                                     "SiO2, MgO and FeOt; Al and Ti are common choices."))
+    c_o = src[pre].astype(float)
+    tab1, tab2, tab3 = st.tabs([t("Isocon"), t("All samples"), t("Immobility test")])
+    with tab1:
+        others = [k for k in keys if k != pre]
+        alt = st.selectbox(t("Altered composition Cᴬ"), others, key="mc_alt")
+        c_a = src[alt].astype(float)
+        if not immobile:
+            st.info(t("Choose at least one immobile species."))
+        else:
+            try:
+                slope, used = masschange.isocon_slope(c_o, c_a, immobile)
+            except ValueError as e:
+                st.warning(t(str(e)))
+                slope = None
+            if slope is not None:
+                m1, m2, m3 = st.columns(3)
+                m1.metric(t("Isocon slope M°/Mᴬ"), f"{slope:.3f}")
+                m2.metric(t("Mass change"), f"{masschange.mass_change_percent(slope):+.1f} %")
+                m3.metric(t("Spread of C^A/C^O of the immobile species"),
+                          f"{masschange.ratios(c_o, c_a)[used].std(ddof=0):.3f}" if len(used) > 1 else "–")
+                rr = masschange.ratios(c_o, c_a)[used]
+                if len(used) > 1 and rr.std(ddof=0) / rr.mean() > 0.10:
+                    st.warning(t("The immobile species do not cluster: their C^A/C^O differ "
+                                 "by more than 10 %. Some of them were probably mobile, or "
+                                 "the two compositions do not share a protolith. Check the "
+                                 "Immobility test tab and the ranking in the table."),
+                               icon=":material/warning:")
+                left, right = st.columns([3, 2], gap="large")
+                with left:
+                    fig = plotting.plot_isocon(c_o, c_a, slope, used, style=SCREEN)
+                    show(fig, max_width="620px")
+                    downloads(lambda s_: plotting.plot_isocon(c_o, c_a, slope, used, style=s_),
+                              "isocon")
+                with right:
+                    g = masschange.gains(c_o, c_a, slope).sort_values("CA/CO", ascending=False)
+                    tab = g.rename(columns={"CO": "C°", "CA": "Cᴬ", "CA/CO": "Cᴬ/C°",
+                                            "dC/CO": "ΔC/C°", "dC": "ΔC"})
+                    st.dataframe(tab.round(3), height=420)
+                    csv_download(t("Download gains and losses (CSV)"),
+                                 lambda: tab.rename_axis("Species"), "isocon_gains.csv",
+                                 index=True)
+                st.caption(t("ΔC is in the unit of each species (wt% for oxides, ppm for "
+                             "elements), per 100 g of the original rock. Species above the "
+                             "isocon were gained, below were lost (Grant 2005). Points near "
+                             "the isocon mean small changes: do not over-interpret them."))
+    with tab2:
+        if immobile:
+            mt = masschange.mass_change_table(df[species], c_o, species, immobile)
+            if not mt.empty:
+                mt.insert(0, t("Sample"), df.iloc[:, 0].astype(str).reindex(mt.index))
+                st.dataframe(mt.round(3), hide_index=True, height=380)
+                csv_download(t("Download mass change of all samples (CSV)"), lambda: mt,
+                             "mass_change.csv")
+                st.caption(t("Every sample against the chosen original composition. dX = "
+                             "change of each species per 100 g of original rock (MacLean "
+                             "and Barrett 1993)."))
+    with tab3:
+        st.caption(t("Use samples of one precursor unit (one lava flow, one peridotite "
+                     "body): hide other groups in the left panel. Immobile species form a "
+                     "straight line through the origin with r of about 0.90-0.99 "
+                     "(MacLean and Barrett 1993)."))
+        refs = [x for x in ("Zr", "TiO2", "Al2O3", "Yb") if x in species] or species
+        ref = st.selectbox(t("Reference species"), species,
+                           index=species.index(refs[0]), key="mc_ref")
+        stats = masschange.immobility_test(df, ref, species)
+        if stats.empty:
+            st.info(t("Not enough samples (at least 3)."))
+        else:
+            stats[t("Behaves immobile (r ≥ 0.90)")] = stats["r"] >= 0.90
+            stats = stats.sort_values("r", ascending=False)
+            st.dataframe(stats.round(3), height=300)
+            show(plotting.plot_immobility(df, ref, list(stats.index), stats, style=SCREEN))
+
+
+
 LEGEND_PLACES = ["auto", "below", "upper right", "upper left", "lower right",
                  "lower left", "outside", "hidden"]
 LEGEND_LABELS = {"auto": "Automatic (avoids the data)", "below": "Below the plot",
@@ -2210,6 +2339,8 @@ PAGES = {
                          icon=":material/stacked_line_chart:", url_path="variation"),
     "stats": st.Page(page_stats, title=t("Statistics"), icon=":material/bar_chart:",
                      url_path="statistics"),
+    "masschange": st.Page(page_masschange, title=t("Mass change"),
+                          icon=":material/compare_arrows:", url_path="mass-change"),
     "symbols": st.Page(page_symbols, title=t("Symbols and colours"),
                        icon=":material/palette:", url_path="symbols"),
     "appearance": st.Page(page_appearance, title=t("Plot appearance"),
@@ -2231,7 +2362,7 @@ PAGES = {
 }
 NAV_GROUPS = [("Overview", ["dashboard", "data", "project"]),
               ("Plots", ["diagrams", "variation", "spider", "xy", "ternary"]),
-              ("Tools", ["stats"] + (["xrfqc"] if settings["xrf_qc"] else [])
+              ("Tools", ["stats", "masschange"] + (["xrfqc"] if settings["xrf_qc"] else [])
                + ["symbols", "appearance", "settings"])]
 nav = st.navigation([p for k, p in PAGES.items() if k != "xrfqc" or settings["xrf_qc"]],
                     position="hidden")
