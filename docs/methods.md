@@ -258,6 +258,23 @@ Special cases:
     [App convention]
   - The lines were drawn by eye (Saccani 2015, section 7); the paper reports
     96–100 % correct classification of its training samples.
+- **Deschamps et al. (2013) LOI diagrams.** [Source: Figs. 3a, 4d, 4f]
+  - Anhydrous basis of the paper: SiO2 and Sum = MgO + Fe2O3(total) + Al2O3
+    + TiO2 + CaO + Cr2O3 + MnO + NiO + Na2O + K2O + P2O5, closed to 100 %.
+    This sum differs from the anhydrous sum of section 2 (it includes Cr2O3
+    and NiO, and iron is taken as Fe2O3(total) = FeOt / 0.8998).
+  - Cr2O3 = 1.4616 × Cr (ppm) / 10,000 and NiO = 1.2725 × Ni (ppm) / 10,000
+    when the oxides are not in the file; a missing minor oxide counts as 0.
+    SiO2, MgO and iron are required. [App convention]
+  - Ternary: LOI × 10 (top), SiO2 (right), Sum (left). LOI is as measured.
+    Lines: SiO2/Sum = 0.81 (mean of 899 serpentinites, paper Fig. 3a) and
+    equal LOI of 2.5, 5, 10, 12, 16 and 20 wt%.
+  - Mineral points are ideal Mg end-members calculated from their formulas:
+    brucite (SiO2 0, LOI 30.9), serpentine Mg3Si2O5(OH)4 (anhydrous SiO2
+    49.85, MgO 50.15, LOI 13.0), talc (66.53, 33.47, 4.75), forsterite
+    (42.71, 57.29, 0) and enstatite (59.85, 40.15, 0) wt%. The paper's Fig.
+    4d plots natural lizardite and antigorite compositions, which are not
+    given in the text and are not copied. [App convention]
 - **Ternary plots.** Each apex is factor × (sum of its columns). The three
   values are closed to 100 %. Plot coordinates: x = c + b/2, y = b·√3/2,
   with apex a left, b top, c right (as in Janoušek et al. 2006). Samples with a missing
@@ -432,6 +449,12 @@ Report these in your methods section if they affect your results.
 - **Variation diagrams (0.14.0).** For a test basalt, anhydrous SiO2 and
   FeOt equal the hand calculation. A point on the Mg# 90 line has
   Mg# = 90.0. Fo90 olivine lies on the olivine line and has Mg# = 90.0.
+
+- **Deschamps et al. (2013) diagrams (0.20.0).** For UB-N (values of the
+  example data: SiO2 39.43, MgO 35.21, Fe2O3t 8.34, LOI 10.44 wt%, Cr 2300
+  and Ni 2000 ppm) a hand calculation gives anhydrous SiO2 44.78, MgO 39.98
+  and SiO2/Sum 0.811; the app gives the same values. UB-N plots on the 0.81
+  line, as in the paper's Fig. 3a. Mineral points and lines match Fig. 3a.
 
 - **Saccani (2015) diagrams (0.19.0).** The N-MORB composition of Sun and
   McDonough (1989) (Ce 7.5, Dy 4.55, Yb 3.05 ppm) gives (Ce/Yb)N = 0.683 and

@@ -59,7 +59,7 @@ every click and rebuilds the page; values that must survive are kept in
 | `variation.py` | Variation diagrams: Harker (SiO2) and MgO plates, anhydrous or as measured; iso-Mg# and olivine lines |
 | `examples.py` | Example datasets: list, descriptions and loading; real reference rocks from `examples/reference_rocks.csv` (USGS certificates; Mikuni et al. 2025) and two synthetic sets |
 | `screening.py` | Checks before naming: IUGS high-Mg rules and nephelinites before TAS, freshness for TAS, ultramafic samples, MgO deficit against the terrestrial array |
-| `catalog.py` | The 29 diagrams: title, category, rock scope, year, axis formulas per panel, sample subset, notes, reference |
+| `catalog.py` | The 31 diagrams: title, category, rock scope, year, axis formulas per panel, sample subset, notes, reference |
 | `plotting.py` | Plotting engine: binary, ternary and logarithmic panels, multi-panel plates, spider and XY plots, sample classification (point in polygon), styles (dark, light, publication) and appearance options |
 | `symbols.py` | Colour, symbol and size per group; palettes; per-sample style columns (Janoušek et al. 2006) |
 | `xrfqc.py`, `xrfcal.py` | Optional XRF module: reference-material QC, calibration from intensities with matrix correction, ultramafic iron check (Mikuni et al. 2025) |

@@ -176,6 +176,30 @@ def T(a, b, c, labels):
     return {"kind": "ternary", "a": a, "b": b, "c": c, "apices": labels}
 
 
+def deschamps_anh(df):
+    """Anhydrous composition used by Deschamps et al. (2013, Figs. 3-4): SiO2 and
+    the sum of MgO, Fe2O3(total), Al2O3, TiO2, CaO, Cr2O3, MnO, NiO, Na2O, K2O and
+    P2O5, closed to 100 %. SiO2, MgO and iron are required; a missing minor
+    oxide counts as 0. Cr2O3 and NiO come from Cr and Ni (ppm) when the
+    oxides are not given [App convention]."""
+    si, mg = need(df, "SiO2"), need(df, "MgO")
+    fe2o3t = need(df, "FeOt") / calc.FEO_PER_FE2O3
+    zero = pd.Series(0.0, index=df.index)
+    other = zero.copy()
+    for ox in ("Al2O3", "TiO2", "CaO", "MnO", "Na2O", "K2O", "P2O5"):
+        if ox in df:
+            other = other + df[ox].fillna(0)
+    for ox, el, f in (("Cr2O3", "Cr", 1.4616), ("NiO", "Ni", 1.2725)):
+        if ox in df:
+            other = other + df[ox].fillna(0)
+        elif el in df:
+            other = other + (df[el] * f / 10000).fillna(0)
+    total = si + mg + fe2o3t + other
+    out = pd.DataFrame({"SiO2": si, "MgO": mg}, index=df.index).div(total, axis=0) * 100
+    out["Sum"] = 100 - out["SiO2"]
+    return out
+
+
 DIAGRAMS = [
     # ----------------------------- classification -----------------------------
     dict(id="TAS", title="TAS (Le Bas et al. 1986)", category="Classification",
@@ -518,6 +542,44 @@ DIAGRAMS = [
          ultramafic_warning="Serpentinization raises Fe3+/Fe(total). Unless FeO "
                             "was measured, the iron split used here is not "
                             "reliable for these samples."),
+    dict(id="DeschampsTernary", title="(LOI x 10) - SiO2 - sum of oxides (Deschamps et al. 2013)",
+         category="Ultramafic rocks", scope="Serpentinites", year=2013,
+         panels=[T(lambda d, s: deschamps_anh(d)["Sum"],
+                   lambda d, s: 10 * need(d, "LOI"),
+                   lambda d, s: deschamps_anh(d)["SiO2"],
+                   ("Sum oxides (anhydrous)", "LOI x 10", "SiO2 (anhydrous)"))],
+         reference="Deschamps F., Godard M., Guillot S., Hattori K. (2013) Geochemistry "
+                   "of subduction zone serpentinites: a review. Lithos 178, 96-127. "
+                   "doi:10.1016/j.lithos.2013.05.019",
+         notes="Fig. 3a of Deschamps et al. (2013). SiO2 and the sum of the other "
+               "oxides (MgO + Fe2O3(total) + Al2O3 + TiO2 + CaO + Cr2O3 + MnO + NiO + "
+               "Na2O + K2O + P2O5) are recalculated on an anhydrous basis; LOI (wt%, "
+               "as measured) is multiplied by 10. Serpentinization adds water but "
+               "hardly changes the major elements: 899 serpentinites keep SiO2/Sum "
+               "near 0.81 (solid line), except talc-altered rocks (Si metasomatism). "
+               "Dashed lines: equal LOI. Mineral points: ideal Mg end-members "
+               "(brucite, serpentine, talc, forsterite, enstatite) [App convention]. "
+               "LOI is not a measure of the degree of serpentinization: completely "
+               "serpentinised samples have 1.5-22.8 wt% LOI (mean 13.2), because "
+               "brucite, talc, chlorite and clays also hold water."),
+    dict(id="DeschampsLOI", title="LOI - SiO2 and LOI - MgO (Deschamps et al. 2013)",
+         category="Ultramafic rocks", scope="Serpentinites", year=2013,
+         panels=[B(lambda d, s: deschamps_anh(d)["SiO2"], lambda d, s: need(d, "LOI"),
+                   "SiO2 (wt%, anhydrous)", "LOI (wt%)"),
+                 B(lambda d, s: deschamps_anh(d)["MgO"], lambda d, s: need(d, "LOI"),
+                   "MgO (wt%, anhydrous)", "LOI (wt%)")],
+         reference="Deschamps F., Godard M., Guillot S., Hattori K. (2013) Geochemistry "
+                   "of subduction zone serpentinites: a review. Lithos 178, 96-127. "
+                   "doi:10.1016/j.lithos.2013.05.019",
+         notes="Figs. 4d and 4f of Deschamps et al. (2013). Oxides on an anhydrous "
+               "basis (as in the ternary), LOI as measured. Mean LOI by setting: "
+               "abyssal 12.4, mantle wedge 14.4, subducted 11.2 wt%; "
+               "lizardite/chrysotile-bearing samples average 15.4 and "
+               "antigorite-bearing samples 11.5 wt%. Talc-altered rocks have high "
+               "SiO2 and low LOI; brucite-rich rocks have low SiO2 and high LOI. "
+               "Mineral points are ideal Mg end-members [App convention]; the paper "
+               "plots natural lizardite and antigorite compositions, which are not "
+               "copied here."),
     dict(id="OhtaArai", title="F - M - W weathering (Ohta and Arai 2007)",
          category="Weathering and alteration", scope="Igneous rocks, weathered",
          year=2007,

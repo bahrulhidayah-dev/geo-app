@@ -2,6 +2,19 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.20.0 - 2026-10-27
+
+- **Stage B starts: two LOI diagrams for serpentinites (Deschamps et al.
+  2013)** in the category Ultramafic rocks:
+  - (LOI x 10) - SiO2 - sum of oxides (Fig. 3a), with the SiO2/Sum = 0.81
+    line of 899 serpentinites and lines of equal LOI;
+  - LOI - SiO2 and LOI - MgO (Figs. 4d, 4f).
+  Oxides on the anhydrous basis of the paper (including Cr2O3 and NiO);
+  ideal mineral points for brucite, serpentine, talc, forsterite and
+  enstatite. The catalogue now has 31 diagrams.
+- Glossary entries; Scientific methods (section 5 and a hand check for UB-N
+  in section 10); user manual diagram list.
+
 ## 0.19.0 - 2026-10-27
 
 - **Two new diagrams for ophiolitic basalts (Saccani 2015)**, the second

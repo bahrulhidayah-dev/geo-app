@@ -1,0 +1,190 @@
+{
+ "id": "DeschampsLOI",
+ "source": "Deschamps et al. (2013), Figs. 4d and 4f; drawn for GeoChem App from the figure description and ideal mineral formulas (no GCDkit template)",
+ "panels": [
+  {
+   "xlim": [
+    30.0,
+    70.0
+   ],
+   "ylim": [
+    0.0,
+    24.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "SiO2 (wt%, anhydrous)",
+   "ylab": "LOI (wt%)",
+   "title": "LOI - SiO2",
+   "ternary": false,
+   "name": "LOI - SiO2",
+   "lines": [],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 50.445694375311106,
+     "y": 13.602056944895528,
+     "text": "Serpentine",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 65.929364868456,
+     "y": 5.350001977519557,
+     "text": "Talc",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 1,
+     "role": "minor"
+    },
+    {
+     "x": 43.30605293833339,
+     "y": 0.6,
+     "text": "Forsterite",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 60.45177511256326,
+     "y": 0.6,
+     "text": "Enstatite",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 0,
+     "role": "minor"
+    }
+   ],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      49.846
+     ],
+     "y": [
+      13.002
+     ]
+    },
+    {
+     "x": [
+      66.529
+     ],
+     "y": [
+      4.75
+     ]
+    },
+    {
+     "x": [
+      42.706
+     ],
+     "y": [
+      0.0
+     ]
+    },
+    {
+     "x": [
+      59.852
+     ],
+     "y": [
+      0.0
+     ]
+    }
+   ]
+  },
+  {
+   "xlim": [
+    25.0,
+    60.0
+   ],
+   "ylim": [
+    0.0,
+    24.0
+   ],
+   "log_x": false,
+   "log_y": false,
+   "xlab": "MgO (wt%, anhydrous)",
+   "ylab": "LOI (wt%)",
+   "title": "LOI - MgO",
+   "ternary": false,
+   "name": "LOI - MgO",
+   "lines": [],
+   "polygons": [],
+   "texts": [
+    {
+     "x": 50.754305624688904,
+     "y": 13.602056944895528,
+     "text": "Serpentine",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 34.07063513154398,
+     "y": 5.350001977519557,
+     "text": "Talc",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 56.69394706166661,
+     "y": 0.6,
+     "text": "Forsterite",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 1,
+     "role": "minor"
+    },
+    {
+     "x": 40.74822488743675,
+     "y": 0.6,
+     "text": "Enstatite",
+     "rot": 0.0,
+     "size": 0.8,
+     "adj": 0,
+     "role": "minor"
+    }
+   ],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      50.154
+     ],
+     "y": [
+      13.002
+     ]
+    },
+    {
+     "x": [
+      33.471
+     ],
+     "y": [
+      4.75
+     ]
+    },
+    {
+     "x": [
+      57.294
+     ],
+     "y": [
+      0.0
+     ]
+    },
+    {
+     "x": [
+      40.148
+     ],
+     "y": [
+      0.0
+     ]
+    }
+   ]
+  }
+ ]
+}

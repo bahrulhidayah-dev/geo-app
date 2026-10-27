@@ -737,6 +737,32 @@ four settings as Agrawal et al. (2008).
 
 ## Diagrams: ultramafic rocks and weathering
 
+### (LOI x 10) - SiO2 - sum of oxides (Deschamps et al. 2013)
+
+**What it shows.** A ternary of LOI × 10 (top), SiO2 (right) and the sum of
+the other oxides (left), with the oxides on an anhydrous basis. It shows
+how much water a rock gained without changing its rock chemistry. Most
+serpentinites lie along one line, SiO2/Sum ≈ 0.81: serpentinization adds
+water but hardly changes the major elements. Talc-altered rocks move to
+higher SiO2; brucite-rich rocks to lower SiO2 and higher LOI.
+
+**Use for.** Serpentinites and serpentinised peridotites with LOI.
+**Do not** read LOI as the degree of serpentinization: brucite, talc,
+chlorite and clays also hold water.
+
+**Source.** Deschamps et al. (2013), Fig. 3a.
+
+### LOI - SiO2 and LOI - MgO (Deschamps et al. 2013)
+
+**What it shows.** LOI (as measured) against anhydrous SiO2 and MgO, with
+ideal mineral points for serpentine, talc, forsterite and enstatite.
+
+**Use for.** Serpentinites: comparing the water content of samples and
+spotting talc alteration (high SiO2, low LOI) or brucite (low SiO2, high
+LOI).
+
+**Source.** Deschamps et al. (2013), Figs. 4d and 4f.
+
 ### Al2O3/SiO2 - MgO/SiO2 (Paulick et al. 2006)
 
 **What it shows.** MgO/SiO2 against Al2O3/SiO2 with the terrestrial array

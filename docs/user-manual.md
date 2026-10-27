@@ -17,7 +17,7 @@ programming is needed.
 
 - Reads your data from a CSV or Excel file and cleans it for you
   (values below detection limit, decimal commas, units rows).
-- Plots **29 classification and discrimination diagrams** (boundaries after
+- Plots **31 classification and discrimination diagrams** (boundaries after
   Janoušek et al. 2006 or, where no template exists, the original paper), grouped into six categories, and names the field of every sample.
 - Draws REE and multi-element **spider diagrams**, free **XY plots** and
   **ternary plots**, and
@@ -335,6 +335,8 @@ implementation.
 | Basalts and ophiolites | Th - Hf - Ta - Zr - Nb (Wood 1980) | Basalts |
 | Basalts and ophiolites | Agrawal et al. (2008); Verma et al. (2006) | Basic rocks, SiO2 < 52 wt% |
 | Ultramafic rocks | Al2O3/SiO2 - MgO/SiO2 (Paulick et al. 2006) | Peridotites, serpentinites |
+| Ultramafic rocks | (LOI x 10) - SiO2 - sum of oxides (Deschamps et al. 2013) | Serpentinites (needs LOI) |
+| Ultramafic rocks | LOI - SiO2 and LOI - MgO (Deschamps et al. 2013) | Serpentinites (needs LOI) |
 | Weathering and alteration | F - M - W (Ohta and Arai 2007) | Weathered igneous rocks |
 
 The **References** page in the top bar lists the full reference of every
