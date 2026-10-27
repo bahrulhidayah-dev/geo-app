@@ -162,6 +162,11 @@ GENERAL = [
     ("Serpentinites and peridotites", "Deschamps F., Godard M., Guillot S., Hattori K. "
      "(2013) Geochemistry of subduction zone serpentinites: a review. Lithos 178, 96-127. "
      "doi:10.1016/j.lithos.2013.05.019 (Fe oxidation and Ca loss during serpentinization)"),
+    ("Serpentinites and peridotites", "Salters V.J.M., Stracke A. (2004) Composition of "
+     "the depleted mantle. Geochemistry, Geophysics, Geosystems 5, Q05B07. "
+     "doi:10.1029/2003GC000597 (depleted-mantle reference points)"),
+    ("Serpentinites and peridotites", "McDonough W.F., Sun S.-s. (1995) The composition "
+     "of the Earth. Chemical Geology 120, 223-253. (primitive-mantle reference points)"),
     ("Serpentinites and peridotites", "Hart S.R., Zindler A. (1986) In search of a "
      "bulk-Earth composition. Chemical Geology 57, 247-267. (terrestrial array; metal "
      "ratios)"),

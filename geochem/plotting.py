@@ -394,7 +394,9 @@ def _draw_geometry(ax, geom, s, ternary, xlim, log_x, log_y):
         else:
             ax.plot(ln["x"], ln["y"], **kw)
     for pt in geom.get("points", []):
-        ax.scatter(pt["x"], pt["y"], marker="s", s=22, color=s["muted"], zorder=3)
+        # reference points (minerals, mantle compositions) stay visible above the data
+        ax.scatter(pt["x"], pt["y"], marker="s", s=26, color=s["muted"], edgecolor=s["bg"],
+                   linewidth=0.6, zorder=5)
     mode = _APP["field_labels"]
     if mode != "hidden":
         key = []
@@ -416,7 +418,8 @@ def _draw_geometry(ax, geom, s, ternary, xlim, log_x, log_y):
             rot = t.get("rot", 0) if mode in ("template", "numbered") else 0
             ax.text(t["x"], t["y"], t["text"], rotation=rot, rotation_mode="anchor",
                     ha=_halign(t.get("adj")), va="center", fontsize=fs,
-                    color=s["muted"], zorder=3, clip_on=True,
+                    color=s["muted"], zorder=5 if t.get("role") == "minor" else 3,
+                    clip_on=True,
                     family=_APP["font_family"])
         if key:
             ax.figure._geo_field_keys.append((geom.get("name") or "", key))

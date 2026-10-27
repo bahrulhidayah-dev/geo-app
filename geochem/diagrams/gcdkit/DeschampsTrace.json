@@ -1,0 +1,644 @@
+{
+ "id": "DeschampsTrace",
+ "source": "Deschamps et al. (2013), Figs. 7a, 7d and 11; reference points: primitive mantle (McDonough and Sun 1995, Table 5) and depleted mantle (Salters and Stracke 2004, Table 6); the paper's hand-drawn fields are not copied",
+ "panels": [
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    1.0,
+    10000.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "Ti (ppm)",
+   "title": "Ti (ppm) - Yb",
+   "ternary": false,
+   "name": "Ti - Yb (Fig. 7d)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      1205
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      798
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 1928.0,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 1276.8000000000002,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.01,
+    100.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "La/Yb",
+   "title": "La/Yb - Yb",
+   "ternary": false,
+   "name": "La/Yb - Yb (Fig. 7a)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      1.469387755102041
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      0.5835411471321695
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 2.3510204081632655,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 0.9336658354114713,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.01,
+    100.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "Li (ppm)",
+   "title": "Li (ppm) - Yb",
+   "ternary": false,
+   "name": "Li - Yb (Fig. 11b)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      1.6
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      0.7
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 2.5600000000000005,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 1.1199999999999999,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.01,
+    1000.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "B (ppm)",
+   "title": "B (ppm) - Yb",
+   "ternary": false,
+   "name": "B - Yb (Fig. 11a)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      0.3
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      0.06
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 0.48,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 0.096,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.0001,
+    10.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "Cs (ppm)",
+   "title": "Cs (ppm) - Yb",
+   "ternary": false,
+   "name": "Cs - Yb (Fig. 11c)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      0.021
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      0.00132
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 0.033600000000000005,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 0.002112,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.01,
+    1000.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "Sr (ppm)",
+   "title": "Sr (ppm) - Yb",
+   "ternary": false,
+   "name": "Sr - Yb (Fig. 11d)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      19.9
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      9.8
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 31.84,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 15.680000000000001,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.01,
+    1000.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "Ba (ppm)",
+   "title": "Ba (ppm) - Yb",
+   "ternary": false,
+   "name": "Ba - Yb (Fig. 11e)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      6.6
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      1.2
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 10.56,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 1.92,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.0001,
+    10.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "U (ppm)",
+   "title": "U (ppm) - Yb",
+   "ternary": false,
+   "name": "U - Yb (Fig. 11f)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      0.0203
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      0.0047
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 0.03248,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 0.007520000000000001,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.001,
+    100.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "Pb (ppm)",
+   "title": "Pb (ppm) - Yb",
+   "ternary": false,
+   "name": "Pb - Yb (Fig. 11i)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      0.15
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      0.0232
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 0.24,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 0.03712,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.001,
+    100.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "As (ppm)",
+   "title": "As (ppm) - Yb",
+   "ternary": false,
+   "name": "As - Yb (Fig. 11g)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      0.05
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      0.0074
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 0.08000000000000002,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 0.011840000000000002,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  },
+  {
+   "xlim": [
+    0.001,
+    10.0
+   ],
+   "ylim": [
+    0.001,
+    10.0
+   ],
+   "log_x": true,
+   "log_y": true,
+   "xlab": "Yb (ppm)",
+   "ylab": "Sb (ppm)",
+   "title": "Sb (ppm) - Yb",
+   "ternary": false,
+   "name": "Sb - Yb (Fig. 11h)",
+   "lines": [],
+   "polygons": [],
+   "fields": [],
+   "points": [
+    {
+     "x": [
+      0.441
+     ],
+     "y": [
+      0.0055
+     ]
+    },
+    {
+     "x": [
+      0.401
+     ],
+     "y": [
+      0.0026
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "x": 0.59535,
+     "y": 0.0088,
+     "text": "PM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 0,
+     "role": "minor"
+    },
+    {
+     "x": 0.18045000000000003,
+     "y": 0.00416,
+     "text": "DM",
+     "rot": 0.0,
+     "size": 0.75,
+     "adj": 1,
+     "role": "minor"
+    }
+   ]
+  }
+ ]
+}

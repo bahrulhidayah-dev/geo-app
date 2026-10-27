@@ -621,6 +621,28 @@ DIAGRAMS = [
                "uses LOI. Fe3+/Fe(total) = 0.8998 Fe2O3 / (FeO + 0.8998 Fe2O3); "
                "magnetite has 2/3. The lines of equal total iron (4-10 wt%) are an App "
                "convention; the paper draws one line for its own samples."),
+    dict(id="DeschampsTrace", title="Trace elements vs Yb in serpentinites (Deschamps et al. 2013)",
+         category="Ultramafic rocks", scope="Serpentinites, peridotites", year=2013,
+         panels=[B(lambda d, s: need(d, "Yb"), lambda d, s: need(d, "Ti"), "Yb (ppm)", "Ti (ppm)"),
+                 B(lambda d, s: need(d, "Yb"), lambda d, s: need(d, "La") / need(d, "Yb"),
+                   "Yb (ppm)", "La/Yb")]
+               + [B(lambda d, s: need(d, "Yb"), (lambda e: lambda d, s: need(d, e))(el),
+                    "Yb (ppm)", f"{el} (ppm)")
+                  for el in ("Li", "B", "Cs", "Sr", "Ba", "U", "Pb", "As", "Sb")],
+         reference="Deschamps F., Godard M., Guillot S., Hattori K. (2013) Geochemistry "
+                   "of subduction zone serpentinites: a review. Lithos 178, 96-127. "
+                   "doi:10.1016/j.lithos.2013.05.019",
+         notes="Figs. 7a, 7d and 11 of Deschamps et al. (2013). Yb is little affected "
+               "by serpentinization and records how depleted the protolith was; the "
+               "y axis shows either melting (Ti, La/Yb) or fluid-mobile elements (Li, B, "
+               "Cs, Sr, Ba, U, Pb, As, Sb) gained from seawater, slab fluids or "
+               "sediments. Ti - Yb separates depleted mantle-wedge serpentinites (low "
+               "Ti) from more fertile subducted serpentinites; abyssal serpentinites "
+               "lie in between. Fluid-mobile elements far above the mantle values at "
+               "the same Yb show fluid input. Reference points: PM = primitive mantle "
+               "(McDonough and Sun 1995, Table 5), DM = depleted mantle (Salters and "
+               "Stracke 2004, Table 6). The paper's fields (hand-drawn around its "
+               "data) are not copied. Panels without data show 'Missing data'."),
     dict(id="OhtaArai", title="F - M - W weathering (Ohta and Arai 2007)",
          category="Weathering and alteration", scope="Igneous rocks, weathered",
          year=2007,

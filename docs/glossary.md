@@ -777,6 +777,22 @@ show the setting chosen in Settings.
 
 **Source.** Paulick et al. (2006), Figs. 6D and 11A.
 
+### Trace elements vs Yb in serpentinites (Deschamps et al. 2013)
+
+**What it shows.** Eleven log–log panels against Yb: Ti and La/Yb (how
+depleted the protolith was by melting), and the fluid-mobile elements Li,
+B, Cs, Sr, Ba, U, Pb, As and Sb. Yb hardly moves during serpentinization,
+so a sample far above the mantle value at the same Yb has gained that
+element from seawater, slab fluids or sediments.
+
+**Use for.** Serpentinites and peridotites with trace-element data. Ti – Yb
+helps to separate depleted mantle-wedge serpentinites (low Ti) from more
+fertile subducted serpentinites. Reference points: PM primitive mantle,
+DM depleted mantle.
+
+**Source.** Deschamps et al. (2013), Figs. 7a, 7d and 11; McDonough and
+Sun (1995); Salters and Stracke (2004).
+
 ### Al2O3/SiO2 - MgO/SiO2 (Paulick et al. 2006)
 
 **What it shows.** MgO/SiO2 against Al2O3/SiO2 with the terrestrial array
@@ -886,6 +902,8 @@ compositions.
 - Rollinson H., Pease V. (2021) Using Geochemical Data: To Understand
   Geological Processes, 2nd edition. Cambridge University Press.
 - Saccani E. (2015) Geoscience Frontiers 6, 481–501.
+- Salters V.J.M., Stracke A. (2004) Geochemistry, Geophysics, Geosystems 5,
+  Q05B07.
 - Shand S.J. (1943) Eruptive Rocks. Wiley, New York.
 - Shervais J.W. (1982) Earth and Planetary Science Letters 59, 101–118.
 - Sun S.-s., McDonough W.F. (1989) Geological Society, London, Special

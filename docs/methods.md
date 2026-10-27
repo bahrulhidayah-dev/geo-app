@@ -290,6 +290,16 @@ Special cases:
   - Fe³⁺/Fe(total) (atomic) = 0.8998 Fe2O3 / (FeO + 0.8998 Fe2O3).
   - The x axis is LOI. Paulick et al. plotted H2O, which they measured or
     calculated from LOI, CO2, S and NO3. [App convention]
+- **Trace elements vs Yb in serpentinites (Deschamps et al. 2013).**
+  [Source: Figs. 7a, 7d, 11] Log–log plots of Ti, La/Yb, Li, B, Cs, Sr, Ba,
+  U, Pb, As and Sb (ppm) against Yb (ppm), as measured (no recalculation).
+  Reference points: primitive mantle (McDonough and Sun 1995, Table 5:
+  Yb 0.441, Ti 1205, La 0.648, Li 1.6, B 0.30, Cs 0.021, Sr 19.9, Ba 6.6,
+  U 0.0203, Pb 0.150, As 0.05, Sb 0.0055 ppm) and depleted mantle (Salters
+  and Stracke 2004, Table 6: Yb 0.401, Ti 798, La 0.234, Li 0.70, B 0.060,
+  Cs 0.00132, Sr 9.80, Ba 1.20, U 0.0047, Pb 0.0232, As 0.0074, Sb 0.0026
+  ppm). The paper's fields were drawn by hand around its data and are not
+  copied. [App convention]
 - **Ternary plots.** Each apex is factor × (sum of its columns). The three
   values are closed to 100 %. Plot coordinates: x = c + b/2, y = b·√3/2,
   with apex a left, b top, c right (as in Janoušek et al. 2006). Samples with a missing
@@ -465,6 +475,15 @@ Report these in your methods section if they affect your results.
   FeOt equal the hand calculation. A point on the Mg# 90 line has
   Mg# = 90.0. Fo90 olivine lies on the olivine line and has Mg# = 90.0.
 
+- **Trace elements vs Yb (0.22.0).** Tested with 289 serpentinites of the
+  global database with Yb (16–273 per element; values at or below zero,
+  i.e. below detection, set to missing). La/Yb of the first sample: hand
+  2.6207, app 2.6207. The reference values were read from the tables of
+  McDonough and Sun (1995) and Salters and Stracke (2004); the PM values
+  agree with the primitive-mantle set already in the app. As in the paper's
+  Fig. 11, Cs, U, Pb, As, Sb and B of most serpentinites lie one to three
+  orders of magnitude above the mantle values.
+
 - **Fe redox diagram (0.21.0).** Tested with 134 serpentinites of the
   global database of Gard et al. (2019) that have FeO, Fe2O3 and LOI
   (duplicates removed). For the first sample (FeO 0.28, Fe2O3 8.10 wt%)
@@ -608,6 +627,8 @@ basis tab.
   (as cited in Rollinson and Pease 2021)
 - Middlemost E.A.K. (1989) Iron oxidation ratios, norms and the
   classification of volcanic rocks. Chemical Geology 77, 19–26.
+- Salters V.J.M., Stracke A. (2004) Composition of the depleted mantle.
+  Geochemistry, Geophysics, Geosystems 5, Q05B07. doi:10.1029/2003GC000597
 - Saccani E. (2015) A new method of discriminating different types of
   post-Archean ophiolitic basalts and their tectonic significance using
   Th-Nb and Ce-Dy-Yb systematics. Geoscience Frontiers 6, 481–501.

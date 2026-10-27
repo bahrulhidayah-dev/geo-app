@@ -2,6 +2,18 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.22.0 - 2026-10-27
+
+- **Trace elements vs Yb in serpentinites (Deschamps et al. 2013)**, a
+  plate of 11 log-log panels in Ultramafic rocks: Ti, La/Yb and the
+  fluid-mobile elements Li, B, Cs, Sr, Ba, U, Pb, As and Sb against Yb,
+  with primitive-mantle (McDonough and Sun 1995) and depleted-mantle
+  (Salters and Stracke 2004) reference points. 33 diagrams.
+- Reference points (minerals, mantle compositions) are now drawn above the
+  data so they stay visible.
+- Tested with 289 serpentinites of the global database.
+- Glossary, Scientific methods, References, user manual.
+
 ## 0.21.0 - 2026-10-27
 
 - **Fe redox in serpentinites (Paulick et al. 2006)**, a new diagram in
