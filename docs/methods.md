@@ -481,6 +481,60 @@ Page *Tools → Mass change*; code in `geochem/masschange.py`.
 - C° may be a single sample or the mean of a group, as Grant (2005)
   recommends averaging several least-altered samples.
 
+## 8b. Mineral modes (least squares with closure)
+
+Page *Tools → Mineral modes*; code in `geochem/modes.py`.
+
+- **Mass balance** (Albarède 1995, section 5.3.1). [Source] The rock
+  composition y (m components) is a mixture of n minerals with known
+  compositions (the columns of A): y = A x, where x holds the mass
+  fractions of the minerals. With more components than minerals the
+  system is solved by least squares.
+- **Closure condition.** The fractions must add up to 1. Albarède (1995)
+  adds this with a Lagrange multiplier λ. With J = (1, …, 1)ᵀ:
+  - unconstrained solution x₀ = (AᵀA)⁻¹Aᵀy;
+  - λ = (1 − Jᵀx₀) / (Jᵀ(AᵀA)⁻¹J);
+  - constrained solution x = x₀ + λ(AᵀA)⁻¹J.
+
+  All values are divided by 100 first (wt% → fractions), as in the book.
+  When AᵀA is singular the same problem is solved as one bordered system
+  [AᵀA J; Jᵀ 0][x; μ] = [Aᵀy; 1] (minimum-norm solution).
+- **Components.** SiO2, Al2O3, FeOt, MgO, CaO and H2O. All iron is FeOt;
+  magnetite is therefore entered as 93.1 % FeOt (3 FeO per Fe3O4). H2O is
+  H2O+ when present, otherwise LOI. [App convention: LOI also contains CO2
+  and S; in serpentinites it is mostly H2O.] The analysis is used as
+  measured (not anhydrous), because H2O is a component.
+- **Normalisation.** The closure condition assumes that the rock and every
+  mineral add up to the same total over the components used. Real
+  analyses do not (minor oxides are left out; Fe2O3 is recast as FeO), nor
+  does magnetite written as FeOt. The app therefore scales the rock and
+  each mineral to 100 % over the components used, solves, and converts
+  back to mass fractions: xᵢ = (x′ᵢ/sᵢ) / Σⱼ(x′ⱼ/sⱼ), where sᵢ is the
+  original sum of mineral i. [App convention] Without this step a rock
+  analysis that is 3 % short gives modes wrong by up to 4 % (absolute) in
+  the test below; with it the modes are exact.
+- **Mineral compositions.** Ideal end-members by default (olivine Fo90,
+  orthopyroxene En90, diopside, MgAl2O4 spinel, Mg-serpentine, brucite,
+  magnetite, talc, clinochlore). [App convention] They can be replaced on
+  the page by measured (for example EPMA) compositions, and new minerals
+  can be added.
+- **Which minerals can be resolved.** At most as many minerals as
+  independent components. The app checks the rank of the equations
+  (component rows plus the closure row) and their condition number
+  (ratio of the largest to the smallest singular value). Rank < n: the
+  modes are not unique. Condition number > 300: the modes are unstable.
+  [App convention] Brucite is not in the default set: serpentine = 2
+  enstatite + brucite + H2O, so with olivine, orthopyroxene and serpentine
+  the condition number is about 5000 and an analytical error of 1 %
+  changes the modes by more than 100 %.
+- **Uncertainty.** Monte Carlo: the analysis is varied 300 times with
+  normal errors of 1 % relative, at least 0.05 wt% (1σ) [App convention],
+  and the spread of the modes is reported as ±1σ.
+- **Quality of the fit.** Residuals (measured − calculated, wt%) and their
+  sum of squares. A negative mode means that the mineral is probably
+  absent, or that its composition does not fit.
+- Modes are mass fractions, not volume fractions.
+
 ## 9. All app conventions in one place
 
 Report these in your methods section if they affect your results.
@@ -506,6 +560,11 @@ Report these in your methods section if they affect your results.
 | Variation diagrams: panels per row | 3 | Variation diagrams page |
 | Sample labels | Auto-arrange (least overlap, 8 positions × 3 distances) | Plot appearance |
 | Field names | rotated along boundaries (Janoušek et al. 2006); numbers optional | Plot appearance |
+| Mineral modes: H2O | H2O+, otherwise LOI | — |
+| Mineral modes: rock and minerals scaled to 100 % over the components used | on | `geochem/modes.py` |
+| Mineral modes: unstable when the condition number exceeds | 300 | `geochem/modes.py` |
+| Mineral modes: analytical error for the ±1σ | 1 % relative, at least 0.05 wt% | `geochem/modes.py` |
+| Mineral modes: default minerals | olivine Fo90, orthopyroxene En90, diopside, spinel, serpentine, magnetite (ideal) | Mineral modes page |
 | TAS label "Trachyte / Trachydacite" | moved to (66.0, 11.6) | `TAS.json` |
 
 ## 10. Checks and tests
@@ -623,6 +682,27 @@ Report these in your methods section if they affect your results.
     (2008), Agrawal et al. (2008) and Verma et al. (2006) were run with each
     method on the example sets without error.
 
+- **Mineral modes (0.25.0).**
+  - Albarède (1995, Table 5.16): a komatiitic liquid as a mixture of
+    olivine, clinopyroxene and garnet (seven components). Book: x₀ =
+    (0.210, 0.267, 0.442), λ = 0.0188, x = (0.200, 0.235, 0.564). App:
+    x₀ = (0.210, 0.267, 0.442), λ = 0.0188, x = (0.201, 0.235, 0.564)
+    (the book rounds the intermediate values).
+  - Synthetic partly serpentinised harzburgite with a known mode (olivine
+    40, orthopyroxene 15, clinopyroxene 3, spinel 2, serpentine 38,
+    magnetite 2 %): recovered exactly, also when 3 % of the mass is left
+    out of the analysis (normalisation) and without H2O.
+  - Brucite added to the default set: condition number 5180, ±1σ above
+    100 % — the warning appears. Default set: condition number 27, ±1σ
+    0.2–1.6 %.
+  - 92 fully serpentinised peridotites (H2O or LOI > 11 wt%) of the global
+    database (Gard et al. 2019): serpentine + magnetite + spinel +
+    clinopyroxene give median modes 87, 9, 2 and 1 %. With the default set
+    (olivine and orthopyroxene included) olivine comes out negative in
+    almost every sample: the page then warns that a mineral is absent.
+    Ideal Mg-serpentine carries no iron, so magnetite is an upper limit;
+    use measured serpentine compositions for better values.
+
 ### 10.1 Sources of the example datasets
 
 The start page and the *Example datasets* menu offer eight sets. Two are
@@ -700,6 +780,9 @@ basis tab.
 - Aitchison J., Egozcue J.J. (2005) Compositional data analysis: where are
   we and where should we be heading? Mathematical Geology 37, 829–850.
   (as cited in Rollinson and Pease 2021)
+- Albarède F. (1995) Introduction to Geochemical Modeling. Cambridge
+  University Press, Cambridge. (section 5.3: mineral modes by least
+  squares with a closure condition; Table 5.16)
 - Gard M., Hasterok D., Halpin J.A. (2019) Global whole-rock geochemical
   database compilation. Earth System Science Data 11, 1553–1566.
   doi:10.5194/essd-11-1553-2019 (test data for the iron split, version

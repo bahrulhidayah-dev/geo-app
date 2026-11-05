@@ -2,6 +2,27 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.25.0 - 2026-10-28
+
+- **New page Tools → Mineral modes**: mineral proportions (wt%) from the
+  whole-rock analysis by least squares with the condition that they add up
+  to 100 % (Albarède 1995, section 5.3).
+  - H2O (H2O+ or LOI) is a component, so serpentine is told apart from
+    olivine in serpentinised peridotites.
+  - Ideal compositions of nine minerals; edit them or add your own (for
+    example EPMA analyses).
+  - One sample: modes with ±1σ (Monte Carlo from the analytical error),
+    residuals, sum of squared residuals and condition number. All
+    samples: table (CSV) and bar chart.
+  - Warnings for negative modes, minerals that cannot be resolved (rank)
+    and unstable modes (condition number above 300).
+- New module `geochem/modes.py`; tested against Albarède (1995, Table
+  5.16), synthetic serpentinised harzburgites with a known mode and 92
+  serpentinites of the global database.
+- Glossary (mineral mode, least squares with a closure condition,
+  condition number), Scientific methods (section 8b, conventions and
+  tests), user manual (section 10.2), References.
+
 ## 0.24.0 - 2026-10-27
 
 - **New page Tools → Mass change**: which components were gained or lost

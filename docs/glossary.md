@@ -361,6 +361,41 @@ gain or loss only dilutes or concentrates both.
 
 **Source.** MacLean and Barrett (1993).
 
+### Mineral mode
+
+**What it is.** The proportion of each mineral in a rock. A mode from
+thin-section point counting is in volume %; a mode calculated from the
+chemical analysis is in mass (weight) %.
+
+**In the app.** Tools → Mineral modes (calculated from the whole-rock
+analysis and mineral compositions).
+
+**Source.** Albarède (1995).
+
+### Least squares with a closure condition
+
+**What it is.** A way to find the mineral proportions that best reproduce
+the rock analysis (smallest sum of squared differences), with the extra
+condition that the proportions add up to 100 %. The condition is added
+with a Lagrange multiplier, a number that adjusts the unconstrained
+solution until the sum is right.
+
+**In the app.** Tools → Mineral modes.
+
+**Source.** Albarède (1995, section 5.3).
+
+### Condition number
+
+**What it is.** A measure of how strongly a result reacts to small errors
+in the input. For mineral modes it is large when some minerals can be
+made from others (for example serpentine from enstatite, brucite and
+water): then two very different modes fit the rock equally well.
+
+**In the app.** Tools → Mineral modes; above 300 the page warns that the
+modes are unstable [App convention].
+
+**Source.** Albarède (1995).
+
 ### Protolith
 
 **What it is.** The original rock before alteration or metamorphism, for

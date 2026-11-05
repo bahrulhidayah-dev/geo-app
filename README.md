@@ -34,6 +34,7 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
   V - MgO melting curves calculated after Lee et al. (2003).
 - CIPW norm (Hutchison 1974, 1975; ported from Janoušek et al. 2006) with download.
 - Mass change: isocon analysis (Grant 1986, 2005), gains and losses, immobility test
+- Mineral modes from the whole-rock analysis (least squares with closure, Albarède 1995), with H2O for serpentinites
   (MacLean and Barrett 1993); for example for serpentinization.
 - Top bar with Documentation (full user manual with screenshots),
   References, About, and the language (Indonesian, English, Japanese) and

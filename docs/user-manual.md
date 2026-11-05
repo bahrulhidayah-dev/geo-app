@@ -530,6 +530,40 @@ MacLean and Barrett (1993).
 Choosing the protolith and the immobile species is a geological decision:
 the app does the arithmetic, but cannot tell which rock was the original.
 
+### 10.2 Mineral modes (Tools → Mineral modes)
+
+The proportions of minerals (wt%) that best reproduce the whole-rock
+analysis, with the condition that they add up to 100 % (least squares,
+Albarède 1995). Useful for serpentinised peridotites: with H2O (from LOI)
+as a component, serpentine can be told apart from olivine.
+
+1. **Minerals.** Choose only minerals that are present in the rock. With
+   the six components (SiO2, Al2O3, FeOt, MgO, CaO, H2O) at most six
+   minerals can be resolved. Default: olivine, orthopyroxene,
+   clinopyroxene, spinel, serpentine and magnetite.
+2. **Mineral compositions.** Ideal compositions by default. Open *Mineral
+   compositions (wt%)* to type your own analyses (for example EPMA), or
+   add a row for another mineral.
+3. **One sample tab.** Choose a sample or a group mean. The app shows the
+   modes with ±1σ (from the analytical error), the measured and calculated
+   compositions with residuals, the sum of squared residuals and the
+   condition number.
+4. **All samples tab.** Modes of every shown sample (CSV) and a bar chart.
+
+How to read the warnings:
+
+- **Negative mode:** that mineral is probably absent, or its composition
+  does not fit. Remove it and compare the residuals.
+- **Not unique / unstable:** some minerals can be made from others (for
+  example serpentine = 2 enstatite + brucite + water). Remove one of them.
+- **Large residuals:** a mineral is missing, or the compositions are not
+  right (for example iron-free serpentine in a rock where serpentine
+  carries iron).
+
+Modes are mass fractions, not volume fractions. The method is a mass
+balance: it cannot tell which minerals are present — check that with
+petrography or XRD.
+
 ## 11. Symbols and colours
 
 ![Symbols and colours](img/symbols.png)

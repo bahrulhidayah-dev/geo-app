@@ -639,6 +639,49 @@ def plot_immobility(df, reference, species, stats, style="dark", panel_size=(2.6
     return _finish(fig)
 
 
+# ---------------- mineral modes ----------------
+MODE_COLOURS = ["#0072B2", "#E69F00", "#009E73", "#CC79A7", "#56B4E9", "#D55E00",
+                "#F0E442", "#999999", "#000000"]   # Okabe and Ito (2008)
+
+
+def plot_modes(table, style="dark", width=6.4):
+    """Mineral modes (wt%) as one horizontal stacked bar per sample.
+    table: rows = samples (index = names), columns = minerals. Negative
+    modes are drawn to the left of zero, so the bars stay honest, and the
+    sample is marked with an asterisk."""
+    s = STYLES[style]
+    table = table.astype(float)
+    n = len(table)
+    fig = _figure((width, 1.4 + 0.30 * max(n, 1)))
+    fig.patch.set_facecolor(s["bg"])
+    fig._geo_style = s
+    ax = fig.subplots()
+    y = np.arange(n)[::-1]
+    pos, neg = np.zeros(n), np.zeros(n)
+    for k, m in enumerate(table.columns):
+        v = table[m].fillna(0).to_numpy()
+        col = MODE_COLOURS[k % len(MODE_COLOURS)]
+        vp, vn = np.clip(v, 0, None), np.clip(v, None, 0)
+        ax.barh(y, vp, left=pos, height=0.72, color=col, edgecolor=s["bg"],
+                linewidth=0.4, label=str(m), zorder=3)
+        if (vn < 0).any():
+            ax.barh(y, vn, left=neg, height=0.72, color=col, edgecolor=s["bg"],
+                    linewidth=0.4, hatch="///", zorder=3)
+        pos, neg = pos + vp, neg + vn
+    for xv in (0, 100):
+        ax.axvline(xv, color=s["line"], lw=0.8, zorder=4)
+    bad = (table < -0.5).any(axis=1).to_numpy()
+    labels = [f"{nm} *" if b else str(nm) for nm, b in zip(table.index, bad)]
+    ax.set_yticks(y, labels)
+    lo = min(0.0, float(neg.min())) if n else 0.0
+    hi = max(100.0, float(pos.max())) if n else 100.0
+    ax.set_xlim(lo - 1, hi + 1)
+    ax.set_ylim(-0.6, n - 0.4)
+    _style_axes(ax, s, "Mode (wt%)", None)
+    _legend(ax, s, title=None, where="below")
+    return _finish(fig)
+
+
 # ---------------- variation diagrams (Harker, MgO) ----------------
 def _var_label(name, basis):
     """Axis label: oxides in wt% (anhydrous when recalculated), elements in ppm."""

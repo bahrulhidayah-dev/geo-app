@@ -172,6 +172,9 @@ GENERAL = [
     ("Mass change", "MacLean W.H., Barrett T.J. (1993) Lithogeochemical techniques using "
      "immobile elements. Journal of Geochemical Exploration 48, 109-133. (immobility test, "
      "enrichment factors)"),
+    ("Mineral modes", "Albarede F. (1995) Introduction to Geochemical Modeling. Cambridge "
+     "University Press, Cambridge. (section 5.3: mineral modes by least squares with a "
+     "closure condition; test data of Table 5.16)"),
     ("Serpentinites and peridotites", "Salters V.J.M., Stracke A. (2004) Composition of "
      "the depleted mantle. Geochemistry, Geophysics, Geosystems 5, Q05B07. "
      "doi:10.1029/2003GC000597 (depleted-mantle reference points)"),
