@@ -10,6 +10,7 @@ import uuid
 from collections import OrderedDict
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import streamlit as st
 from matplotlib.colors import to_hex
@@ -24,6 +25,7 @@ from geochem import (calc, catalog, data, docs, examples, hydrogen, iron, massch
                      project,
                      screening, symbols, variation, xrfcal, xrfqc)
 from geochem import i18n
+from geochem import units as unitconv   # not 'units': app.py uses that name for column units
 from geochem.i18n import LANGUAGES, t
 
 
@@ -31,7 +33,7 @@ from geochem.i18n import LANGUAGES, t
 # reruns app.py but keeps the old geochem modules in memory. Reload every
 # module whose file changed, in dependency order, so all code is current.
 def _reload_changed_modules():
-    order = [calc, modes, hydrogen, data, examples, norms, screening, variation, symbols, i18n, plotting, catalog,
+    order = [calc, unitconv, modes, hydrogen, data, examples, norms, screening, variation, symbols, i18n, plotting, catalog,
              xrfqc, xrfcal, docs, project]
     stamps = getattr(geochem, "_file_stamps", {})
     changed = False
@@ -47,7 +49,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.27.0"
+APP_VERSION = "0.28.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -1540,29 +1542,117 @@ def page_modes():
 
 
 
-def h2_condition(prefix, allow_none=True):
-    """Temperature and pressure inputs (manual or from depth). Returns T (C),
-    P (bar or None) and a short text of how they were obtained."""
+def unum(label, key, internal_default, lo, hi, step, to_int, from_int, unit,
+         help=None, fmt=None):
+    """Number input shown in `unit`, returned in the internal unit. The value
+    is kept when the unit is changed (it is converted, not reset)."""
+    k = f"{key}__w"
+    last = st.session_state.get(f"{key}__unit")
+    if k not in st.session_state or last != unit:
+        base = st.session_state.get(f"{key}__int", internal_default)
+        st.session_state[k] = round(float(from_int(base)), 6)
+    st.session_state[f"{key}__unit"] = unit
+    a, b = sorted((float(from_int(lo)), float(from_int(hi))))
+    st.session_state[k] = min(max(float(st.session_state[k]), a), b)
+    v = st.number_input(f"{label} ({unit})", a, b, step=float(step), key=k, help=help,
+                        format=fmt)
+    val = float(to_int(v))
+    st.session_state[f"{key}__int"] = val
+    return val
+
+
+T_STEP = {"°C": 5.0, "K": 5.0, "°F": 10.0}
+P_STEP = {"bar": 50.0, "atm": 50.0, "MPa": 5.0, "kPa": 5000.0, "GPa": 0.01, "psi": 500.0}
+Z_STEP = {"m": 100.0, "km": 0.1, "ft": 250.0}
+
+
+def h2_units():
+    """Unit choices for the whole page."""
+    with st.container(border=True):
+        st.caption(t("Units for all inputs, tables, plots and downloads on this page. "
+                     "Values you typed are converted when you change a unit."))
+        c1, c2, c3, c4 = st.columns(4)
+        tu = c1.selectbox(t("Temperature"), unitconv.TEMP_UNITS, key="h2u_T")
+        pu = c2.selectbox(t("Pressure"), unitconv.PRESSURE_UNITS, key="h2u_P")
+        zu = c3.selectbox(t("Depth"), unitconv.DEPTH_UNITS, key="h2u_Z")
+        du = c4.selectbox(t("Density"), unitconv.DENSITY_UNITS, key="h2u_D")
+    return {"T": tu, "P": pu, "Z": zu, "D": du}
+
+
+def _tnum(label, key, default_c, lo_c, hi_c, U, help=None):
+    tu = U["T"]
+    return unum(label, key, default_c, lo_c, hi_c, T_STEP[tu],
+                lambda v: unitconv.temp_to_c(v, tu), lambda v: unitconv.temp_from_c(v, tu), tu,
+                help=help)
+
+
+def _pnum(label, key, default_bar, lo_bar, hi_bar, U, help=None):
+    pu = U["P"]
+    return unum(label, key, default_bar, lo_bar, hi_bar, P_STEP[pu],
+                lambda v: unitconv.pressure_to_bar(v, pu), lambda v: unitconv.pressure_from_bar(v, pu),
+                pu, help=help, fmt="%.4g")
+
+
+def _znum(label, key, default_m, lo_m, hi_m, U, help=None):
+    zu = U["Z"]
+    return unum(label, key, default_m, lo_m, hi_m, Z_STEP[zu],
+                lambda v: unitconv.depth_to_m(v, zu), lambda v: unitconv.depth_from_m(v, zu), zu,
+                help=help, fmt="%.4g")
+
+
+def _gnum(label, key, default_c_per_km, U):
+    """Geothermal gradient in temperature-unit per km (a difference, so no offset)."""
+    tu = U["T"]
+    k = unitconv.temp_step_per_c(tu)
+    return unum(label, key, default_c_per_km, 5.0, 100.0, 1.0,
+                lambda v: v / k, lambda v: v * k, f"{tu}/km")
+
+
+def _rnum(label, key, default_kgm3, U, help=None):
+    du = U["D"]
+    return unum(label, key, default_kgm3, 2000.0, 3600.0,
+                50.0 if du == "kg/m³" else 0.05,
+                lambda v: unitconv.density_to_kgm3(v, du), lambda v: unitconv.density_from_kgm3(v, du),
+                du, help=help, fmt="%.4g")
+
+
+def fmt_t(v_c, U):
+    return f"{float(unitconv.temp_from_c(v_c, U['T'])):.5g} {U['T']}"
+
+
+def fmt_p(v_bar, U):
+    return f"{float(unitconv.pressure_from_bar(v_bar, U['P'])):.4g} {U['P']}"
+
+
+def h2_condition(prefix, U):
+    """Temperature and pressure inputs (manual or from depth), in the chosen
+    unitconv. Returns T (C), P (bar or None) and a short text of how they were
+    obtained (in the chosen units)."""
     src = st.radio(t("Temperature from"), ["temperature", "depth"], horizontal=True,
                    key=f"{prefix}_tsrc",
                    format_func=lambda v: {"temperature": t("Enter the temperature"),
                                           "depth": t("Depth and geothermal gradient")}[v])
     depth = None
     if src == "temperature":
-        T = st.number_input(t("Temperature (°C)"), 0.0, 1000.0, 250.0, 5.0, key=f"{prefix}_T")
-        how = f"T = {T:g} °C"
+        T = _tnum(t("Temperature"), f"{prefix}_T", 250.0, 0.0, 1000.0, U)
+        how = f"T = {fmt_t(T, U)}"
     else:
         c1, c2, c3 = st.columns(3)
-        depth = c1.number_input(t("Depth (m)"), 0.0, 50000.0, 7500.0, 100.0, key=f"{prefix}_z")
-        ts = c2.number_input(t("Surface temperature (°C)"), -10.0, 60.0, 23.0, 1.0,
-                             key=f"{prefix}_ts")
-        grad = c3.number_input(t("Gradient (°C/km)"), 5.0, 100.0, 30.0, 1.0, key=f"{prefix}_g")
+        with c1:
+            depth = _znum(t("Depth"), f"{prefix}_z", 7500.0, 0.0, 50000.0, U)
+        with c2:
+            ts = _tnum(t("Surface temperature"), f"{prefix}_ts", 23.0, -10.0, 60.0, U)
+        with c3:
+            grad = _gnum(t("Gradient"), f"{prefix}_g", 30.0, U)
         T = float(hydrogen.temperature_from_depth(depth, ts, grad))
-        how = f"T = {ts:g} °C + {grad:g} °C/km × {depth / 1000:g} km = {T:.1f} °C"
+        how = (f"T = {fmt_t(ts, U)} + {grad * unitconv.temp_step_per_c(U['T']):g} {U['T']}/km × "
+               f"{depth / 1000:g} km = {fmt_t(T, U)}")
     opts = ["none", "enter"] + (["hydrostatic", "lithostatic"] if depth is not None else [])
     names = {"none": t("No pressure (Eq. 4)"), "enter": t("Enter the pressure"),
              "hydrostatic": t("Hydrostatic from depth"),
              "lithostatic": t("Lithostatic from depth")}
+    if st.session_state.get(f"{prefix}_pm") not in opts:
+        st.session_state.pop(f"{prefix}_pm", None)
     pmode = st.radio(t("Pressure"), opts, horizontal=True, key=f"{prefix}_pm",
                      format_func=names.get,
                      help=t("Pressure only enters Eq. 3 (up to 315 °C). Rezaee (2025) means "
@@ -1571,15 +1661,14 @@ def h2_condition(prefix, allow_none=True):
                             "about 294 bar/km at 3000 kg/m³."))
     P = None
     if pmode == "enter":
-        P = st.number_input(t("Pressure (bar)"), 0.0, 10000.0, 500.0, 50.0, key=f"{prefix}_P")
+        P = _pnum(t("Pressure"), f"{prefix}_P", 500.0, 0.0, 10000.0, U)
     elif pmode in ("hydrostatic", "lithostatic"):
         rho = 3000.0
         if pmode == "lithostatic":
-            rho = st.number_input(t("Rock density (kg/m³)"), 2000.0, 3600.0, 3000.0, 50.0,
-                                  key=f"{prefix}_prho")
+            rho = _rnum(t("Rock density"), f"{prefix}_prho", 3000.0, U)
         P = float(hydrogen.pressure_from_depth(depth, pmode, rho))
     if P is not None:
-        how += f", P = {P:.0f} bar"
+        how += f", P = {fmt_p(P, U)}"
     return T, P, how
 
 
@@ -1596,13 +1685,32 @@ def h2_minerals(prefix):
         {"olivine": ol / 100, "orthopyroxene": opx / 100, "clinopyroxene": cpx / 100})["C"]
 
 
+def _editor_key(prefix, frame):
+    """A data-editor key that changes when its starting table changes, so old
+    edits are not applied to a different table; plus a reset counter."""
+    import hashlib
+    h = hashlib.md5(frame.to_csv(index=False).encode()).hexdigest()[:10]
+    return f"{prefix}_{h}_{st.session_state.get(prefix + '_reset', 0)}"
+
+
+def _reset_button(prefix):
+    if st.button(t("Undo my edits"), key=f"{prefix}_rbtn", icon=":material/undo:",
+                 type="tertiary"):
+        st.session_state[prefix + "_reset"] = st.session_state.get(prefix + "_reset", 0) + 1
+        st.rerun()
+
+
 def page_hydrogen():
     header(t("Hydrogen generation"),
            t("Estimate of the H₂ generated by serpentinization: a rate from temperature "
              "and pressure, a correction factor for the minerals and a volumetric total "
-             "for a rock body (Rezaee 2025, Geosciences 15, 112). The rate equations "
-             "are empirical fits to laboratory experiments on powdered olivine and "
-             "peridotite: treat the results as an order of magnitude, not a measurement."))
+             "for a rock body (Rezaee 2025, Geosciences 15, 112), and the H₂ a rock has "
+             "already made from its degree of serpentinization (Liu et al. 2023). The "
+             "rate equations are empirical fits to laboratory experiments on powdered "
+             "olivine and peridotite: treat the results as an order of magnitude, not a "
+             "measurement. A step-by-step tutorial is on the Documentation page."))
+    U = h2_units()
+    tu, pu, zu = U["T"], U["P"], U["Z"]
     tab1, tab2, tab3, tab4 = st.tabs([t("Rate (one condition)"), t("Per sample"),
                                       t("Rock body (volumetric)"),
                                       t("Already generated (serpentinization degree)")])
@@ -1611,7 +1719,7 @@ def page_hydrogen():
     with tab1:
         left, right = st.columns([2, 3], gap="large")
         with left:
-            T, P, how = h2_condition("h2a")
+            T, P, how = h2_condition("h2a", U)
             st.markdown(f"**{t('Minerals of the rock')}**")
             C = h2_minerals("h2a")
             st.session_state["h2_C_last"] = C
@@ -1629,12 +1737,13 @@ def page_hydrogen():
                       help=t("Rate corrected for the minerals of the rock."))
             st.caption(f"{how}. {r['equation'] or ''} · {t(r['note'])}")
             pts = None if rate is None else pd.DataFrame({"T (C)": [T], "RH2 (mmol/kg)": [rate]})
-            show(plotting.plot_h2_rate(pts, P, style=SCREEN))
-            downloads(lambda s_: plotting.plot_h2_rate(pts, P, style=s_), "h2_rate")
+            show(plotting.plot_h2_rate(pts, P, style=SCREEN, t_unit=tu, p_unit=pu))
+            downloads(lambda s_: plotting.plot_h2_rate(pts, P, style=s_, t_unit=tu, p_unit=pu),
+                      "h2_rate")
             if T > hydrogen.T_MAX:
                 st.info(t("Above 400 °C olivine is stable with water: no H₂ is assumed."))
 
-    # ---- tab 2: every sample, C from the mineral modes ----
+    # ---- tab 2: every sample; temperature, pressure and minerals can be edited ----
     with tab2:
         if ctx is None:
             empty_state()
@@ -1644,84 +1753,167 @@ def page_hydrogen():
             if rocks[["SiO2", "MgO"]].dropna().empty:
                 missing_note(["SiO2", "MgO", "FeOt / Fe2O3", "LOI / H2O+"])
             else:
-                st.caption(t("C is calculated from the mineral modes of each sample (least "
-                             "squares, default minerals, see Tools → Mineral modes). The "
-                             "temperature and pressure come from the first tab, or from a "
-                             "column of the file."))
+                st.caption(t("Each row is one sample. The start values come from the "
+                             "choices below: C from the mineral modes (Tools → Mineral "
+                             "modes, default minerals), temperature and pressure from the "
+                             "first tab or from columns of your file. Then type over any "
+                             "cell of the white columns (temperature, pressure, minerals) "
+                             "and the results update at once. Leave the pressure empty to "
+                             "use Eq. 4."))
                 num = [c for c in df.columns[1:] if pd.api.types.is_numeric_dtype(df[c])]
-                tcols = [c for c in num if re.search(r"temp|°c|\(c\)|suhu", str(c), re.I)]
-                zcols = [c for c in num if re.search(r"depth|\(m\)|kedalaman", str(c), re.I)]
-                choices = ["tab"] + [f"T|{c}" for c in tcols] + [f"Z|{c}" for c in zcols]
-                lab = lambda v: (t("Same as the first tab") if v == "tab" else
-                                 (t("Column: {c}") if v[0] == "T"
-                                  else t("Column: {c} (depth → temperature)")).format(c=v[2:]))
-                tsel = st.selectbox(t("Temperature of each sample"), choices, format_func=lab,
-                                    key="h2b_t")
-                if len(choices) == 1:
-                    st.caption(t("To give each sample its own temperature, add a column "
-                                 "named Temperature (°C) or Depth (m) to the data file."))
+                tcols = [c for c in num if re.search(r"temp|°c|\(c\)|\(k\)|°f|suhu", str(c), re.I)]
+                zcols = [c for c in num if re.search(r"depth|\(m\)|\(km\)|\(ft\)|kedalaman",
+                                                     str(c), re.I)]
+                pcols = [c for c in num if re.search(r"press|\(bar\)|\(mpa\)|\(atm\)|\(kpa\)|"
+                                                     r"\(psi\)|\(gpa\)|tekanan", str(c), re.I)]
+                c1, c2 = st.columns(2)
+                tchoices = ["tab"] + [f"T|{c}" for c in tcols] + [f"Z|{c}" for c in zcols]
+                tsel = c1.selectbox(
+                    t("Temperature of each sample"), tchoices, key="h2b_t",
+                    format_func=lambda v: (t("Same as the first tab") if v == "tab" else
+                                           (t("Column: {c} (in {u})").format(c=v[2:], u=tu)
+                                            if v[0] == "T" else
+                                            t("Column: {c} (depth in {u} → temperature)")
+                                            .format(c=v[2:], u=zu))),
+                    help=t("A column is read in the units chosen above."))
+                pchoices = (["tab", "none"] + [f"P|{c}" for c in pcols]
+                            + (["hydro"] if tsel.startswith("Z|") else []))
+                if st.session_state.get("h2b_p") not in pchoices:
+                    st.session_state.pop("h2b_p", None)
+                psel = c2.selectbox(
+                    t("Pressure of each sample"), pchoices, key="h2b_p",
+                    format_func=lambda v: {"tab": t("Same as the first tab"),
+                                           "none": t("No pressure (Eq. 4)"),
+                                           "hydro": t("Hydrostatic from the depth column")}
+                    .get(v, t("Column: {c} (in {u})").format(c=v[2:], u=pu)))
+                if len(tchoices) == 1:
+                    st.caption(t("To read temperatures or depths from your file, add a "
+                                 "column named for example Temperature (°C) or Depth (m); "
+                                 "for pressures, Pressure (bar)."))
                 comps = [c for c in modes.COMPONENTS if rocks[c].notna().any()]
                 A = modes.mineral_table(modes.DEFAULT_MINERALS).loc[comps]
                 table, _ = modes.solve_all(rocks[comps], A)
                 if table.empty:
                     st.info(t("No sample has SiO2 and MgO."))
                 else:
-                    ts = float(st.session_state.get("h2a_ts", 23.0))
-                    gr = float(st.session_state.get("h2a_g", 30.0))
+                    ts_ = float(st.session_state.get("h2a_ts__int", 23.0))
+                    gr_ = float(st.session_state.get("h2a_g__int", 30.0))
                     rows = []
                     for idx, row in table.iterrows():
                         cm = hydrogen.c_from_modes(row)
+                        z_m = None
                         if tsel == "tab":
-                            Ti, Pi = T, P
+                            Ti = T
                         elif tsel[0] == "T":
-                            Ti, Pi = df.at[idx, tsel[2:]], P
+                            v = df.at[idx, tsel[2:]]
+                            Ti = float(unitconv.temp_to_c(v, tu)) if pd.notna(v) else None
                         else:
-                            zi = df.at[idx, tsel[2:]]
-                            Ti = (float(hydrogen.temperature_from_depth(zi, ts, gr))
-                                  if pd.notna(zi) else None)
-                            Pi = (float(hydrogen.pressure_from_depth(zi, "hydrostatic"))
-                                  if pd.notna(zi) and P is not None else None)
-                        ri = hydrogen.rh2_rate(Ti, Pi)
+                            v = df.at[idx, tsel[2:]]
+                            z_m = float(unitconv.depth_to_m(v, zu)) if pd.notna(v) else None
+                            Ti = (float(hydrogen.temperature_from_depth(z_m, ts_, gr_))
+                                  if z_m is not None else None)
+                        if psel == "tab":
+                            Pi = P
+                        elif psel == "none":
+                            Pi = None
+                        elif psel == "hydro":
+                            Pi = (float(hydrogen.pressure_from_depth(z_m, "hydrostatic"))
+                                  if z_m is not None else None)
+                        else:
+                            v = df.at[idx, psel[2:]]
+                            Pi = float(unitconv.pressure_to_bar(v, pu)) if pd.notna(v) else None
+                        rows.append({
+                            t("Sample"): str(df.iloc[:, 0].get(idx, idx)),
+                            f"T ({tu})": (np.nan if Ti is None
+                                          else round(float(unitconv.temp_from_c(Ti, tu)), 4)),
+                            f"P ({pu})": (np.nan if Pi is None
+                                          else round(float(unitconv.pressure_from_bar(Pi, pu)), 5)),
+                            "Olivine (wt%)": round(100 * cm["olivine"], 2),
+                            "Orthopyroxene (wt%)": round(100 * cm["orthopyroxene"], 2),
+                            "Clinopyroxene (wt%)": round(100 * cm["clinopyroxene"], 2)})
+                    base = pd.DataFrame(rows)
+                    st.markdown(f"**{t('Inputs (editable)')}**")
+                    ed = st.data_editor(
+                        base, key=_editor_key("h2b_ed", base), hide_index=True,
+                        disabled=[t("Sample")], width="stretch",
+                        column_config={
+                            f"T ({tu})": st.column_config.NumberColumn(format="%.4g"),
+                            f"P ({pu})": st.column_config.NumberColumn(format="%.4g"),
+                            "Olivine (wt%)": st.column_config.NumberColumn(
+                                min_value=0.0, max_value=100.0, format="%.2f"),
+                            "Orthopyroxene (wt%)": st.column_config.NumberColumn(
+                                min_value=0.0, max_value=100.0, format="%.2f"),
+                            "Clinopyroxene (wt%)": st.column_config.NumberColumn(
+                                min_value=0.0, max_value=100.0, format="%.2f")})
+                    _reset_button("h2b_ed")
+                    res = []
+                    for _, e in ed.iterrows():
+                        Tc = (float(unitconv.temp_to_c(e[f"T ({tu})"], tu))
+                              if pd.notna(e[f"T ({tu})"]) else None)
+                        Pb = (float(unitconv.pressure_to_bar(e[f"P ({pu})"], pu))
+                              if pd.notna(e[f"P ({pu})"]) else None)
+                        fr = {k: float(np.nan_to_num(pd.to_numeric(e[c], errors="coerce"))) / 100
+                              for k, c in (("olivine", "Olivine (wt%)"),
+                                           ("orthopyroxene", "Orthopyroxene (wt%)"),
+                                           ("clinopyroxene", "Clinopyroxene (wt%)"))}
+                        cc = hydrogen.composition_correction(fr)["C"]
+                        ri = hydrogen.rh2_rate(Tc, Pb)
                         rr = ri["rate_mmol_kg"]
-                        rows.append({t("Sample"): str(df.iloc[:, 0].get(idx, idx)),
-                                     "Olivine (wt%)": 100 * cm["olivine"],
-                                     "Orthopyroxene (wt%)": 100 * cm["orthopyroxene"],
-                                     "Clinopyroxene (wt%)": 100 * cm["clinopyroxene"],
-                                     "C": cm["C"], "T (C)": Ti, "P (bar)": Pi,
-                                     "Equation": ri["equation"], "RH2 (mmol/kg)": rr,
-                                     "C x RH2 (mmol/kg)": None if rr is None else cm["C"] * rr})
-                    out = pd.DataFrame(rows)
-                    st.dataframe(out.round(2), hide_index=True, height=320)
+                        res.append({"C": cc, "Equation": ri["equation"], "RH2 (mmol/kg)": rr,
+                                    "C x RH2 (mmol/kg)": None if rr is None else cc * rr,
+                                    "T (C)": Tc,
+                                    "Check": ("" if sum(fr.values()) <= 1.00001
+                                              else t("minerals > 100 %"))})
+                    resdf = pd.DataFrame(res)
+                    out = pd.concat([ed.reset_index(drop=True),
+                                     resdf.drop(columns=["T (C)"])], axis=1)
+                    st.markdown(f"**{t('Results')}**")
+                    st.dataframe(out[[t("Sample"), "C", "Equation", "RH2 (mmol/kg)",
+                                      "C x RH2 (mmol/kg)", "Check"]].round(2),
+                                 hide_index=True, height=260)
                     csv_download(t("Download H₂ estimates (CSV)"), lambda: out,
                                  "hydrogen_per_sample.csv")
-                    pts = out.dropna(subset=["RH2 (mmol/kg)"]).rename(
-                        columns={t("Sample"): "Sample"})
-                    show(plotting.plot_h2_rate(pts, P if tsel == "tab" else None, style=SCREEN))
+                    pts = pd.DataFrame({"Sample": out[t("Sample")], "T (C)": resdf["T (C)"],
+                                        "RH2 (mmol/kg)": resdf["RH2 (mmol/kg)"]}).dropna()
+                    show(plotting.plot_h2_rate(pts, P if psel == "tab" else None, style=SCREEN,
+                                               t_unit=tu, p_unit=pu))
                     downloads(lambda s_: plotting.plot_h2_rate(
-                        pts, P if tsel == "tab" else None, style=s_), "h2_rate_samples")
+                        pts, P if psel == "tab" else None, style=s_, t_unit=tu, p_unit=pu),
+                        "h2_rate_samples")
                     st.caption(t("C uses only the olivine and pyroxene still present. In a "
                                  "serpentinite most of them are already gone, so C and C × "
                                  "RH2 describe the remaining potential. For the potential "
-                                 "of the original rock use a least-altered sample or enter "
-                                 "the protolith minerals in the first tab."))
+                                 "of the original rock, type the protolith minerals in the "
+                                 "table or use a least-altered sample."))
 
     # ---- tab 3: volumetric estimate for a rock body ----
     with tab3:
         left, right = st.columns([2, 3], gap="large")
         with left:
-            area = st.number_input(t("Area (km²)"), 0.0, 1e7, 100.0, 10.0, key="h2c_area")
+            c1, c2 = st.columns([2, 1])
+            au = c2.selectbox(t("Area unit"), unitconv.AREA_UNITS, key="h2u_A")
+            with c1:
+                area = unum(t("Area"), "h2c_area", 100e6, 0.0, 1e13,
+                            {"km²": 10.0, "m²": 1e6, "ha": 1000.0, "mi²": 5.0}[au],
+                            lambda v: unitconv.area_to_m2(v, au),
+                            lambda v: np.asarray(v, dtype=float) / unitconv.AREA_M2[au], au,
+                            fmt="%.6g")
             c1, c2 = st.columns(2)
-            top = c1.number_input(t("Top depth (km)"), 0.0, 50.0, 0.0, 0.5, key="h2c_top")
-            base = c2.number_input(t("Base depth (km)"), 0.0, 50.0, 15.0, 0.5, key="h2c_base")
+            with c1:
+                top = _znum(t("Top depth"), "h2c_top", 0.0, 0.0, 50000.0, U)
+            with c2:
+                base_z = _znum(t("Base depth"), "h2c_base", 15000.0, 0.0, 50000.0, U)
             c1, c2 = st.columns(2)
-            step = c1.number_input(t("Depth step (m)"), 10.0, 5000.0, 100.0, 10.0, key="h2c_step")
-            rho = c2.number_input(t("Rock density (kg/m³)"), 2000.0, 3600.0, 3000.0, 50.0,
-                                  key="h2c_rho",
-                                  help=t("Ultramafic rocks: about 2900–3300 kg/m³."))
+            with c1:
+                step = _znum(t("Depth step"), "h2c_step", 100.0, 10.0, 5000.0, U)
+            with c2:
+                rho = _rnum(t("Rock density"), "h2c_rho", 3000.0, U,
+                            help=t("Ultramafic rocks: about 2900–3300 kg/m³."))
             c1, c2 = st.columns(2)
-            ts = c1.number_input(t("Surface temperature (°C)"), -10.0, 60.0, 23.0, 1.0,
-                                 key="h2c_ts")
-            gr = c2.number_input(t("Gradient (°C/km)"), 5.0, 100.0, 30.0, 1.0, key="h2c_g")
+            with c1:
+                ts = _tnum(t("Surface temperature"), "h2c_ts", 23.0, -10.0, 60.0, U)
+            with c2:
+                gr = _gnum(t("Gradient"), "h2c_g", 30.0, U)
             pm = st.radio(t("Pressure"), hydrogen.PRESSURE_MODES, horizontal=True, key="h2c_pm",
                           format_func={"hydrostatic": t("Hydrostatic"),
                                        "lithostatic": t("Lithostatic"),
@@ -1736,28 +1928,40 @@ def page_hydrogen():
                                    key="h2c_frac", format="%.3f",
                                    help=t("Share of the body that actually serpentinized. "
                                           "Rezaee (2025) uses 0.01 for the Giles Complex."))
-        table, tot = hydrogen.volumetric_by_depth(area * 1e6, top * 1000, base * 1000, rho, Cb,
-                                                  step, frac, ts, gr, pm)
+        table, tot = hydrogen.volumetric_by_depth(area, top, base_z, rho, Cb, step, frac, ts, gr,
+                                                  pm)
         with right:
             if table.empty:
                 st.info(t("The base must be deeper than the top, and the area above 0."))
             else:
                 u = hydrogen.h2_units(tot["GH2_kg"])
                 m1, m2, m3 = st.columns(3)
-                m1.metric(t("Rock volume GRV (km³)"), f"{tot['GRV_m3'] / 1e9:,.1f}")
+                m1.metric(t("Rock volume GRV (km³)"), f"{tot['GRV_m3'] / 1e9:,.4g}")
                 m2.metric(t("Rock mass GRM (kg)"), f"{tot['GRM_kg']:.3g}")
                 m3.metric(t("H₂ generated GH2 (kg)"), f"{u['kg']:.3g}")
                 m1, m2, m3 = st.columns(3)
                 m1.metric(t("GH2 (Mt)"), f"{u['Mt']:.3g}")
                 m2.metric(t("GH2 (mol)"), f"{u['mol']:.3g}")
                 m3.metric(t("GH2 (m³ at 0 °C, 1 atm)"), f"{u['m3_STP']:.3g}")
-                show(plotting.plot_h2_depth(table, style=SCREEN), max_width="520px")
-                downloads(lambda s_: plotting.plot_h2_depth(table, style=s_), "h2_depth")
-                st.dataframe(table, hide_index=True, height=260,
+                show(plotting.plot_h2_depth(table, style=SCREEN, t_unit=tu, z_unit=zu),
+                     max_width="520px")
+                downloads(lambda s_: plotting.plot_h2_depth(table, style=s_, t_unit=tu,
+                                                            z_unit=zu), "h2_depth")
+                shown = pd.DataFrame({
+                    f"Top ({zu})": unitconv.depth_from_m(table["Top (m)"], zu),
+                    f"Base ({zu})": unitconv.depth_from_m(table["Base (m)"], zu),
+                    f"Mid depth ({zu})": unitconv.depth_from_m(table["Mid depth (m)"], zu),
+                    f"T ({tu})": unitconv.temp_from_c(table["T (C)"], tu),
+                    f"P ({pu})": [None if p is None or pd.isna(p)
+                                  else float(unitconv.pressure_from_bar(p, pu))
+                                  for p in table["P (bar)"]],
+                    "Equation": table["Equation"], "RH2 (mmol/kg)": table["RH2 (mmol/kg)"],
+                    "GRM (kg)": table["GRM (kg)"], "GH2 (kg)": table["GH2 (kg)"]})
+                st.dataframe(shown, hide_index=True, height=260,
                              column_config={"GRM (kg)": st.column_config.NumberColumn(
                                  format="%.3e"), "GH2 (kg)": st.column_config.NumberColumn(
                                  format="%.3e")})
-                csv_download(t("Download depth intervals (CSV)"), lambda: table,
+                csv_download(t("Download depth intervals (CSV)"), lambda: shown,
                              "hydrogen_volumetric.csv")
                 st.caption(t("Each depth interval: mid depth → temperature and pressure → "
                              "RH2 (Eqs. 3–5) → GH2 = 2×10⁻⁶ × mass of the interval × C × "
@@ -1769,7 +1973,8 @@ def page_hydrogen():
         st.caption(t("How much H₂ a rock has already made: degree of serpentinization S "
                      "× H₂ yield of complete serpentinization (Liu et al. 2023). Works with "
                      "ordinary XRF data (total iron and LOI); no FeO analysis is needed. "
-                     "Only ultramafic samples are used."))
+                     "Only ultramafic samples are used; you can include or exclude samples "
+                     "and correct the water in the table."))
         if ctx is None:
             st.info(t("Load a data file or an example dataset first (see the Per sample "
                       "tab or the left panel)."))
@@ -1803,7 +2008,7 @@ def page_hydrogen():
                     st.warning(t("The yield is outside the low–high range. Adjust the low "
                                  "and high yields so that they enclose it."),
                                icon=":material/warning:")
-            um = screening.ultramafic_mask(df, settings["um_mgo"])
+            um0 = screening.ultramafic_mask(df, settings["um_mgo"])
             srp = None
             rocks = modes.rock_components(df)
             comps = [c for c in modes.COMPONENTS if rocks[c].notna().any()]
@@ -1817,32 +2022,59 @@ def page_hydrogen():
                              "H2O or LOI are needed). Water is used instead."),
                            icon=":material/warning:")
                 use = "h2o"
-            dt = hydrogen.degree_table(df, um, srp, use, yld, ylo, yhi)
             names = df.iloc[:, 0].astype(str)
+            h2o0, src0 = hydrogen.h2o_for_degree(df)
+            base = pd.DataFrame({t("Sample"): names.values,
+                                 t("Include"): um0.values.astype(bool),
+                                 "H2O (wt%)": h2o0.round(4).values,
+                                 t("Water from"): src0.values})
+            st.markdown(f"**{t('Inputs (editable)')}**")
+            ed = st.data_editor(
+                base, key=_editor_key("h2d_ed", base), hide_index=True, width="stretch",
+                disabled=[t("Sample"), t("Water from")],
+                column_config={
+                    t("Include"): st.column_config.CheckboxColumn(
+                        help=t("Ticked: ultramafic by the screening. Untick to leave a "
+                               "sample out, tick to include it.")),
+                    "H2O (wt%)": st.column_config.NumberColumn(
+                        min_value=0.0, max_value=40.0, format="%.3f",
+                        help=t("Water used for S. Type a corrected value, for example "
+                               "LOI minus CO2 measured elsewhere."))})
+            _reset_button("h2d_ed")
+            um = pd.Series(ed[t("Include")].astype(bool).values, index=df.index)
+            h2o_e = pd.Series(pd.to_numeric(ed["H2O (wt%)"], errors="coerce").values,
+                              index=df.index)
+            dt = hydrogen.degree_table(df, um, srp, use, yld, ylo, yhi, h2o_edited=h2o_e)
+            forced = um & ~um0
+            if forced.any():
+                st.caption(t("{n} sample(s) included by hand that are not ultramafic by "
+                             "the screening: check that the method fits them.")
+                           .format(n=int(forced.sum())))
             with right:
                 n_um = int(dt["Ultramafic"].sum())
                 n_ok = int(dt["H2 (mmol/kg)"].notna().sum())
                 if n_um == 0:
-                    st.info(t("No ultramafic samples: this method is for serpentinized "
-                              "peridotites (Settings: ultramafic threshold)."))
+                    st.info(t("No samples included: tick Include in the table, or check "
+                              "the ultramafic threshold in Settings."))
                 else:
                     m1, m2, m3 = st.columns(3)
-                    m1.metric(t("Ultramafic samples"), n_um)
+                    m1.metric(t("Samples included"), n_um)
                     m2.metric(t("With a result"), n_ok)
                     m3.metric(t("Median H₂ (mmol/kg)"),
                               f"{dt['H2 (mmol/kg)'].median():.0f}" if n_ok else "–")
                     n_loi = int(((dt["H2O from"] == "LOI") & dt["Ultramafic"]).sum())
                     if n_loi:
                         st.caption(t("{n} sample(s) use LOI as water: LOI also holds CO2 "
-                                     "and S. Add an H2O+ or CO2 column for better "
-                                     "values.").format(n=n_loi))
+                                     "and S. Add an H2O+ or CO2 column, or correct the "
+                                     "water in the table.").format(n=n_loi))
                     shown = dt.set_index(names).head(40)
                     if n_ok:
                         show(plotting.plot_h2_degree(shown, style=SCREEN))
                         downloads(lambda s_: plotting.plot_h2_degree(shown, style=s_),
                                   "h2_serpentinization_degree")
-            out = dt.copy()
+            out = dt.rename(columns={"Ultramafic": t("Include")}).copy()
             out.insert(0, t("Sample"), names)
+            st.markdown(f"**{t('Results')}**")
             st.dataframe(out.round(3), hide_index=True, height=320,
                          column_config={"Note": st.column_config.TextColumn(width="large")})
             csv_download(t("Download H₂ from serpentinization degree (CSV)"), lambda: out,

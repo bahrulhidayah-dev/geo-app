@@ -633,6 +633,29 @@ It needs only total iron and LOI, so it works with ordinary XRF data.
   serpentinization. Most of it left the rock long ago, or was used to make
   methane.
 
+## 8e. Units and edited inputs (hydrogen page)
+
+- **Units.** [Source: SI and NIST definitions] The app calculates in °C,
+  bar, m and kg/m³, because the equations of Rezaee (2025) use °C and bar.
+  Input and output are converted with exact factors: K = °C + 273.15;
+  °F = °C × 9/5 + 32; 1 atm = 1.01325 bar; 1 MPa = 10 bar; 1 kPa =
+  0.01 bar; 1 GPa = 10 000 bar; 1 psi = 0.06894757 bar; 1 km = 1000 m;
+  1 ft = 0.3048 m; 1 g/cm³ = 1000 kg/m³; 1 ha = 10⁴ m²; 1 mi² =
+  2 589 988.11 m². A geothermal gradient is a temperature difference, so
+  °F/km = 1.8 × °C/km (no offset). Code: `geochem/units.py`.
+- **Columns read in the chosen units.** [App convention] Temperature,
+  depth and pressure columns of the file are read in the units chosen on
+  the page. Columns are offered when their name contains *temp*, *depth*
+  or *press*, or a unit in brackets.
+- **Edited inputs.** [App convention] On the Per sample tab the start
+  values (temperature, pressure, olivine, orthopyroxene, clinopyroxene) can
+  be typed over; C and RH2 are recalculated from the edited values. An
+  empty pressure means Eq. 4. On the Already generated tab the user can
+  include or exclude samples and type the water per sample; typed water
+  is marked *edited*. Edits are kept until a selection or a unit changes
+  the start table, or *Undo my edits* is clicked. Edited values are part of
+  the CSV download, so they are documented.
+
 ## 9. All app conventions in one place
 
 Report these in your methods section if they affect your results.
@@ -842,6 +865,23 @@ Report these in your methods section if they affect your results.
     outside the low–high range. A crash found in this test (the example
     cards were drawn twice on the page without data) was fixed before
     release.
+  - Units (0.28.0): `geochem/units.py` checks (100 °C = 212 °F,
+    373.15 K = 100 °C, 1 atm = 1.01325 bar, 500 bar = 50 MPa,
+    14.5038 psi = 1 bar, 1 ft = 0.3048 m, 3 g/cm³ = 3000 kg/m³). In the
+    full app the results do not change when only the units change: 250 °C
+    = 523.15 K = 482 °F all give 98.2 mmol/kg; 500 bar = 50 MPa =
+    7251.9 psi give 75.6; 7.5 km = 24 606 ft give 86.6; the rock body total
+    stays 4.74 × 10¹¹ kg in °C/bar/m/kg/m³, K/atm/km/g/cm³ and
+    °F/psi/ft/g/cm³, and with the area in ha.
+  - Edited tables (0.28.0): JP-1 typed as 300 °C and 500 bar gives Eq. 3
+    and 75.60; UB-N typed as olivine 80, orthopyroxene 15, clinopyroxene 3
+    gives C = 0.92; JP-2 unticked leaves the Already generated results;
+    UB-N water typed as 9.0 gives S = 0.69 and 157.15 mmol/kg (source
+    *edited*).
+  - Tutorial dataset (`geochem/examples/hydrogen_tutorial.csv`): all
+    expected results of the tutorial reproduced in the full app (Per sample
+    with the temperature column, with and without the pressure column;
+    Already generated; Rock body 10 km² × 0–3 km = 3.23 × 10⁹ kg).
   - Per sample tab with the ultramafic example set: fresh peridotites
     JP-1 and JP-2 give C = 0.77 and 0.80; the serpentinite UB-N gives
     C = 0.11, because its olivine has already reacted.

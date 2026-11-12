@@ -74,6 +74,14 @@ EXAMPLES = {
         text="All 27 reference rocks, coloured as volcanic, plutonic or ultramafic.",
         tags=["Real rocks", "27 samples"], icon=":material/inventory_2:",
         samples=None, group="class"),
+    "hydrogen": dict(
+        title="Hydrogen tutorial: synthetic peridotites",
+        text="6 synthetic rocks with known mineral modes, from fresh dunite to "
+             "serpentinite and pyroxenite, with temperature, depth and pressure columns. "
+             "Follow the hydrogen generation tutorial (Documentation page) with it.",
+        tags=["Synthetic", "Known answers"], icon=":material/bubble_chart:",
+        file=HERE / "examples" / "hydrogen_tutorial.csv",
+        note="Synthetic teaching data with known answers (see the hydrogen tutorial)."),
     "messy": dict(
         title="Messy lab file (data cleaning practice)",
         text="30 samples with typical lab problems: a units row, <0.01, bdl, n.d., "

@@ -15,6 +15,7 @@ MANUAL = DOCS / "user-manual.md"
 GLOSSARY = DOCS / "glossary.md"
 # Documents shown on the Documentation page (title: file)
 DOCUMENTS = {"User manual": MANUAL,
+             "Tutorial: hydrogen generation": DOCS / "tutorial-hydrogen.md",
              "Glossary": GLOSSARY,
              "Scientific methods": DOCS / "methods.md",
              "Architecture and workflows": DOCS / "architecture.md",

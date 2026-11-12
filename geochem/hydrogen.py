@@ -279,15 +279,24 @@ def h2_from_degree(degree, yield_mmol_kg=YIELD_LIU, low=YIELD_RANGE[0],
 
 
 def degree_table(df, ultramafic, serpentine_pct=None, use="h2o",
-                 yield_mmol_kg=YIELD_LIU, low=YIELD_RANGE[0], high=YIELD_RANGE[1]):
+                 yield_mmol_kg=YIELD_LIU, low=YIELD_RANGE[0], high=YIELD_RANGE[1],
+                 h2o_edited=None):
     """Degree of serpentinization and H2 already generated for every sample.
 
     ultramafic: boolean Series (screening.ultramafic_mask). The method is
         applied only to ultramafic samples; others get no value.
     serpentine_pct: serpentine mode (wt%) from Tools -> Mineral modes, or None.
     use: "h2o" (S from H2O) or "mode" (S from the serpentine mode).
+    h2o_edited: optional water (wt%) typed by the user per sample; where it
+        differs from the value read from the file it is used instead, and
+        its source becomes "edited".
     """
     h2o, src = h2o_for_degree(df)
+    if h2o_edited is not None:
+        e = pd.Series(h2o_edited, dtype=float).reindex(df.index)
+        changed = e.notna() & ~np.isclose(e.fillna(-1.0), h2o.fillna(-1.0))
+        h2o = h2o.where(~changed, e.clip(lower=0))
+        src = src.where(~changed, "edited")
     s_h2o = degree_from_h2o(h2o)
     s_mode = (degree_from_mode(serpentine_pct).reindex(df.index)
               if serpentine_pct is not None
@@ -307,7 +316,7 @@ def degree_table(df, ultramafic, serpentine_pct=None, use="h2o",
     for i in df.index:
         n = []
         if not um[i]:
-            n.append("not ultramafic: method not applied")
+            n.append("not included (not ultramafic, or unticked)")
         else:
             if pd.isna(s_used[i]):
                 n.append("no H2O, LOI or mode")

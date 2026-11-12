@@ -567,8 +567,19 @@ petrography or XRD.
 ### 10.3 Hydrogen generation (Tools → Hydrogen generation)
 
 An estimate of how much hydrogen (H₂) serpentinization can make, after
-Rezaee (2025). The equations come from laboratory experiments on powdered
-rock, so treat the numbers as an order of magnitude.
+Rezaee (2025), and how much a rock has already made (Liu et al. 2023). The
+equations come from laboratory experiments on powdered rock, so treat the
+numbers as an order of magnitude.
+
+**New to this page?** Follow the document *Tutorial: hydrogen generation*
+on the Documentation page with the example dataset *Hydrogen tutorial:
+synthetic peridotites*. It shows every step with the expected results.
+
+**Units.** The *Units* box at the top sets temperature (°C, K, °F),
+pressure (bar, atm, MPa, kPa, GPa, psi), depth (m, km, ft) and density
+(kg/m³, g/cm³) for every input, table, plot and download. Typed values are
+converted when you change a unit. Columns of your file are read in these
+units.
 
 1. **Rate (one condition) tab.** Works without a data file.
    - *Temperature from*: type the temperature, or give the depth, the
@@ -581,10 +592,15 @@ rock, so treat the numbers as an order of magnitude.
    - Results: the rate RH2 (mmol H₂ per kg of rock), the correction factor
      C and C × RH2, with the rate curve. Above 400 °C the rate is 0.
 2. **Per sample tab.** Needs SiO2 and MgO (plus FeOt, CaO, Al2O3, LOI).
-   C of each sample comes from its mineral modes (Tools → Mineral modes,
-   default minerals). The temperature comes from the first tab, or from a
-   column named *Temperature (°C)* or *Depth (m)* in your file. Download
-   the table as CSV.
+   - *Temperature of each sample*: the first tab, a temperature column or
+     a depth column. *Pressure of each sample*: the first tab, none, a
+     pressure column, or hydrostatic from the depth column.
+   - The **Inputs (editable)** table starts with these values and with the
+     olivine, orthopyroxene and clinopyroxene of the mineral modes. Type
+     over any cell; the **Results** table (C, equation, RH2, C × RH2)
+     updates at once. Clear a pressure to use Eq. 4. *Undo my edits*
+     restores the start values.
+   - Download inputs and results together as CSV.
 3. **Rock body (volumetric) tab.** The total H₂ of an ultramafic body:
    area, top and base depth, depth step, density, temperature gradient,
    pressure, C and the fraction of the body that reacted. The body is cut
@@ -599,6 +615,8 @@ rock, so treat the numbers as an order of magnitude.
      table shows both, so you can compare them.
    - *Yield*: 227 mmol/kg (Liu et al. 2023), with a low–high range of
      150–300 mmol/kg. Keep the central value inside the range.
+   - **Inputs (editable)** table: tick or untick *Include* for each
+     sample, and type a corrected water content if you have one.
    - Results: bar chart with the range, table with notes, CSV.
    - Add an **H2O+** or **CO2** column if you have one: LOI alone also
      counts CO2 and S as water.

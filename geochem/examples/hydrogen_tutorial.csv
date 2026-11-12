@@ -1,0 +1,7 @@
+Sample,Group,Rock type,SiO2,Al2O3,Fe2O3t,MgO,CaO,LOI,Temperature (°C),Depth (m),Pressure (bar)
+H2-DUN,Fresh peridotite,Dunite,40.399,1.433,10.583,48.645,0.0,0.0,25.0,66.667,6.54
+H2-HZB,Fresh peridotite,Harzburgite,43.371,2.15,9.69,45.243,0.518,0.0,150.0,4233.333,415.29
+H2-LHZ,Fresh peridotite,Lherzolite,45.69,2.15,8.446,41.453,3.107,0.0,250.0,7566.667,742.29
+H2-SHZ,Serpentinized peridotite,Serpentinized harzburgite,43.197,1.433,7.571,42.701,0.777,4.941,300.0,9233.333,905.79
+H2-SRP,Serpentinized peridotite,Serpentinite,39.876,1.433,7.396,39.851,0.259,11.442,350.0,10900.0,1069.29
+H2-WEB,Pyroxenite,Websterite,54.92,1.433,4.399,28.554,11.135,0.0,420.0,13233.333,1298.19

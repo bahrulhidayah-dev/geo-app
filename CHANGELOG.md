@@ -2,6 +2,35 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.28.0 - 2026-11-12
+
+- **Tools → Hydrogen generation is now flexible.**
+  - **Units** box for the whole page: temperature (°C, K, °F), pressure
+    (bar, atm, MPa, kPa, GPa, psi), depth (m, km, ft), density (kg/m³,
+    g/cm³), and area (km², m², ha, mi²) on the Rock body tab. Inputs,
+    tables, plots and CSV files follow the choice; typed values are
+    converted, not reset. Results do not change with the units (tested).
+  - **Per sample tab:** editable table of temperature, pressure and
+    olivine, orthopyroxene and clinopyroxene for every sample; results
+    update at once; *Undo my edits*. Pressure can now come from a column
+    of the file (for example *Pressure (bar)* or *Pressure (MPa)*), or be
+    hydrostatic from a depth column. A check warns when the minerals add
+    up to more than 100 %.
+  - **Already generated tab:** editable table to include or exclude
+    samples and to correct the water per sample (source shown as
+    *edited*).
+- **New document "Tutorial: hydrogen generation"** (Documentation page):
+  data to prepare, units, every tab step by step with expected results,
+  reading and reporting the results, common problems and a checklist.
+- **New example dataset "Hydrogen tutorial: synthetic peridotites"**: six
+  synthetic rocks with known modes and Temperature, Depth and Pressure
+  columns, used by the tutorial.
+- New module `geochem/units.py` (exact unit definitions, with checks).
+- Fixed a name clash found in testing (the unit module and the column-unit
+  variable of `app.py`) before release.
+- Scientific methods (section 8e, tests), user manual (section 10.3),
+  architecture, examples README, translations.
+
 ## 0.27.0 - 2026-11-12
 
 - **Tools → Hydrogen generation, new tab "Already generated

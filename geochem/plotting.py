@@ -1021,61 +1021,71 @@ def _label_vline(ax, x, text, s):
             color=s["muted"], fontsize=_APP["font_tick"] * 0.9, family=_APP["font_family"])
 
 
-def plot_h2_rate(points=None, pressure_bar=None, style="dark", size=(6.2, 4.6)):
+def plot_h2_rate(points=None, pressure_bar=None, style="dark", size=(6.2, 4.6),
+                 t_unit="°C", p_unit="bar"):
     """H2 generation rate against temperature (Rezaee 2025, Eqs. 3-5).
     Solid line: Eq. 4 (below 315 C) and Eq. 5 (315-400 C). Dashed line: Eq. 3
     at the given pressure. points: DataFrame with columns 'T (C)',
-    'RH2 (mmol/kg)' and optionally 'Sample'."""
+    'RH2 (mmol/kg)' and optionally 'Sample' (temperatures in C; the axis is
+    drawn in t_unit)."""
     from .hydrogen import rate_curve, T_PEAK, T_MAX
+    from .units import temp_from_c, pressure_from_bar
     fig, ax, s = _new_axes(style, size)
     T = np.linspace(0, 450, 451)
-    ax.plot(T, rate_curve(T), color=s["fg"], lw=1.4, zorder=3, label="Eqs. 4 and 5 (T only)")
+    X = temp_from_c(T, t_unit)
+    ax.plot(X, rate_curve(T), color=s["fg"], lw=1.4, zorder=3, label="Eqs. 4 and 5 (T only)")
     if pressure_bar is not None:
         Tp = T[T <= T_PEAK]
-        ax.plot(Tp, rate_curve(Tp, pressure_bar), color=s["field"], lw=1.4, ls="--", zorder=3,
-                label=f"Eq. 3 at {pressure_bar:g} bar")
-    _label_vline(ax, T_PEAK, "315 °C peak", s)
-    _label_vline(ax, T_MAX, "400 °C", s)
+        ax.plot(temp_from_c(Tp, t_unit), rate_curve(Tp, pressure_bar), color=s["field"], lw=1.4,
+                ls="--", zorder=3,
+                label=f"Eq. 3 at {float(pressure_from_bar(pressure_bar, p_unit)):.4g} {p_unit}")
+    _label_vline(ax, float(temp_from_c(T_PEAK, t_unit)),
+                 f"{float(temp_from_c(T_PEAK, t_unit)):.5g} {t_unit} peak", s)
+    _label_vline(ax, float(temp_from_c(T_MAX, t_unit)),
+                 f"{float(temp_from_c(T_MAX, t_unit)):.5g} {t_unit}", s)
     if points is not None and len(points):
-        ax.scatter(points["T (C)"], points["RH2 (mmol/kg)"], s=40, color=H2_COLOUR,
+        px = temp_from_c(points["T (C)"].astype(float), t_unit)
+        ax.scatter(px, points["RH2 (mmol/kg)"], s=40, color=H2_COLOUR,
                    edgecolor=s["edge"], linewidth=0.5, zorder=5, label="Your input")
         if "Sample" in points and len(points) <= 15:
-            for _, r in points.iterrows():
-                ax.annotate(str(r["Sample"]), (r["T (C)"], r["RH2 (mmol/kg)"]),
+            for xx, (_, r) in zip(px, points.iterrows()):
+                ax.annotate(str(r["Sample"]), (xx, r["RH2 (mmol/kg)"]),
                             xytext=(4, 3), textcoords="offset points",
                             fontsize=_APP["font_point"], color=s["fg"],
                             family=_APP["font_family"],
                             path_effects=[patheffects.withStroke(linewidth=2.2,
                                                                  foreground=s["bg"])])
-    ax.set_xlim(0, 450)
+    ax.set_xlim(float(X[0]), float(X[-1]))
     ax.set_ylim(bottom=0)
-    _style_axes(ax, s, "Temperature (°C)", "H₂ generation rate (mmol/kg)")
+    _style_axes(ax, s, f"Temperature ({t_unit})", "H₂ generation rate (mmol/kg)")
     _legend(ax, s, title=None, where="below")
     return _finish(fig)
 
 
-def plot_h2_depth(table, style="dark", size=(5.4, 5.6)):
+def plot_h2_depth(table, style="dark", size=(5.4, 5.6), t_unit="°C", z_unit="km"):
     """H2 generation rate (mmol/kg) of each depth interval of a rock body,
-    depth downwards, with the 315 C and 400 C depths marked."""
+    depth downwards (in z_unit), with the 315 C and 400 C depths marked."""
+    from .units import depth_from_m, temp_from_c
     fig, ax, s = _new_axes(style, size)
-    z = table["Mid depth (m)"].to_numpy() / 1000.0
+    z = depth_from_m(table["Mid depth (m)"].to_numpy(dtype=float), z_unit)
     r = table["RH2 (mmol/kg)"].to_numpy()
     ax.fill_betweenx(z, 0, r, color=H2_COLOUR, alpha=0.35, lw=0, zorder=2)
     ax.plot(r, z, color=H2_COLOUR, lw=1.4, zorder=3)
     T = table["T (C)"].to_numpy()
-    for lim, txt in ((315.0, "315 °C"), (400.0, "400 °C")):
+    for lim in (315.0, 400.0):
         hit = np.nonzero(T >= lim)[0]
         if len(hit) and hit[0] > 0:
             zz = z[hit[0]]
             ax.axhline(zz, color=s["line"], lw=0.8, ls=":", zorder=1)
-            ax.text(0.98, zz, f"{txt} ", transform=ax.get_yaxis_transform(), ha="right",
+            ax.text(0.98, zz, f"{float(temp_from_c(lim, t_unit)):.5g} {t_unit} ",
+                    transform=ax.get_yaxis_transform(), ha="right",
                     va="bottom", color=s["muted"], fontsize=_APP["font_tick"] * 0.9,
                     family=_APP["font_family"])
-    top = float(table["Top (m)"].min()) / 1000.0
-    base = float(table["Base (m)"].max()) / 1000.0
+    top = float(depth_from_m(table["Top (m)"].min(), z_unit))
+    base = float(depth_from_m(table["Base (m)"].max(), z_unit))
     ax.set_ylim(base, top)
     ax.set_xlim(left=0)
-    _style_axes(ax, s, "H₂ generation rate (mmol/kg)", "Depth (km)")
+    _style_axes(ax, s, "H₂ generation rate (mmol/kg)", f"Depth ({z_unit})")
     return _finish(fig)
 
 
