@@ -564,6 +564,45 @@ Modes are mass fractions, not volume fractions. The method is a mass
 balance: it cannot tell which minerals are present — check that with
 petrography or XRD.
 
+### 10.3 Hydrogen generation (Tools → Hydrogen generation)
+
+An estimate of how much hydrogen (H₂) serpentinization can make, after
+Rezaee (2025). The equations come from laboratory experiments on powdered
+rock, so treat the numbers as an order of magnitude.
+
+1. **Rate (one condition) tab.** Works without a data file.
+   - *Temperature from*: type the temperature, or give the depth, the
+     surface temperature and the geothermal gradient.
+   - *Pressure*: leave it out (Eq. 4), type it, or (with depth) use the
+     hydrostatic (water column) or lithostatic (rock column) pressure.
+     Pressure only matters up to 315 °C.
+   - *Minerals of the rock*: olivine, orthopyroxene and clinopyroxene in
+     wt%. Other minerals do not make H₂ in this method.
+   - Results: the rate RH2 (mmol H₂ per kg of rock), the correction factor
+     C and C × RH2, with the rate curve. Above 400 °C the rate is 0.
+2. **Per sample tab.** Needs SiO2 and MgO (plus FeOt, CaO, Al2O3, LOI).
+   C of each sample comes from its mineral modes (Tools → Mineral modes,
+   default minerals). The temperature comes from the first tab, or from a
+   column named *Temperature (°C)* or *Depth (m)* in your file. Download
+   the table as CSV.
+3. **Rock body (volumetric) tab.** The total H₂ of an ultramafic body:
+   area, top and base depth, depth step, density, temperature gradient,
+   pressure, C and the fraction of the body that reacted. The body is cut
+   into depth intervals; each gets its own temperature and rate. Results
+   in kg, megatonnes, mol and m³, a depth profile and a CSV of the
+   intervals.
+
+How to read the results:
+
+- **In a serpentinite C is small.** The olivine is already gone, so the
+  rock has little potential left. For the potential of the original rock,
+  use a least-altered sample or type the protolith minerals.
+- **There is a step at 315 °C.** Rezaee (2025) uses one equation below
+  and another above 315 °C, and they do not meet exactly.
+- **Totals are upper limits.** Real bodies react only in part (water
+  supply, fractures, grain size). Use *Fraction that reacted* to test
+  this.
+
 ## 11. Symbols and colours
 
 ![Symbols and colours](img/symbols.png)

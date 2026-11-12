@@ -396,6 +396,47 @@ modes are unstable [App convention].
 
 **Source.** Albarède (1995).
 
+### Hydrogen generation rate (RH2)
+
+**What it is.** The amount of hydrogen (H₂) made per kilogram of rock
+during serpentinization, in mmol/kg. Iron in olivine and pyroxene is
+oxidised (Fe²⁺ → Fe³⁺ in magnetite and serpentine), and the water gives
+up its hydrogen: 2FeO + H₂O → Fe₂O₃ + H₂. The rate rises with
+temperature up to about 315 °C and falls to zero at 400 °C.
+
+**In the app.** Tools → Hydrogen generation (Eqs. 3–5 of Rezaee 2025).
+
+**Source.** Rezaee (2025).
+
+### Correction factor C (hydrogen)
+
+**What it is.** A number from 0 to 1 that scales the hydrogen rate for
+the minerals of the rock: olivine counts fully (1.0), orthopyroxene 0.7,
+clinopyroxene 0.5, all other minerals 0. A rock with 60 % olivine and
+40 % orthopyroxene has C = 0.88.
+
+**In the app.** Tools → Hydrogen generation. The ranks are provisional
+(the author's judgment).
+
+**Source.** Rezaee (2025, Table 2).
+
+### Geothermal gradient
+
+**What it is.** How fast temperature rises with depth, in °C/km. A
+common average for continental crust is 25–30 °C/km.
+
+**In the app.** Tools → Hydrogen generation (temperature from depth).
+
+### Hydrostatic and lithostatic pressure
+
+**What it is.** The pressure at a depth from the weight of a water column
+(hydrostatic, about 98 bar per km) or of a rock column (lithostatic,
+about 290–320 bar per km). Fluid in open fractures is often near
+hydrostatic pressure.
+
+**In the app.** Tools → Hydrogen generation (pressure from depth)
+[App convention].
+
 ### Protolith
 
 **What it is.** The original rock before alteration or metamorphism, for

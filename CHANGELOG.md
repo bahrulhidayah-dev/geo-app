@@ -2,6 +2,29 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.26.0 - 2026-11-12
+
+- **New page Tools → Hydrogen generation**: an estimate of the H₂ made by
+  serpentinization, after Rezaee (2025, Geosciences 15, 112).
+  - Rate tab: H₂ generation rate RH2 (mmol/kg) from temperature and
+    pressure (Eqs. 3–5). Temperature typed in, or from depth and a
+    geothermal gradient; pressure typed in, hydrostatic or lithostatic
+    from depth, or left out (Eq. 4). Correction factor C from olivine,
+    orthopyroxene and clinopyroxene (Table 2). Rate curve with the 315 °C
+    peak and the 400 °C limit.
+  - Per sample tab: C of every sample from its mineral modes (same least
+    squares as Tools → Mineral modes); temperature from the first tab or
+    from a Temperature (°C) or Depth (m) column. Table (CSV) and chart.
+  - Rock body tab: the five-step volumetric method (Eqs. 6–8), with the
+    body divided into depth intervals as in the paper. GRV, GRM and GH2
+    in kg, Mt, mol and m³; depth profile (CSV).
+- New module `geochem/hydrogen.py`; tested against the equations, the
+  worked example of the paper and six synthetic rocks with known modes
+  (`tools/synthetic_h2_test.py`; Scientific methods, section 10).
+- Scientific methods (section 8c, conventions, tests), user manual
+  (section 10.3), Glossary, References.
+- README: the Mineral modes line no longer splits the Mass change line.
+
 ## 0.25.0 - 2026-10-28
 
 - **New page Tools → Mineral modes**: mineral proportions (wt%) from the

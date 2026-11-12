@@ -535,6 +535,58 @@ Page *Tools → Mineral modes*; code in `geochem/modes.py`.
   absent, or that its composition does not fit.
 - Modes are mass fractions, not volume fractions.
 
+## 8c. Hydrogen generation by serpentinization
+
+Page *Tools → Hydrogen generation*; code in `geochem/hydrogen.py`. All
+equations are from Rezaee (2025). They are empirical: a regression on 14
+laboratory experiments (mostly powdered olivine and peridotite) with
+R² ≈ 0.86. Natural rocks react more slowly (grain size, water supply,
+fracture density), so the results are an order of magnitude, not a
+measurement. Rezaee (2025) says this himself.
+
+- **Reaction.** [Source] Fe²⁺ in olivine and pyroxene is oxidised to Fe³⁺
+  (in magnetite and serpentine) and water is reduced to H₂:
+  2FeO + H₂O → Fe₂O₃ + H₂.
+- **Generation rate RH2** (mmol H₂ per kg of rock; T in °C, P in bar).
+  [Source]
+  - Eq. 3: RH2 = 3.102 + 0.12 T + 0.073 P, for T up to 315 °C.
+  - Eq. 4: RH2 = 0.43 T − 9.33, for T below 315 °C (no pressure term).
+  - Eq. 5: RH2 = −1.38 T + 571.3, for 315–400 °C.
+  - Above 400 °C olivine is stable with water: RH2 = 0.
+  The app uses Eq. 3 when a pressure is given and Eq. 4 when it is not.
+  [App convention] Negative values (Eq. 4 below about 22 °C) are set to 0;
+  below 0 °C no rate is given. The equations do not join at 315 °C
+  (Eq. 4 gives 126, Eq. 5 gives 137 mmol/kg; Eq. 3 depends on P), so the
+  curve has a step there. This is a property of the published equations.
+- **Correction factor C.** [Source] C = Σ (mass fraction × rank), with
+  rank 1.0 for olivine, 0.7 for orthopyroxene, 0.5 for clinopyroxene and
+  0 for all minerals that do not take part (Table 2). Example of the
+  paper: 60 % olivine + 40 % orthopyroxene → C = 0.88. C = 1 when the
+  composition is unknown. The paper states that the ranks are the
+  author's provisional judgment, not experimental values.
+  [App convention] On the Per sample tab C comes from the mineral modes
+  (default minerals of Tools → Mineral modes); negative modes are set to
+  0. Spinel, serpentine, magnetite, brucite, talc and chlorite get rank 0.
+- **Temperature from depth.** [Source] T = surface temperature + gradient
+  × depth; the paper uses 23 °C and 30 °C/km.
+- **Pressure from depth.** The paper means the pore pressure of water in
+  open fractures but does not say how it was calculated. [App convention]
+  Hydrostatic: P = 1000 kg/m³ × g × z (about 98 bar/km). Lithostatic:
+  P = rock density × g × z (about 294 bar/km at 3000 kg/m³). g = 9.81 m/s².
+  With a Depth column on the Per sample tab, hydrostatic pressure is used
+  when the first tab uses a pressure.
+- **Volumetric total GH2.** [Source] Eqs. 6–8:
+  GRV = area × thickness; GRM = GRV × density;
+  GH2 (kg) = 2 × 10⁻⁶ × GRM × C × RH2. The factor 2 × 10⁻⁶ converts mmol
+  of H₂ to kg (H₂ taken as 2 g/mol, as in the paper). As in the paper's
+  example, the body is divided into depth intervals (default 100 m) with
+  the same area from top to base; each interval uses its own mass and the
+  RH2 at its mid depth, and the intervals are added. An optional *fraction
+  that reacted* multiplies the total (the paper uses 0.01 for the Giles
+  Complex).
+- **Other units.** [App convention] mol uses the true molar mass of H₂
+  (2.016 g/mol); m³ at 0 °C and 1 atm uses 22.414 L/mol.
+
 ## 9. All app conventions in one place
 
 Report these in your methods section if they affect your results.
@@ -565,6 +617,12 @@ Report these in your methods section if they affect your results.
 | Mineral modes: unstable when the condition number exceeds | 300 | `geochem/modes.py` |
 | Mineral modes: analytical error for the ±1σ | 1 % relative, at least 0.05 wt% | `geochem/modes.py` |
 | Mineral modes: default minerals | olivine Fo90, orthopyroxene En90, diopside, spinel, serpentine, magnetite (ideal) | Mineral modes page |
+| Hydrogen: equation below 315 °C | Eq. 3 with a pressure, Eq. 4 without | Hydrogen generation page |
+| Hydrogen: pressure from depth | hydrostatic (1000 kg/m³) or lithostatic (rock density), g = 9.81 m/s² | Hydrogen generation page |
+| Hydrogen: negative rates (Eq. 4 below about 22 °C) | set to 0 | `geochem/hydrogen.py` |
+| Hydrogen: minerals with rank 0 in C | all except olivine, orthopyroxene and clinopyroxene | `geochem/hydrogen.py` |
+| Hydrogen: C on the Per sample tab | from the mineral modes (default minerals); negative modes set to 0 | `geochem/hydrogen.py` |
+| Hydrogen: depth interval | 100 m, same area from top to base | Hydrogen generation page |
 | TAS label "Trachyte / Trachydacite" | moved to (66.0, 11.6) | `TAS.json` |
 
 ## 10. Checks and tests
@@ -703,6 +761,37 @@ Report these in your methods section if they affect your results.
     Ideal Mg-serpentine carries no iron, so magnetite is an upper limit;
     use measured serpentine compositions for better values.
 
+- **Hydrogen generation (0.26.0).**
+  - Equations against hand calculation: 300 °C and 500 bar → 75.60
+    (Eq. 3); 300 °C without pressure → 119.67 (Eq. 4); 350 °C → 88.30
+    (Eq. 5); 450 °C → 0. Correction factor of the paper's example (60 %
+    olivine, 40 % orthopyroxene) → 0.88. 1 km² × 100 m, 3200 kg/m³,
+    C = 0.88, RH2 = 100 → GH2 = 5.632 × 10⁷ kg.
+  - From depth: 7.5 km, 23 °C + 30 °C/km → 248 °C; hydrostatic 736 bar →
+    86.6 mmol/kg; lithostatic (3000 kg/m³) 2207 bar → 194.0 mmol/kg.
+  - Synthetic rocks with known answers (`tools/synthetic_h2_test.py`):
+    six rocks (dunite, harzburgite, lherzolite, partly serpentinised
+    harzburgite, serpentinite, websterite) mixed from the ideal minerals
+    and written as a lab would (Fe2O3t, LOI), with Temperature and Depth
+    columns. The app recovers every mode within 0.01 wt%, every C within
+    10⁻⁴ and every RH2 exactly; the Depth column gives the same results
+    as the Temperature column; the volumetric total of a 10 km² × 3 km
+    body equals the hand sum. Also checked through the full app.
+  - Per sample tab with the ultramafic example set: fresh peridotites
+    JP-1 and JP-2 give C = 0.77 and 0.80; the serpentinite UB-N gives
+    C = 0.11, because its olivine has already reacted.
+  - Worked example of the paper (Giles Complex: 32 000 km³, 0–20 km,
+    area 1600 km², C = 0.8, 23 °C + 30 °C/km, 100 m intervals). The paper
+    gives 2.24 × 10¹⁵ kg before the 0.01 reacted fraction. The app gives
+    1.12 × 10¹³ kg with lithostatic pressure at 3000 kg/m³ and 6.06 × 10¹²
+    kg with hydrostatic pressure. The paper does not give the density or
+    how P was calculated. The lithostatic result times 200 (the number of
+    100 m intervals) is 2.25 × 10¹⁵ kg, which matches the paper. This
+    suggests that the paper multiplied the rate of each interval by the
+    mass of the whole body. The app follows the method as written (each
+    interval with its own mass). Check this with the author before you
+    compare your totals with the paper's.
+
 ### 10.1 Sources of the example datasets
 
 The start page and the *Example datasets* menu offer eight sets. Two are
@@ -819,6 +908,9 @@ basis tab.
   Geochemistry of abyssal peridotites (Mid-Atlantic Ridge, 15°20'N, ODP
   Leg 209): implications for fluid/rock interaction in slow spreading
   environments. Chemical Geology 234, 179–210.
+- Rezaee R. (2025) Quantifying natural hydrogen generation rates and
+  volumetric potential in onshore serpentinization. Geosciences 15, 112.
+  https://doi.org/10.3390/geosciences15030112
 - Rollinson H., Pease V. (2021) Using Geochemical Data: To Understand
   Geological Processes, 2nd edition. Cambridge University Press, Cambridge.
 - Shand S.J. (1943) Eruptive Rocks. Their Genesis, Composition,

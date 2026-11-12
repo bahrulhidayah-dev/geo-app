@@ -175,6 +175,10 @@ GENERAL = [
     ("Mineral modes", "Albarede F. (1995) Introduction to Geochemical Modeling. Cambridge "
      "University Press, Cambridge. (section 5.3: mineral modes by least squares with a "
      "closure condition; test data of Table 5.16)"),
+    ("Hydrogen generation", "Rezaee R. (2025) Quantifying natural hydrogen generation "
+     "rates and volumetric potential in onshore serpentinization. Geosciences 15, 112. "
+     "doi:10.3390/geosciences15030112 (rate equations 3-5, correction factor C, "
+     "volumetric method)"),
     ("Serpentinites and peridotites", "Salters V.J.M., Stracke A. (2004) Composition of "
      "the depleted mantle. Geochemistry, Geophysics, Geosystems 5, Q05B07. "
      "doi:10.1029/2003GC000597 (depleted-mantle reference points)"),
