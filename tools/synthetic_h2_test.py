@@ -1,4 +1,4 @@
-"""Synthetic test for Tools -> Hydrogen generation (v0.26.0, v0.27.0).
+"""Synthetic test for Tools -> Hydrogen generation (v0.26.0 to v0.29.0).
 
 Idea: invent six rocks with KNOWN mineral modes, temperatures and depths.
 Mix the ideal mineral compositions to get the whole-rock analysis, as a lab
@@ -136,7 +136,49 @@ ok_c = (np.allclose(deg_h2o["S from H2O"], s_true.values, atol=1e-3)
         and abs(ex["H2 (mmol/kg)"].iloc[1] - 7.8 / 13 * 227) < 1e-9
         and pd.isna(ex["H2 (mmol/kg)"].iloc[2]))
 
-ok = ok_c and (np.allclose(table.values, TRUE_MODES.values, atol=0.01)
+# 6. The 20-rock practice set (v0.29.0): rebuilt from its generator, which
+# also returns the known answers.
+import runpy  # noqa: E402
+g20 = runpy.run_path(
+    str(Path(__file__).resolve().parent / "make_hydrogen_examples.py"))
+d20, a20 = g20["data"], g20["ans"]
+r20 = modes.rock_components(d20)
+c20 = [c for c in modes.COMPONENTS if r20[c].notna().any()]
+t20, _ = modes.solve_all(r20[c20], modes.mineral_table(modes.DEFAULT_MINERALS).loc[c20])
+um20 = screening.ultramafic_mask(d20)
+dt20 = hydrogen.degree_table(d20, um20, t20.iloc[:, 4], "h2o")
+good = ~d20["Sample"].isin(["D-CARB", "D-BRC", "D-BAS"])
+c_app = pd.Series([hydrogen.c_from_modes(t20.loc[i])["C"] for i in d20.index], index=d20.index)
+chk = {
+    "modes of 17 clean rocks within 0.01 wt%":
+        bool(np.allclose(t20[good].iloc[:, [0, 1, 2, 4]].values,
+                         a20[good][["Olivine", "Orthopyroxene", "Clinopyroxene",
+                                    "Serpentine"]].values, atol=0.01)),
+    "C of 17 clean rocks within 0.001":
+        bool(np.allclose(c_app[good], a20["C true"][good], atol=1e-3)),
+    "H2 already generated of 17 clean rocks within 0.1 mmol/kg":
+        bool(np.allclose(dt20["H2 (mmol/kg)"][good],
+                         a20["H2 true (mmol/kg, S x 227)"][good], atol=0.1)),
+    "carbonate: S from LOI - CO2 is right (0.600)":
+        abs(dt20.loc[d20.Sample == "D-CARB", "S from H2O"].iloc[0] - 0.600) < 0.002,
+    "carbonate: the two S values disagree and the note says so":
+        "differ" in dt20.loc[d20.Sample == "D-CARB", "Note"].iloc[0],
+    "brucite: known limitation reproduced (S 0.84 instead of 0.67)":
+        abs(dt20.loc[d20.Sample == "D-BRC", "S from H2O"].iloc[0] - 0.845) < 0.005,
+    "measured H2O+ used before LOI":
+        dt20.loc[d20.Sample == "D-H2O+", "H2O from"].iloc[0] == "H2O+",
+    "basalt left out (not ultramafic)":
+        pd.isna(dt20.loc[d20.Sample == "D-BAS", "H2 (mmol/kg)"].iloc[0]),
+    "pyroxene-rich rocks get the pyroxenite note":
+        all("pyroxenite" in dt20.loc[d20.Sample == s_, "Note"].iloc[0]
+            for s_ in ("B-OWB", "B-OPX")),
+}
+print("\nPRACTICE SET OF 20 ROCKS")
+for k, v in chk.items():
+    print(("  ok    " if v else "  FAIL  ") + k)
+ok_20 = all(chk.values())
+
+ok = ok_20 and ok_c and (np.allclose(table.values, TRUE_MODES.values, atol=0.01)
       and np.allclose(res["C app"], res["C expected"], atol=1e-4)
       and np.allclose(res["RH2 app"], res["RH2 expected"], atol=1e-9)
       and np.allclose(res["T from depth"], res["T (C)"], atol=1e-9)

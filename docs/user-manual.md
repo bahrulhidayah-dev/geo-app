@@ -574,6 +574,14 @@ numbers as an order of magnitude.
 **New to this page?** Follow the document *Tutorial: hydrogen generation*
 on the Documentation page with the example dataset *Hydrogen tutorial:
 synthetic peridotites*. It shows every step with the expected results.
+For more practice, the dataset *Hydrogen practice set: 20 synthetic rocks*
+covers a serpentinization series, protolith types, a drill core and
+special cases (tutorial, chapter 11).
+
+**Checks.** On the Per sample tab, samples that are not ultramafic are
+marked "not ultramafic: C not meaningful". Brucite cannot be seen in a
+whole-rock analysis and makes S too high: check it with XRD or thin
+sections.
 
 **Units.** The *Units* box at the top sets temperature (°C, K, °F),
 pressure (bar, atm, MPa, kPa, GPa, psi), depth (m, km, ft) and density

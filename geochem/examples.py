@@ -82,6 +82,15 @@ EXAMPLES = {
         tags=["Synthetic", "Known answers"], icon=":material/bubble_chart:",
         file=HERE / "examples" / "hydrogen_tutorial.csv",
         note="Synthetic teaching data with known answers (see the hydrogen tutorial)."),
+    "hydrogen20": dict(
+        title="Hydrogen practice set: 20 synthetic rocks",
+        text="20 synthetic rocks in four scenarios: a serpentinization series, five "
+             "protolith types, a drill core from 1 to 12 km, and special cases (carbonate, "
+             "brucite, measured H2O+, a basalt). Known answers; see the hydrogen tutorial.",
+        tags=["Synthetic", "Known answers"], icon=":material/science:",
+        file=HERE / "examples" / "hydrogen_synthetic_20.csv",
+        note="Synthetic teaching data with known answers (made by "
+             "tools/make_hydrogen_examples.py)."),
     "messy": dict(
         title="Messy lab file (data cleaning practice)",
         text="30 samples with typical lab problems: a units row, <0.01, bdl, n.d., "

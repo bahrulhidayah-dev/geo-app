@@ -625,6 +625,20 @@ It needs only total iron and LOI, so it works with ordinary XRF data.
 - **Notes per sample:** pyroxenite; water above pure serpentine (brucite
   or other hydrous minerals?); S from water and from the mode differ by
   more than 0.15. The page also says how many samples use LOI as water.
+- **Brucite: a known limitation.** Brucite water cannot be told apart
+  from serpentine water in a whole-rock analysis, so S from water and S
+  from the mode are both too high. Tested with the practice set: a
+  serpentinite with 7.4 % brucite gives S = 0.84 instead of 0.67 (26 % too
+  high). A warning based on negative mineral modes (below −2 wt%) was
+  tried: it flags the brucite and carbonate rocks of the practice set, but
+  also real serpentinites such as UB-N (olivine −13 %, because ideal
+  serpentine carries no iron). With no large real dataset to set the
+  threshold, it was not released. Check brucite with XRD or thin
+  sections, and type the corrected water in the table.
+- **Not ultramafic on the Per sample tab.** [App convention] Samples that
+  are not ultramafic (section 4.1) are marked "not ultramafic: C not
+  meaningful" in the Check column, because their mineral modes (made for
+  peridotites) are meaningless.
 - **Not used:** splitting total iron into FeO and Fe2O3 with a fixed ratio
   or an igneous regression (section 3) to calculate H₂ from Fe2O3. The H₂
   would only repeat the chosen ratio. Measured FeO and Fe2O3 are needed for
@@ -696,6 +710,7 @@ Report these in your methods section if they affect your results.
 | Hydrogen already generated: degree of serpentinization | H₂O / 13.0 wt% (water: H2O+, else LOI − CO2, else LOI), or serpentine mode / 100; limited to 0–1 | Hydrogen generation page |
 | Hydrogen already generated: samples | ultramafic only; note for pyroxenites | `geochem/hydrogen.py` |
 | Hydrogen already generated: S from water and from mode differ | note above 0.15 | `geochem/hydrogen.py` |
+| Hydrogen, Per sample: samples that are not ultramafic | marked "C not meaningful" | `app.py` |
 | TAS label "Trachyte / Trachydacite" | moved to (66.0, 11.6) | `TAS.json` |
 
 ## 10. Checks and tests
@@ -878,6 +893,16 @@ Report these in your methods section if they affect your results.
     gives C = 0.92; JP-2 unticked leaves the Already generated results;
     UB-N water typed as 9.0 gives S = 0.69 and 157.15 mmol/kg (source
     *edited*).
+  - Practice set of 20 rocks (0.29.0, `tools/make_hydrogen_examples.py`):
+    for the 17 rocks made only of the listed minerals, modes within
+    0.01 wt%, C within 0.001 and H₂ already generated within 0.1 mmol/kg of
+    the known values; carbonate rock: S from LOI − CO2 = 0.600 (known
+    0.600), while the mode gives 0.768 (calcite is not in the list) and the
+    note says that the two disagree; brucite rock: S 0.84 (known 0.67), the
+    limitation above; measured H2O+ used before LOI; basalt left out, and
+    marked "not ultramafic: C not meaningful" on the Per sample tab. Full
+    app: Per sample tab with temperature and pressure columns (A series
+    98.05, C-12.0km 42.76 mmol/kg by hand).
   - Tutorial dataset (`geochem/examples/hydrogen_tutorial.csv`): all
     expected results of the tutorial reproduced in the full app (Per sample
     with the temperature column, with and without the pressure column;

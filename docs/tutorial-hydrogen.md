@@ -333,6 +333,8 @@ References:
 | Already generated: no samples included | No sample is ultramafic by the screening. Tick *Include*, or check the threshold in Settings. |
 | S from water and from mode disagree | Other hydrous minerals or carbonate. Add H2O+ or CO2, or type the corrected water. |
 | My edits disappeared | Changing a selection or a unit starts the table again from the new values. Make your choices first, then edit. |
+| S looks too high for a rock with brucite | Brucite water looks like serpentine water in a whole-rock analysis; the app cannot see it (chapter 11, D-BRC). Check with XRD or thin sections and type the corrected water. |
+| "not ultramafic: C not meaningful" | The method is for ultramafic rocks. Leave the sample out of your interpretation. |
 
 ## 10. Checklist
 
@@ -343,3 +345,84 @@ References:
 - [ ] Rate tabs: temperature source and pressure model chosen and noted.
 - [ ] Already generated: samples included checked; water source checked.
 - [ ] Tables and plots downloaded; app version and choices written down.
+
+## 11. Practice set: 20 synthetic rocks
+
+For more practice, load **Example datasets → Hydrogen practice set: 20
+synthetic rocks**. The rocks were mixed from ideal minerals with known
+proportions (except the basalt), so the right answers are known. Each
+group teaches one thing. All values below were checked in the app.
+
+Every sample has *Temperature (°C)*, *Depth (m)* (23 °C + 30 °C/km) and
+*Pressure (bar)* (hydrostatic) columns. On the Per sample tab choose
+*Column: Temperature (°C)* and *Column: Pressure (bar)*.
+
+### Group A: serpentinization series (280 °C)
+
+One harzburgite (olivine 75, orthopyroxene 20, clinopyroxene 2, spinel 3
+wt%) at 0, 20, 40, 60, 80 and 100 % serpentinization. All six have the same
+temperature and pressure, so the same rate RH2 = 98.05 mmol/kg (Eq. 3,
+840 bar). What changes is the rock:
+
+| Sample | Serpentine (known, %) | C | C × RH2 | S | H₂ already generated (mmol/kg) |
+|---|---|---|---|---|---|
+| A000 | 0 | 0.90 | 88.3 | 0.00 | 0 |
+| A020 | 18.1 | 0.72 | 70.8 | 0.18 | 41.0 (27–54) |
+| A040 | 36.1 | 0.54 | 53.3 | 0.36 | 82.0 (54–108) |
+| A060 | 54.2 | 0.37 | 35.9 | 0.54 | 123.0 (81–162) |
+| A080 | 72.2 | 0.19 | 18.4 | 0.72 | 163.9 (108–217) |
+| A100 | 90.3 | 0.01 | 1.0 | 0.90 | 204.9 (135–271) |
+
+**Lesson:** the two halves of the page mirror each other. As the rock
+serpentinizes, the H₂ it *has made* rises and the H₂ it *could still make*
+(C × RH2) falls.
+
+### Group B: protolith types (300 °C, RH2 = 105.22 with 906 bar)
+
+| Sample | Rock | Olivine / Opx / Cpx (%) | C | C × RH2 |
+|---|---|---|---|---|
+| B-DUN | Dunite | 97 / 1 / 0 | 0.98 | 102.8 |
+| B-LHZ | Lherzolite | 60 / 25 / 12 | 0.84 | 87.9 |
+| B-WEH | Wehrlite | 60 / 0 / 38 | 0.79 | 83.1 |
+| B-OWB | Olivine websterite | 25 / 40 / 33 | 0.70 | 73.1 |
+| B-OPX | Orthopyroxenite | 5 / 90 / 3 | 0.70 | 73.1 |
+
+All are fresh (S = 0). **Lesson:** olivine-rich rocks have the highest
+potential. The two pyroxene-rich rocks get the note *pyroxenite: yield is
+for peridotite* on the Already generated tab, because pyroxenites make less
+H₂ (Klein et al. 2013).
+
+### Group C: drill core (same rock, S = 0.45)
+
+| Sample | Depth | T (°C) | Equation | RH2 | C × RH2 |
+|---|---|---|---|---|---|
+| C-01.0km | 1 km | 53 | Eq. 3 | 16.6 | 7.6 |
+| C-03.0km | 3 km | 113 | Eq. 3 | 38.2 | 17.4 |
+| C-06.0km | 6 km | 203 | Eq. 3 | 70.4 | 32.1 |
+| C-09.7km | 9.7 km | 314 | Eq. 3 | 110.3 | 50.2 |
+| C-12.0km | 12 km | 383 | Eq. 5 | 42.8 | 19.5 |
+
+H₂ already generated is the same for all five (102.4 mmol/kg), because
+the rock is the same. **Lesson:** the rate depends on temperature, with a
+peak near 315 °C; the H₂ already made depends only on the rock. Try the
+*Column: Depth (m)* option too: the results are the same.
+
+### Group D: special cases (200 °C)
+
+| Sample | What is special | What the app shows | Known answer |
+|---|---|---|---|
+| D-CARB | 5 % calcite; LOI includes 2.2 wt% CO2 (CO2 column given) | Water = LOI − CO2; S = 0.60; note: S from water and from the mode differ | S = 0.60 |
+| D-BRC | 7.4 % brucite | S = 0.84, no warning | S = 0.67 |
+| D-H2O+ | H2O+ measured (LOI is 1.2 wt% higher) | Water from H2O+; S = 0.81 | S = 0.81 |
+| D-BAS | A basalt | Left out (not ultramafic); Per sample: "C not meaningful" | — |
+
+**Lessons:**
+
+- Give a **CO2** or **H2O+** column when you have one: the app then uses the
+  right water (D-CARB, D-H2O+). Without the CO2 column D-CARB would give
+  S = 0.77.
+- **Brucite cannot be seen in a whole-rock analysis.** Its water looks
+  like serpentine water, so S is 26 % too high here (D-BRC), and the app
+  cannot warn you. Check brucite with XRD or thin sections, and type the
+  corrected water in the table.
+- The method is for ultramafic rocks only (D-BAS).

@@ -589,6 +589,7 @@ TR = {
     'Rock mass GRM (kg)': ('Massa batuan GRM (kg)', '岩石質量 GRM（kg）'),
     'H₂ generated GH2 (kg)': ('H₂ terbentuk GH2 (kg)', '生成 H₂ GH2（kg）'),
     'Download depth intervals (CSV)': ('Unduh interval kedalaman (CSV)', '深度区間をダウンロード（CSV）'),
+    'not ultramafic: C not meaningful': ('bukan ultramafik: C tidak bermakna', '超苦鉄質でない：C は無意味'),
     'Tutorial: hydrogen generation': ('Tutorial: pembentukan hidrogen', 'チュートリアル：水素生成'),
     'Units for all inputs, tables, plots and downloads on this page. Values you typed are converted when you change a unit.': ('Satuan untuk semua input, tabel, grafik, dan unduhan di halaman ini. Nilai yang sudah diketik dikonversi saat satuan diubah.', 'このページのすべての入力・表・グラフ・ダウンロードの単位です。単位を変えると入力値は換算されます。'),
     'Temperature': ('Suhu', '温度'),

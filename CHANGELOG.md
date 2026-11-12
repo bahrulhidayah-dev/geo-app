@@ -2,6 +2,32 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.29.0 - 2026-11-12
+
+- **New example dataset "Hydrogen practice set: 20 synthetic rocks"**, in
+  four scenarios with known answers:
+  - A: one harzburgite at 0–100 % serpentinization (280 °C);
+  - B: five protolith types, from dunite to orthopyroxenite (300 °C);
+  - C: a drill core of the same rock from 1 to 12 km depth (53–383 °C);
+  - D: special cases: carbonate in the LOI, brucite, measured H2O+ and a
+    basalt.
+  Made by `tools/make_hydrogen_examples.py`, which also writes the known
+  modes, C, S and H₂.
+- **Per sample tab:** samples that are not ultramafic are marked "not
+  ultramafic: C not meaningful" in the Check column (found with the
+  practice set: a basalt gave C = 1.00 from meaningless modes).
+- **Known limitation, now documented and demonstrated:** brucite cannot be
+  seen in a whole-rock analysis; its water is counted as serpentine water,
+  so S is too high (practice rock D-BRC: 0.84 instead of 0.67). A warning
+  based on negative mineral modes was tried and not released: it also
+  fires for real serpentinites such as UB-N (olivine −13 % because the
+  ideal serpentine carries no iron), and its threshold could not be
+  checked against a large real dataset.
+- Synthetic test extended with nine checks on the 20 rocks.
+- Tutorial (new chapter 11 with all expected results, new rows in Common
+  problems), Scientific methods (sections 8d and 10, conventions),
+  examples README, translations.
+
 ## 0.28.0 - 2026-11-12
 
 - **Tools → Hydrogen generation is now flexible.**

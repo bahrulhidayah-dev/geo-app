@@ -1,0 +1,21 @@
+Sample,Group,Rock type,SiO2,TiO2,Al2O3,Fe2O3t,MgO,CaO,Na2O,K2O,LOI,H2O+,CO2,Temperature (°C),Depth (m),Pressure (bar)
+A000,A Serpentinization series,Fresh harzburgite,43.371,0.0,2.15,9.69,45.243,0.518,0.0,0.0,0.0,,,280.0,8566.667,840.39
+A020,A Serpentinization series,Serpentinized harzburgite,42.746,0.0,2.15,8.735,44.314,0.518,0.0,0.0,2.347,,,280.0,8566.667,840.39
+A040,A Serpentinization series,Serpentinized harzburgite,42.121,0.0,2.15,7.779,43.386,0.518,0.0,0.0,4.694,,,280.0,8566.667,840.39
+A060,A Serpentinization series,Serpentinized harzburgite,41.496,0.0,2.15,6.824,42.458,0.518,0.0,0.0,7.041,,,280.0,8566.667,840.39
+A080,A Serpentinization series,Serpentinized harzburgite,40.871,0.0,2.15,5.869,41.529,0.518,0.0,0.0,9.387,,,280.0,8566.667,840.39
+A100,A Serpentinization series,Serpentinite,40.247,0.0,2.15,4.914,40.601,0.518,0.0,0.0,11.734,,,280.0,8566.667,840.39
+B-DUN,B Protolith types,Dunite,40.228,0.0,1.433,10.614,48.788,0.0,0.0,0.0,0.0,,,300.0,9233.333,905.79
+B-LHZ,B Protolith types,Lherzolite,45.69,0.0,2.15,8.446,41.453,3.107,0.0,0.0,0.0,,,300.0,9233.333,905.79
+B-WEH,B Protolith types,Wehrlite,45.611,0.0,1.433,6.518,37.25,9.84,0.0,0.0,0.0,,,300.0,9233.333,905.79
+B-OWB,B Protolith types,Olivine websterite,51.742,0.0,1.433,5.8,33.06,8.546,0.0,0.0,0.0,,,300.0,9233.333,905.79
+B-OPX,B Protolith types,Orthopyroxenite,55.934,0.0,1.433,7.483,35.122,0.777,0.0,0.0,0.0,,,300.0,9233.333,905.79
+C-01.0km,C Drill core,Serpentinized harzburgite,41.809,0.0,2.15,7.302,42.922,0.518,0.0,0.0,5.867,,,53.0,1000.0,98.1
+C-03.0km,C Drill core,Serpentinized harzburgite,41.809,0.0,2.15,7.302,42.922,0.518,0.0,0.0,5.867,,,113.0,3000.0,294.3
+C-06.0km,C Drill core,Serpentinized harzburgite,41.809,0.0,2.15,7.302,42.922,0.518,0.0,0.0,5.867,,,203.0,6000.0,588.6
+C-09.7km,C Drill core,Serpentinized harzburgite,41.809,0.0,2.15,7.302,42.922,0.518,0.0,0.0,5.867,,,314.0,9700.0,951.57
+C-12.0km,C Drill core,Serpentinized harzburgite,41.809,0.0,2.15,7.302,42.922,0.518,0.0,0.0,5.867,,,383.0,12000.0,1177.2
+D-CARB,D Special cases,Serpentinite with carbonate veins,39.125,0.0,2.043,6.029,39.894,3.294,0.0,0.0,10.002,,2.198,200.0,5900.0,578.79
+D-BRC,D Special cases,Brucite-bearing serpentinite,37.881,0.0,1.327,5.522,43.88,0.719,0.0,0.0,10.98,,,200.0,5900.0,578.79
+D-H2O+,D Special cases,Serpentinite (H2O+ measured),40.559,0.0,2.15,5.392,41.065,0.518,0.0,0.0,11.761,10.561,,200.0,5900.0,578.79
+D-BAS,D Special cases,Basalt,49.5,1.8,15.2,11.558,7.6,11.0,2.6,0.4,0.9,,,200.0,5900.0,578.79

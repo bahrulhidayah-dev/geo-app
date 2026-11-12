@@ -49,7 +49,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.28.0"
+APP_VERSION = "0.29.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -1832,6 +1832,7 @@ def page_hydrogen():
                             "Orthopyroxene (wt%)": round(100 * cm["orthopyroxene"], 2),
                             "Clinopyroxene (wt%)": round(100 * cm["clinopyroxene"], 2)})
                     base = pd.DataFrame(rows)
+                    um2 = screening.ultramafic_mask(df, settings["um_mgo"]).reindex(table.index)
                     st.markdown(f"**{t('Inputs (editable)')}**")
                     ed = st.data_editor(
                         base, key=_editor_key("h2b_ed", base), hide_index=True,
@@ -1847,7 +1848,7 @@ def page_hydrogen():
                                 min_value=0.0, max_value=100.0, format="%.2f")})
                     _reset_button("h2b_ed")
                     res = []
-                    for _, e in ed.iterrows():
+                    for (_, e), uu in zip(ed.iterrows(), um2.values):
                         Tc = (float(unitconv.temp_to_c(e[f"T ({tu})"], tu))
                               if pd.notna(e[f"T ({tu})"]) else None)
                         Pb = (float(unitconv.pressure_to_bar(e[f"P ({pu})"], pu))
@@ -1862,8 +1863,10 @@ def page_hydrogen():
                         res.append({"C": cc, "Equation": ri["equation"], "RH2 (mmol/kg)": rr,
                                     "C x RH2 (mmol/kg)": None if rr is None else cc * rr,
                                     "T (C)": Tc,
-                                    "Check": ("" if sum(fr.values()) <= 1.00001
-                                              else t("minerals > 100 %"))})
+                                    "Check": "; ".join(
+                                        ([t("not ultramafic: C not meaningful")] if not uu else [])
+                                        + ([t("minerals > 100 %")]
+                                           if sum(fr.values()) > 1.00001 else []))})
                     resdf = pd.DataFrame(res)
                     out = pd.concat([ed.reset_index(drop=True),
                                      resdf.drop(columns=["T (C)"])], axis=1)
