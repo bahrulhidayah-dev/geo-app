@@ -1,4 +1,4 @@
-"""Synthetic test for Tools -> Hydrogen generation (v0.26.0).
+"""Synthetic test for Tools -> Hydrogen generation (v0.26.0, v0.27.0).
 
 Idea: invent six rocks with KNOWN mineral modes, temperatures and depths.
 Mix the ideal mineral compositions to get the whole-rock analysis, as a lab
@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from geochem import hydrogen, modes  # noqa: E402
+from geochem import hydrogen, modes, screening  # noqa: E402
 
 MIN = modes.DEFAULT_MINERALS
 SHORT = ["Ol", "Opx", "Cpx", "Spl", "Srp", "Mag"]
@@ -35,7 +35,9 @@ TEMP_C = [25.0, 150.0, 250.0, 300.0, 350.0, 420.0]   # one per rock
 # 1. Whole-rock analysis = mixture of the ideal minerals
 A = modes.mineral_table(MIN)                     # rows = components, cols = minerals
 rock = (A @ (TRUE_MODES.T / 100.0)).T            # wt% of each component
-data = pd.DataFrame({"Sample": TRUE_MODES.index, "Group": "Synthetic"})
+data = pd.DataFrame({"Sample": TRUE_MODES.index, "Group": "Synthetic",
+                     "Rock type": ["dunite", "harzburgite", "lherzolite", "serpentinized harzburgite",
+                                   "serpentinite", "websterite"]})
 data["SiO2"] = rock["SiO2"].values
 data["Al2O3"] = rock["Al2O3"].values
 data["Fe2O3t"] = (rock["FeOt"] / 0.8998).values   # as a lab reports total iron
@@ -93,7 +95,48 @@ print("\nHYDROGEN RESULTS")
 print(res.round(3).to_string(index=False))
 print("\nVOLUMETRIC: expected GH2 = %.4e kg, app = %.4e kg" % (exp_total, tot["GH2_kg"]))
 
-ok = (np.allclose(table.values, TRUE_MODES.values, atol=0.01)
+# 5. H2 already generated = degree of serpentinization S x yield (v0.27.0).
+# Only serpentine carries water here, so S = serpentine mode / 100 exactly,
+# both from H2O (LOI / 13 wt%) and from the mode.
+um = screening.ultramafic_mask(df)
+srp = table.iloc[:, 4]
+deg_h2o = hydrogen.degree_table(df, um, srp, use="h2o")
+deg_mode = hydrogen.degree_table(df, um, srp, use="mode")
+s_true = TRUE_MODES.iloc[:, 4] / 100.0
+exp_h2 = s_true.values * 227.0
+deg_show = pd.DataFrame({"Sample": TRUE_MODES.index, "Rock type": df["Rock type"],
+                         "S true": s_true.values, "S from H2O": deg_h2o["S from H2O"].values,
+                         "S from mode": deg_h2o["S from mode"].values,
+                         "H2 expected": exp_h2, "H2 app": deg_h2o["H2 (mmol/kg)"].values,
+                         "low": deg_h2o["H2 low (mmol/kg)"].values,
+                         "high": deg_h2o["H2 high (mmol/kg)"].values,
+                         "Note": deg_h2o["Note"].values})
+print("\nH2 ALREADY GENERATED (S x 227 mmol/kg; low 150, high 300)")
+print(deg_show.round(3).to_string(index=False))
+
+# Small extra cases: water source, CO2 correction, non-ultramafic rock
+extra = pd.DataFrame({"Sample": ["H2O+ given", "LOI - CO2", "basalt"],
+                      "Rock type": ["serpentinite", "serpentinite", "basalt"],
+                      "LOI": [12.0, 10.0, 1.0], "H2O+": [6.5, np.nan, np.nan],
+                      "CO2": [np.nan, 2.2, np.nan]})
+ex = hydrogen.degree_table(extra, pd.Series([True, True, False]), None)
+print("\nEXTRA CASES")
+print(pd.concat([extra[["Sample", "LOI", "H2O+", "CO2"]], ex[["H2O used (wt%)", "H2O from",
+                 "S used", "H2 (mmol/kg)", "Note"]]], axis=1).round(3).to_string(index=False))
+ok_c = (np.allclose(deg_h2o["S from H2O"], s_true.values, atol=1e-3)
+        and np.allclose(deg_h2o["S from mode"], s_true.values, atol=1e-3)
+        and np.allclose(deg_h2o["H2 (mmol/kg)"], exp_h2, atol=0.3)
+        and np.allclose(deg_mode["H2 (mmol/kg)"], exp_h2, atol=0.3)
+        and np.allclose(deg_h2o["H2 low (mmol/kg)"], s_true.values * 150, atol=0.2)
+        and np.allclose(deg_h2o["H2 high (mmol/kg)"], s_true.values * 300, atol=0.3)
+        and bool(um.all())
+        and "pyroxenite" in deg_h2o["Note"].iloc[5]
+        and ex["H2O from"].tolist() == ["H2O+", "LOI - CO2", "LOI"]
+        and abs(ex["H2 (mmol/kg)"].iloc[0] - 6.5 / 13 * 227) < 1e-9
+        and abs(ex["H2 (mmol/kg)"].iloc[1] - 7.8 / 13 * 227) < 1e-9
+        and pd.isna(ex["H2 (mmol/kg)"].iloc[2]))
+
+ok = ok_c and (np.allclose(table.values, TRUE_MODES.values, atol=0.01)
       and np.allclose(res["C app"], res["C expected"], atol=1e-4)
       and np.allclose(res["RH2 app"], res["RH2 expected"], atol=1e-9)
       and np.allclose(res["T from depth"], res["T (C)"], atol=1e-9)

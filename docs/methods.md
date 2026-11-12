@@ -587,6 +587,52 @@ measurement. Rezaee (2025) says this himself.
 - **Other units.** [App convention] mol uses the true molar mass of H₂
   (2.016 g/mol); m³ at 0 °C and 1 atm uses 22.414 L/mol.
 
+## 8d. Hydrogen already generated (degree of serpentinization)
+
+Tab *Already generated (serpentinization degree)* of Tools → Hydrogen
+generation; code in `geochem/hydrogen.py` (`degree_table`). It answers a
+different question from section 8c: not "how fast could this rock make
+H₂ at this temperature?" but "how much H₂ has this rock already made?".
+It needs only total iron and LOI, so it works with ordinary XRF data.
+
+- **Yield of complete serpentinization.** [Source] Liu et al. (2023):
+  reactions of mantle olivine (Fo90) that put the Fe into magnetite or
+  into Fe³⁺-serpentine use 15 mol of olivine per mol of H₂, which is at
+  most 454 mmol H₂ per kg (checked: 15 × 0.1470 kg = 2.205 kg per mol).
+  Any Fe²⁺ left in serpentine or brucite lowers this. With about half of
+  the Fe in serpentine trivalent (Klein et al. 2009; Andreani et al. 2013,
+  as cited in Liu et al. 2023) the yield is **227 mmol/kg**, the default.
+  Thermodynamic models of serpentinized mantle give **150–300 mmol/kg**
+  (Albers et al. 2021, as cited in Liu et al. 2023), the default low and
+  high yields. All three can be changed on the page.
+- **Degree of serpentinization S.** [App convention] Two ways, shown side
+  by side:
+  - from water: S = H₂O / 13.0 wt%, the water of pure serpentine
+    Mg₃Si₂O₅(OH)₄ (2 × 18.015 / 277.11). Water is H2O+ when the file has
+    it, otherwise LOI − CO2 when CO2 is given, otherwise LOI;
+  - from the serpentine mode of section 8b (default minerals): S =
+    serpentine wt% / 100.
+  S is limited to 0–1. Both assume that serpentine is the only hydrous
+  mineral: brucite (31 wt% H₂O), chlorite, amphibole or carbonate in the
+  LOI make S too high.
+- **H₂ already generated** = S × yield, with the low and high yields as a
+  range. [App convention] The result is per kg of the analysed rock; the
+  mass added by water (up to 13 %) is not corrected.
+- **Which samples.** [App convention] Only ultramafic samples (section
+  4.1). The yield is for olivine-rich mantle rock; serpentinization of
+  pyroxenite makes Fe-rich serpentine and no magnetite, and less H₂ (Klein
+  et al. 2013), so pyroxenites get a note.
+- **Notes per sample:** pyroxenite; water above pure serpentine (brucite
+  or other hydrous minerals?); S from water and from the mode differ by
+  more than 0.15. The page also says how many samples use LOI as water.
+- **Not used:** splitting total iron into FeO and Fe2O3 with a fixed ratio
+  or an igneous regression (section 3) to calculate H₂ from Fe2O3. The H₂
+  would only repeat the chosen ratio. Measured FeO and Fe2O3 are needed for
+  an H₂ estimate from the oxidised iron (planned).
+- **Not the H₂ in the rock today.** The result is the H₂ made during
+  serpentinization. Most of it left the rock long ago, or was used to make
+  methane.
+
 ## 9. All app conventions in one place
 
 Report these in your methods section if they affect your results.
@@ -623,6 +669,10 @@ Report these in your methods section if they affect your results.
 | Hydrogen: minerals with rank 0 in C | all except olivine, orthopyroxene and clinopyroxene | `geochem/hydrogen.py` |
 | Hydrogen: C on the Per sample tab | from the mineral modes (default minerals); negative modes set to 0 | `geochem/hydrogen.py` |
 | Hydrogen: depth interval | 100 m, same area from top to base | Hydrogen generation page |
+| Hydrogen already generated: yield | 227 mmol/kg, range 150–300 (Liu et al. 2023) | Hydrogen generation page |
+| Hydrogen already generated: degree of serpentinization | H₂O / 13.0 wt% (water: H2O+, else LOI − CO2, else LOI), or serpentine mode / 100; limited to 0–1 | Hydrogen generation page |
+| Hydrogen already generated: samples | ultramafic only; note for pyroxenites | `geochem/hydrogen.py` |
+| Hydrogen already generated: S from water and from mode differ | note above 0.15 | `geochem/hydrogen.py` |
 | TAS label "Trachyte / Trachydacite" | moved to (66.0, 11.6) | `TAS.json` |
 
 ## 10. Checks and tests
@@ -777,6 +827,21 @@ Report these in your methods section if they affect your results.
     10⁻⁴ and every RH2 exactly; the Depth column gives the same results
     as the Temperature column; the volumetric total of a 10 km² × 3 km
     body equals the hand sum. Also checked through the full app.
+  - Already generated (0.27.0), synthetic rocks: S from water and from
+    the serpentine mode both equal the known serpentine content (0, 0, 0,
+    0.38, 0.88, 0) within 0.001; H₂ = S × 227 (86.3 and 199.8 mmol/kg),
+    low and high = S × 150 and S × 300; the websterite gets the pyroxenite
+    note. Water rules: H2O+ = 6.5 is used before LOI = 12 (H₂ = 113.5);
+    LOI 10 − CO2 2.2 = 7.8 (H₂ = 136.2); a basalt gets no value.
+  - Already generated, ultramafic example set: JP-1 0.16 (37 mmol/kg),
+    JP-2 0.01 (2), UB-N serpentinite 0.80 from water and 0.82 from the mode
+    (182 and 187 mmol/kg, range 120–248); the komatiite and the
+    hornblendite are not ultramafic by the screening and get no value.
+  - Full app (test harness): the tab opens without data, with the example
+    set and with the synthetic set; a warning appears when the yield is
+    outside the low–high range. A crash found in this test (the example
+    cards were drawn twice on the page without data) was fixed before
+    release.
   - Per sample tab with the ultramafic example set: fresh peridotites
     JP-1 and JP-2 give C = 0.77 and 0.80; the serpentinite UB-N gives
     C = 0.11, because its olivine has already reacted.
@@ -908,6 +973,18 @@ basis tab.
   Geochemistry of abyssal peridotites (Mid-Atlantic Ridge, 15°20'N, ODP
   Leg 209): implications for fluid/rock interaction in slow spreading
   environments. Chemical Geology 234, 179–210.
+- Albers E., Bach W., Pérez-Gussinyé M., McCammon C., Frederichs T.
+  (2021) Serpentinization-driven H2 production from continental break-up
+  to mid-ocean ridge spreading: unexpected high rates at the West Iberia
+  margin. Frontiers in Earth Science 9, 673063. (as cited in Liu et al.
+  2023)
+- Klein F., Bach W., McCollom T.M. (2013) Compositional controls on
+  hydrogen generation during serpentinization of ultramafic rocks. Lithos
+  178, 55–69.
+- Liu Z., Pérez-Gussinyé M., García-Pintado J., Mezri L., Bach W. (2023)
+  Mantle serpentinization and associated hydrogen flux at North Atlantic
+  magma-poor rifted margins. Geology 51, 284–289.
+  https://doi.org/10.1130/G50722.1
 - Rezaee R. (2025) Quantifying natural hydrogen generation rates and
   volumetric potential in onshore serpentinization. Geosciences 15, 112.
   https://doi.org/10.3390/geosciences15030112

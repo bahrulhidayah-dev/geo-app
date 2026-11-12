@@ -47,7 +47,7 @@ def _reload_changed_modules():
 _reload_changed_modules()
 LANGUAGES, t = i18n.LANGUAGES, i18n.t
 
-APP_VERSION = "0.26.0"
+APP_VERSION = "0.27.0"
 DEVELOPER = "Bahrul Hidayah"
 DEVELOPER_EMAIL = "bahrul.hidayah@gmail.com"
 APP_URL = "https://geo-app-hidayah.streamlit.app"
@@ -1603,8 +1603,9 @@ def page_hydrogen():
              "for a rock body (Rezaee 2025, Geosciences 15, 112). The rate equations "
              "are empirical fits to laboratory experiments on powdered olivine and "
              "peridotite: treat the results as an order of magnitude, not a measurement."))
-    tab1, tab2, tab3 = st.tabs([t("Rate (one condition)"), t("Per sample"),
-                                t("Rock body (volumetric)")])
+    tab1, tab2, tab3, tab4 = st.tabs([t("Rate (one condition)"), t("Per sample"),
+                                      t("Rock body (volumetric)"),
+                                      t("Already generated (serpentinization degree)")])
 
     # ---- tab 1: one condition, works without a data file ----
     with tab1:
@@ -1762,6 +1763,96 @@ def page_hydrogen():
                              "RH2 (Eqs. 3–5) → GH2 = 2×10⁻⁶ × mass of the interval × C × "
                              "RH2 × fraction that reacted (Eq. 8). The area is the same from "
                              "top to base, as in the paper. No H₂ above 400 °C."))
+
+    # ---- tab 4: H2 already generated, from the degree of serpentinization ----
+    with tab4:
+        st.caption(t("How much H₂ a rock has already made: degree of serpentinization S "
+                     "× H₂ yield of complete serpentinization (Liu et al. 2023). Works with "
+                     "ordinary XRF data (total iron and LOI); no FeO analysis is needed. "
+                     "Only ultramafic samples are used."))
+        if ctx is None:
+            st.info(t("Load a data file or an example dataset first (see the Per sample "
+                      "tab or the left panel)."))
+        else:
+            df = view()
+            left, right = st.columns([2, 3], gap="large")
+            with left:
+                use = st.radio(
+                    t("Degree of serpentinization from"), ["h2o", "mode"], key="h2d_use",
+                    format_func={"h2o": t("Water: H2O ÷ 13 wt%"),
+                                 "mode": t("Serpentine mode (Mineral modes)")}.get,
+                    help=t("Pure serpentine has 13 wt% H2O. Water is H2O+ when the file "
+                           "has it, otherwise LOI minus CO2, otherwise LOI. The serpentine "
+                           "mode uses the default minerals of Tools → Mineral modes."))
+                yld = st.number_input(t("H₂ yield of complete serpentinization (mmol/kg)"),
+                                      1.0, float(hydrogen.YIELD_MAX), hydrogen.YIELD_LIU, 1.0,
+                                      key="h2d_y",
+                                      help=t("227 mmol/kg: mantle olivine with about half "
+                                             "of the Fe in serpentine as Fe³⁺ (Liu et al. "
+                                             "2023). Upper limit with all Fe as Fe³⁺: "
+                                             "454 mmol/kg."))
+                c1, c2 = st.columns(2)
+                ylo = c1.number_input(t("Low yield (mmol/kg)"), 0.0, float(hydrogen.YIELD_MAX),
+                                      hydrogen.YIELD_RANGE[0], 10.0, key="h2d_lo")
+                yhi = c2.number_input(t("High yield (mmol/kg)"), 0.0, float(hydrogen.YIELD_MAX),
+                                      hydrogen.YIELD_RANGE[1], 10.0, key="h2d_hi",
+                                      help=t("150–300 mmol/kg from thermodynamic models of "
+                                             "serpentinized mantle (Albers et al. 2021, as "
+                                             "cited in Liu et al. 2023)."))
+                if not ylo <= yld <= yhi:
+                    st.warning(t("The yield is outside the low–high range. Adjust the low "
+                                 "and high yields so that they enclose it."),
+                               icon=":material/warning:")
+            um = screening.ultramafic_mask(df, settings["um_mgo"])
+            srp = None
+            rocks = modes.rock_components(df)
+            comps = [c for c in modes.COMPONENTS if rocks[c].notna().any()]
+            if "H2O" in comps and not rocks[["SiO2", "MgO"]].dropna().empty:
+                A = modes.mineral_table(modes.DEFAULT_MINERALS).loc[comps]
+                mt, _ = modes.solve_all(rocks[comps], A)
+                if not mt.empty:
+                    srp = mt["Serpentine (Mg3Si2O5(OH)4)"]
+            if use == "mode" and srp is None:
+                st.warning(t("No serpentine mode could be calculated (SiO2, MgO and "
+                             "H2O or LOI are needed). Water is used instead."),
+                           icon=":material/warning:")
+                use = "h2o"
+            dt = hydrogen.degree_table(df, um, srp, use, yld, ylo, yhi)
+            names = df.iloc[:, 0].astype(str)
+            with right:
+                n_um = int(dt["Ultramafic"].sum())
+                n_ok = int(dt["H2 (mmol/kg)"].notna().sum())
+                if n_um == 0:
+                    st.info(t("No ultramafic samples: this method is for serpentinized "
+                              "peridotites (Settings: ultramafic threshold)."))
+                else:
+                    m1, m2, m3 = st.columns(3)
+                    m1.metric(t("Ultramafic samples"), n_um)
+                    m2.metric(t("With a result"), n_ok)
+                    m3.metric(t("Median H₂ (mmol/kg)"),
+                              f"{dt['H2 (mmol/kg)'].median():.0f}" if n_ok else "–")
+                    n_loi = int(((dt["H2O from"] == "LOI") & dt["Ultramafic"]).sum())
+                    if n_loi:
+                        st.caption(t("{n} sample(s) use LOI as water: LOI also holds CO2 "
+                                     "and S. Add an H2O+ or CO2 column for better "
+                                     "values.").format(n=n_loi))
+                    shown = dt.set_index(names).head(40)
+                    if n_ok:
+                        show(plotting.plot_h2_degree(shown, style=SCREEN))
+                        downloads(lambda s_: plotting.plot_h2_degree(shown, style=s_),
+                                  "h2_serpentinization_degree")
+            out = dt.copy()
+            out.insert(0, t("Sample"), names)
+            st.dataframe(out.round(3), hide_index=True, height=320,
+                         column_config={"Note": st.column_config.TextColumn(width="large")})
+            csv_download(t("Download H₂ from serpentinization degree (CSV)"), lambda: out,
+                         "hydrogen_serpentinization_degree.csv")
+            st.caption(t("H₂ = S × yield; the bar shows the central yield and the line the "
+                         "low–high yields. S from water assumes that serpentine is the only "
+                         "hydrous mineral: brucite (31 wt% H2O) or carbonate in the LOI "
+                         "make S too high. The yield is for olivine-rich mantle rock; "
+                         "pyroxenites make less H₂ (Klein et al. 2013). The result is the "
+                         "H₂ made per kg of rock, not the H₂ still in the rock."))
 
 
 LEGEND_PLACES = ["auto", "below", "upper right", "upper left", "lower right",

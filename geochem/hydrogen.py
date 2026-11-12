@@ -211,6 +211,118 @@ def h2_units(gh2_kg):
             "mol": mol, "m3_STP": mol * 0.022414}
 
 
+# ---------- 5. H2 already made: degree of serpentinization x yield ----------
+# Source of the yield: Liu Z., Perez-Gussinye M., Garcia-Pintado J., Mezri L.,
+# Bach W. (2023) Mantle serpentinization and associated hydrogen flux at North
+# Atlantic magma-poor rifted margins. Geology 51, 284-289.
+# https://doi.org/10.1130/G50722.1
+# Complete serpentinization of mantle olivine (Fo90) gives at most
+# 454 mmol H2 per kg (15 mol olivine per mol H2). With about half of the Fe
+# in serpentine trivalent, the yield is 227 mmol/kg; thermodynamic models of
+# serpentinized mantle give 150-300 mmol/kg (Albers et al. 2021, as cited in
+# Liu et al. 2023).
+YIELD_LIU = 227.0                     # mmol H2 per kg, central value
+YIELD_RANGE = (150.0, 300.0)          # low and high values
+YIELD_MAX = 454.0                     # upper limit (all Fe as Fe3+)
+# [App convention] H2O of ideal lizardite/chrysotile Mg3Si2O5(OH)4:
+# 2 x 18.015 / 277.11 = 13.00 wt%.
+SERPENTINE_H2O = 13.0
+PYROXENITE_WORDS = ("pyroxenit", "websterit")
+
+
+def h2o_for_degree(df):
+    """Water (wt%) used for the degree of serpentinization, and its source.
+
+    [App convention] H2O+ when the file has it; otherwise LOI minus CO2 when
+    CO2 is given; otherwise LOI. Negative values are set to 0.
+    Returns (Series of wt%, Series of source text)."""
+    idx = df.index
+    h2o = pd.Series(np.nan, index=idx, dtype=float)
+    src = pd.Series("", index=idx, dtype=object)
+    if "H2O+" in df:
+        v = pd.to_numeric(df["H2O+"], errors="coerce")
+        h2o[v.notna()] = v[v.notna()]
+        src[v.notna()] = "H2O+"
+    if "LOI" in df:
+        loi = pd.to_numeric(df["LOI"], errors="coerce")
+        co2 = (pd.to_numeric(df["CO2"], errors="coerce") if "CO2" in df
+               else pd.Series(np.nan, index=idx, dtype=float))
+        need = h2o.isna() & loi.notna()
+        with_co2 = need & co2.notna()
+        h2o[with_co2] = loi[with_co2] - co2[with_co2]
+        src[with_co2] = "LOI - CO2"
+        only = need & co2.isna()
+        h2o[only] = loi[only]
+        src[only] = "LOI"
+    return h2o.clip(lower=0), src
+
+
+def degree_from_h2o(h2o):
+    """[App convention] Degree of serpentinization S = H2O / 13.0 wt% (the
+    water of pure serpentine), limited to 0-1."""
+    return (pd.Series(h2o, dtype=float) / SERPENTINE_H2O).clip(0.0, 1.0)
+
+
+def degree_from_mode(serpentine_pct):
+    """[App convention] S = serpentine mode (wt%) / 100, limited to 0-1."""
+    return (pd.Series(serpentine_pct, dtype=float) / 100.0).clip(0.0, 1.0)
+
+
+def h2_from_degree(degree, yield_mmol_kg=YIELD_LIU, low=YIELD_RANGE[0],
+                   high=YIELD_RANGE[1]):
+    """H2 already generated (mmol per kg of rock) = S x yield.
+    [Source: yield of Liu et al. 2023] [App convention: S x yield]."""
+    s = pd.Series(degree, dtype=float)
+    return pd.DataFrame({"H2 (mmol/kg)": s * yield_mmol_kg,
+                         "H2 low (mmol/kg)": s * low,
+                         "H2 high (mmol/kg)": s * high})
+
+
+def degree_table(df, ultramafic, serpentine_pct=None, use="h2o",
+                 yield_mmol_kg=YIELD_LIU, low=YIELD_RANGE[0], high=YIELD_RANGE[1]):
+    """Degree of serpentinization and H2 already generated for every sample.
+
+    ultramafic: boolean Series (screening.ultramafic_mask). The method is
+        applied only to ultramafic samples; others get no value.
+    serpentine_pct: serpentine mode (wt%) from Tools -> Mineral modes, or None.
+    use: "h2o" (S from H2O) or "mode" (S from the serpentine mode).
+    """
+    h2o, src = h2o_for_degree(df)
+    s_h2o = degree_from_h2o(h2o)
+    s_mode = (degree_from_mode(serpentine_pct).reindex(df.index)
+              if serpentine_pct is not None
+              else pd.Series(np.nan, index=df.index, dtype=float))
+    s_used = s_mode if use == "mode" else s_h2o
+    um = pd.Series(ultramafic, index=df.index).fillna(False).astype(bool)
+    s_used = s_used.where(um)
+    out = pd.DataFrame({"Ultramafic": um, "H2O used (wt%)": h2o, "H2O from": src,
+                        "S from H2O": s_h2o, "S from mode": s_mode, "S used": s_used},
+                       index=df.index)
+    out = out.join(h2_from_degree(s_used, yield_mmol_kg, low, high))
+    notes = []
+    words = pd.Series("", index=df.index)
+    for col in ("Rock type", "Group"):
+        if col in df:
+            words = words + " " + df[col].astype(str).str.lower()
+    for i in df.index:
+        n = []
+        if not um[i]:
+            n.append("not ultramafic: method not applied")
+        else:
+            if pd.isna(s_used[i]):
+                n.append("no H2O, LOI or mode")
+            if any(w in words[i] for w in PYROXENITE_WORDS):
+                n.append("pyroxenite: yield is for peridotite, expect less")
+            if (pd.notna(s_h2o[i]) and pd.notna(s_mode[i])
+                    and abs(s_h2o[i] - s_mode[i]) > 0.15):
+                n.append("S from H2O and from mode differ by > 0.15")
+            if pd.notna(h2o[i]) and h2o[i] > SERPENTINE_H2O + 0.5:
+                n.append("H2O above pure serpentine: brucite or other hydrous minerals?")
+        notes.append("; ".join(n))
+    out["Note"] = notes
+    return out
+
+
 if __name__ == "__main__":
     print(rh2_rate(300, 500))   # Eq. 3 -> 75.602
     print(rh2_rate(300))        # Eq. 4 -> 119.67

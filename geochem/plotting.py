@@ -1077,3 +1077,34 @@ def plot_h2_depth(table, style="dark", size=(5.4, 5.6)):
     ax.set_xlim(left=0)
     _style_axes(ax, s, "H₂ generation rate (mmol/kg)", "Depth (km)")
     return _finish(fig)
+
+
+def plot_h2_degree(table, style="dark", width=6.4):
+    """H2 already generated (mmol/kg) per sample as horizontal bars, with a
+    line from the low to the high yield (Liu et al. 2023; Albers et al.
+    2021). table: index = sample names; columns 'H2 (mmol/kg)',
+    'H2 low (mmol/kg)', 'H2 high (mmol/kg)' and 'S used'."""
+    s = STYLES[style]
+    t = table.dropna(subset=["H2 (mmol/kg)"])
+    n = len(t)
+    fig = _figure((width, 1.3 + 0.32 * max(n, 1)))
+    fig.patch.set_facecolor(s["bg"])
+    fig._geo_style = s
+    ax = fig.subplots()
+    y = np.arange(n)[::-1]
+    v = t["H2 (mmol/kg)"].to_numpy(dtype=float)
+    lo = t["H2 low (mmol/kg)"].to_numpy(dtype=float)
+    hi = t["H2 high (mmol/kg)"].to_numpy(dtype=float)
+    ax.barh(y, v, height=0.62, color=H2_COLOUR, alpha=0.85, zorder=3)
+    ax.hlines(y, lo, hi, color=s["fg"], lw=1.2, zorder=4)
+    for yy, a, b in zip(y, lo, hi):
+        ax.vlines([a, b], yy - 0.15, yy + 0.15, color=s["fg"], lw=1.2, zorder=4)
+    for yy, val, sd in zip(y, v, t["S used"].to_numpy(dtype=float)):
+        ax.text(val, yy + 0.33, f" S = {sd:.2f}", va="bottom", ha="left",
+                color=s["muted"], fontsize=_APP["font_tick"] * 0.85,
+                family=_APP["font_family"], zorder=5)
+    ax.set_yticks(y, [str(i) for i in t.index])
+    ax.set_xlim(0, max(float(np.nanmax(hi)) if n else 1.0, 1.0) * 1.12)
+    ax.set_ylim(-0.7, n - 0.2)
+    _style_axes(ax, s, "H₂ already generated (mmol/kg)", None)
+    return _finish(fig)

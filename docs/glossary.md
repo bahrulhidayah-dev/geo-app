@@ -420,6 +420,26 @@ clinopyroxene 0.5, all other minerals 0. A rock with 60 % olivine and
 
 **Source.** Rezaee (2025, Table 2).
 
+### Degree of serpentinization
+
+**What it is.** The share of a peridotite that has turned into serpentine,
+from 0 (fresh) to 1 (fully serpentinized). It can be estimated from the
+water content (pure serpentine has about 13 wt% H₂O) or from the
+serpentine mode.
+
+**In the app.** Tools → Hydrogen generation, Already generated tab
+[App convention].
+
+### H₂ yield of serpentinization
+
+**What it is.** The H₂ made when one kilogram of mantle rock is fully
+serpentinized: at most 454 mmol/kg when all iron becomes Fe³⁺, about
+227 mmol/kg when half of the iron in serpentine stays Fe²⁺.
+
+**In the app.** Tools → Hydrogen generation, Already generated tab.
+
+**Source.** Liu et al. (2023).
+
 ### Geothermal gradient
 
 **What it is.** How fast temperature rises with depth, in °C/km. A

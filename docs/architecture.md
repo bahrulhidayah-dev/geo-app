@@ -57,7 +57,7 @@ every click and rebuilds the page; values that must survive are kept in
 | `calc.py` | FeOt, Mg#, anhydrous recalculation, molar values, millications, element from oxide, normalisation |
 | `norms.py` | CIPW norm (Hutchison 1974, 1975; ported from Janoušek et al. 2006), iron split by Fe³⁺/Fe(total) |
 | `modes.py` | Mineral modes by least squares with a closure condition (Albarède 1995, section 5.3), rank and condition checks, Monte Carlo uncertainty, ideal mineral compositions; used by Tools → Mineral modes |
-| `hydrogen.py` | H₂ generation by serpentinization (Rezaee 2025): rate RH2 from T and P (Eqs. 3–5), correction factor C (Table 2), T and P from depth, volumetric GH2 by depth intervals (Eqs. 6–8); used by Tools → Hydrogen generation |
+| `hydrogen.py` | H₂ generation by serpentinization (Rezaee 2025): rate RH2 from T and P (Eqs. 3–5), correction factor C (Table 2), T and P from depth, volumetric GH2 by depth intervals (Eqs. 6–8); H₂ already generated = degree of serpentinization × yield (Liu et al. 2023); used by Tools → Hydrogen generation |
 | `masschange.py` | Mass change: isocon slope, gains and losses (Grant 1986, 2005), enrichment factors and immobility test (MacLean and Barrett 1993); used by Tools → Mass change |
 | `variation.py` | Variation diagrams: Harker (SiO2) and MgO plates, anhydrous or as measured; iso-Mg# and olivine lines |
 | `examples.py` | Example datasets: list, descriptions and loading; real reference rocks from `examples/reference_rocks.csv` (USGS certificates; Mikuni et al. 2025) and two synthetic sets |

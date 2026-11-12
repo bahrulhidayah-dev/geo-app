@@ -2,6 +2,30 @@
 
 All notable changes to GeoChem App. Versions follow MAJOR.MINOR.PATCH.
 
+## 0.27.0 - 2026-11-12
+
+- **Tools → Hydrogen generation, new tab "Already generated
+  (serpentinization degree)"**: how much H₂ a rock has already made, from
+  ordinary XRF data (total iron and LOI). No FeO analysis is needed.
+  - H₂ = degree of serpentinization S × H₂ yield of complete
+    serpentinization: 227 mmol/kg (Liu et al. 2023), with a low–high range
+    of 150–300 mmol/kg (Albers et al. 2021, as cited in Liu et al. 2023).
+    All three values can be changed.
+  - S from water (H2O+, otherwise LOI − CO2, otherwise LOI, divided by the
+    13 wt% water of pure serpentine) or from the serpentine mode of Tools →
+    Mineral modes; both are shown side by side.
+  - Only ultramafic samples are used (the screening of Settings). Notes for
+    pyroxenites (less H₂, Klein et al. 2013), water above pure serpentine
+    (brucite?) and S values that disagree; a note when LOI is used as water.
+  - Bar chart with the low–high range, table and CSV.
+- Splitting total iron into FeO and Fe2O3 with a fixed ratio is not used
+  for H₂: the result would only repeat the chosen ratio.
+- Synthetic test extended (`tools/synthetic_h2_test.py`): S and H₂ of six
+  rocks with known serpentine contents, the water source rules and a
+  non-ultramafic rock.
+- Scientific methods (section 8d, conventions, tests), user manual
+  (section 10.3, step 4), Glossary, References.
+
 ## 0.26.0 - 2026-11-12
 
 - **New page Tools → Hydrogen generation**: an estimate of the H₂ made by

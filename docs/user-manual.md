@@ -591,6 +591,17 @@ rock, so treat the numbers as an order of magnitude.
    into depth intervals; each gets its own temperature and rate. Results
    in kg, megatonnes, mol and m³, a depth profile and a CSV of the
    intervals.
+4. **Already generated (serpentinization degree) tab.** How much H₂ each
+   ultramafic sample has already made, from ordinary XRF data (total iron
+   and LOI are enough). H₂ = degree of serpentinization S × yield.
+   - *Degree of serpentinization from*: water (H2O ÷ 13 wt%, the water of
+     pure serpentine) or the serpentine mode (Tools → Mineral modes). The
+     table shows both, so you can compare them.
+   - *Yield*: 227 mmol/kg (Liu et al. 2023), with a low–high range of
+     150–300 mmol/kg. Keep the central value inside the range.
+   - Results: bar chart with the range, table with notes, CSV.
+   - Add an **H2O+** or **CO2** column if you have one: LOI alone also
+     counts CO2 and S as water.
 
 How to read the results:
 
@@ -602,6 +613,12 @@ How to read the results:
 - **Totals are upper limits.** Real bodies react only in part (water
   supply, fractures, grain size). Use *Fraction that reacted* to test
   this.
+- **Rate tabs and the Already generated tab answer different questions.**
+  The rate tabs: how much H₂ the rock *could* make under given conditions.
+  The Already generated tab: how much it *has* made, from its water.
+- **No FeO analysis?** The app does not split total iron into FeO and
+  Fe2O3 to calculate H₂: the answer would only repeat the chosen split.
+  Use the Already generated tab instead.
 
 ## 11. Symbols and colours
 

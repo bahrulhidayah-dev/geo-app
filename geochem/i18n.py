@@ -589,6 +589,17 @@ TR = {
     'Rock mass GRM (kg)': ('Massa batuan GRM (kg)', '岩石質量 GRM（kg）'),
     'H₂ generated GH2 (kg)': ('H₂ terbentuk GH2 (kg)', '生成 H₂ GH2（kg）'),
     'Download depth intervals (CSV)': ('Unduh interval kedalaman (CSV)', '深度区間をダウンロード（CSV）'),
+    'Already generated (serpentinization degree)': ('Sudah terbentuk (derajat serpentinisasi)', '生成済み（蛇紋岩化度）'),
+    'Degree of serpentinization from': ('Derajat serpentinisasi dari', '蛇紋岩化度の求め方'),
+    'Water: H2O ÷ 13 wt%': ('Air: H2O ÷ 13 wt%', '水: H2O ÷ 13 wt%'),
+    'Serpentine mode (Mineral modes)': ('Mode serpentin (Mode mineral)', '蛇紋石モード（鉱物モード）'),
+    'H₂ yield of complete serpentinization (mmol/kg)': ('Hasil H₂ serpentinisasi penuh (mmol/kg)', '完全蛇紋岩化の H₂ 収量（mmol/kg）'),
+    'Low yield (mmol/kg)': ('Hasil rendah (mmol/kg)', '低い収量（mmol/kg）'),
+    'High yield (mmol/kg)': ('Hasil tinggi (mmol/kg)', '高い収量（mmol/kg）'),
+    'Ultramafic samples': ('Sampel ultramafik', '超苦鉄質試料'),
+    'With a result': ('Dengan hasil', '結果あり'),
+    'Median H₂ (mmol/kg)': ('Median H₂ (mmol/kg)', 'H₂ 中央値（mmol/kg）'),
+    'Download H₂ from serpentinization degree (CSV)': ('Unduh H₂ dari derajat serpentinisasi (CSV)', '蛇紋岩化度からの H₂ をダウンロード（CSV）'),
 }
 
 

@@ -37,7 +37,8 @@ workflows:** [docs/architecture.md](docs/architecture.md). Changes: [CHANGELOG.m
   (MacLean and Barrett 1993); for example for serpentinization.
 - Mineral modes from the whole-rock analysis (least squares with closure, Albarède 1995), with H2O for serpentinites
 - Hydrogen generation by serpentinization (Rezaee 2025): rate from temperature and
-  pressure, mineral correction factor, per-sample estimate and volumetric total for a rock body
+  pressure, mineral correction factor, per-sample estimate and volumetric total for a rock body;
+  H2 already generated from the degree of serpentinization (Liu et al. 2023), with ordinary XRF data
 - Top bar with Documentation (full user manual with screenshots),
   References, About, and the language (Indonesian, English, Japanese) and
   theme (light, dark or system) menus; the session is kept when the page

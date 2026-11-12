@@ -175,6 +175,17 @@ GENERAL = [
     ("Mineral modes", "Albarede F. (1995) Introduction to Geochemical Modeling. Cambridge "
      "University Press, Cambridge. (section 5.3: mineral modes by least squares with a "
      "closure condition; test data of Table 5.16)"),
+    ("Hydrogen generation", "Liu Z., Perez-Gussinye M., Garcia-Pintado J., Mezri L., "
+     "Bach W. (2023) Mantle serpentinization and associated hydrogen flux at North "
+     "Atlantic magma-poor rifted margins. Geology 51, 284-289. doi:10.1130/G50722.1 "
+     "(H2 yield of complete serpentinization: 454 and 227 mmol/kg)"),
+    ("Hydrogen generation", "Klein F., Bach W., McCollom T.M. (2013) Compositional "
+     "controls on hydrogen generation during serpentinization of ultramafic rocks. "
+     "Lithos 178, 55-69. (less H2 from pyroxenite; Fe3+ in serpentine)"),
+    ("Hydrogen generation", "Albers E., Bach W., Perez-Gussinye M., McCammon C., "
+     "Frederichs T. (2021) Serpentinization-driven H2 production from continental "
+     "break-up to mid-ocean ridge spreading. Frontiers in Earth Science 9, 673063. "
+     "(150-300 mmol/kg; as cited in Liu et al. 2023)"),
     ("Hydrogen generation", "Rezaee R. (2025) Quantifying natural hydrogen generation "
      "rates and volumetric potential in onshore serpentinization. Geosciences 15, 112. "
      "doi:10.3390/geosciences15030112 (rate equations 3-5, correction factor C, "
